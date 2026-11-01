@@ -1,0 +1,116 @@
+# encoding: utf-8
+"""Piste 2 : quels parfums garder à l'année, lesquels ne vendre qu'en saison, lesquels retirer ?
+On raisonne en PARFUM (comme la gérante), toutes formes de produit confondues (bougie, fondant, voiture, poudre, élixir…).
+Aucune donnée personnelle."""
+import csv, json, os
+from collections import Counter, defaultdict
+from datetime import datetime, timedelta
+import numpy as np
+from scipy import stats
+from common import charger, famille
+from parfums import parfum
+
+cmds, _ = charger()
+OUVERTURE = datetime(2025, 6, 27); FIN = datetime(2026, 9, 20)
+mois_pleins = [(2025, m) for m in range(7, 13)] + [(2026, m) for m in range(1, 9)]       # 14 mois complets (juil. 2025 - août 2026)
+tot_u = ident_u = 0
+data = defaultdict(lambda: {'u': 0, 'ca': 0.0, 'orders': set(), 'dates': [], 'mois': Counter(), 'formes': Counter(), 'noms': Counter()})
+for o in cmds:
+    for l in o['lignes']:
+        tot_u += l['qte']
+        p = parfum(l['nom'])
+        if not p: continue
+        ident_u += l['qte']
+        d = data[p]; d['u'] += l['qte']; d['ca'] += l['qte'] * l['prix']; d['orders'].add(id(o)); d['dates'] += [o['dt']] * l['qte']
+        d['mois'][(o['dt'].year, o['dt'].month)] += l['qte']; d['formes'][famille(l['nom'])] += l['qte']; d['noms'][l['nom'][:40]] += l['qte']
+print(f'unités totales {tot_u} ; avec parfum identifié {ident_u} ({100*ident_u/tot_u:.1f} %) ; {len(data)} parfums')
+ca_tot = sum(l['qte'] * l['prix'] for o in cmds for l in o['lignes'])
+ca_parfum = sum(d['ca'] for d in data.values())
+
+fiches = []
+for p, d in data.items():
+    dates = sorted(d['dates']); premiere, derniere = dates[0], dates[-1]
+    depuis_ouverture = premiere <= OUVERTURE + timedelta(days=30)
+    u14 = sum(1 for x in dates if x <= premiere + timedelta(days=14))
+    # mois « présents » = mois pleins à partir du mois de la 1re vente (le mois de la 1re vente est exclu s'il est entamé)
+    m0 = (premiere.year, premiere.month)
+    mp = [m for m in mois_pleins if m > m0] if not depuis_ouverture else list(mois_pleins)
+    vendus = sum(1 for m in mp if d['mois'].get(m, 0) > 0)
+    pic = max(d['mois'].values()) / d['u']
+    u90 = sum(1 for x in dates if x > FIN - timedelta(days=90)); u180 = sum(1 for x in dates if x > FIN - timedelta(days=180))
+    fiches.append({'parfum': p, 'unites': d['u'], 'ca': round(d['ca'], 2), 'commandes': len(d['orders']), 'premiere': premiere.strftime('%Y-%m-%d'), 'derniere': derniere.strftime('%Y-%m-%d'),
+                   'depuis_ouverture': depuis_ouverture, 'part_14j': round(u14 / d['u'], 3), 'mois_presents': len(mp), 'mois_vendus': vendus,
+                   'part_mois_vendus': round(vendus / len(mp), 2) if mp else None, 'part_pic': round(pic, 3), 'u90': u90, 'u180': u180,
+                   'formes': dict(d['formes']), 'n_formes': len(d['formes']), 'par_mois': {f'{a}-{b:02d}': c for (a, b), c in sorted(d['mois'].items())}})
+fiches.sort(key=lambda f: -f['unites'])
+
+# ---------- règles de classement (écrites ici pour être relues et contestées)
+def classe(f):
+    if f['unites'] < 10: return 'Marginal'
+    if (not f['depuis_ouverture']) and f['part_14j'] >= 0.40: return 'Lancement (pic à la sortie)'
+    if f['mois_presents'] >= 8 and f['part_mois_vendus'] is not None and f['part_mois_vendus'] >= 0.80 and f['part_pic'] <= 0.25: return 'Régulier (toute l’année)'
+    if f['mois_vendus'] <= 6: return 'Saisonnier'
+    return 'Intermédiaire'
+for f in fiches: f['classe'] = classe(f)
+cl = defaultdict(lambda: {'n': 0, 'u': 0, 'ca': 0.0})
+for f in fiches: c = cl[f['classe']]; c['n'] += 1; c['u'] += f['unites']; c['ca'] += f['ca']
+resume_classes = {k: {'n': v['n'], 'unites': v['u'], 'ca': round(v['ca']), 'part_ca': round(100 * v['ca'] / ca_parfum, 1)} for k, v in cl.items()}
+print('classes :', resume_classes)
+
+# ---------- test : le classement par ventes se maintient-il d'une saison à l'autre ?  (Spearman)
+def unites_periode(f, mois):
+    return sum(f['par_mois'].get(m, 0) for m in mois)
+A = [f'2025-{m:02d}' for m in range(7, 13)]; B = [f'2026-{m:02d}' for m in range(1, 7)]
+communs = [f for f in fiches if unites_periode(f, A) >= 3 and unites_periode(f, B) >= 3]
+ua = np.array([unites_periode(f, A) for f in communs]); ub = np.array([unites_periode(f, B) for f in communs])
+rho, p_rho = stats.spearmanr(ua, ub)
+rng = np.random.default_rng(5); bs = []
+for _ in range(2000):
+    ix = rng.integers(0, len(communs), len(communs)); bs.append(stats.spearmanr(ua[ix], ub[ix])[0])
+rho_ci = (float(np.nanpercentile(bs, 2.5)), float(np.nanpercentile(bs, 97.5)))
+print(f'Spearman ventes juil.-déc. 2025 vs janv.-juin 2026 : rho={rho:.2f} IC95 [{rho_ci[0]:.2f} ; {rho_ci[1]:.2f}] p={p_rho:.4f} (n={len(communs)} parfums vendus dans les deux périodes)')
+# parmi les 20 meilleurs parfums sur toute la période, combien sont des lancements ? et lesquels sont réguliers ?
+top20 = fiches[:20]
+print('20 premiers par unités :', Counter(f['classe'] for f in top20))
+# classement alternatif : par régularité (unités par mois présent)
+reg = sorted([f for f in fiches if f['classe'].startswith('Régulier')], key=lambda f: -f['unites'])
+print('réguliers (par unités) :', [(f['parfum'], f['unites'], f['mois_vendus'], f['mois_presents'], f['n_formes']) for f in reg[:14]])
+print('lancements (par unités) :', [(f['parfum'], f['unites'], round(f['part_14j'] * 100)) for f in sorted([f for f in fiches if f['classe'].startswith('Lancement')], key=lambda f: -f['unites'])[:10]])
+# test de concentration : la part des 14 premiers jours est-elle plus forte que si les ventes étaient étalées ?  (binomiale, produits de plus de 3 mois de vie)
+lanc = [f for f in fiches if not f['depuis_ouverture'] and f['unites'] >= 20 and (FIN - datetime.strptime(f['premiere'], '%Y-%m-%d')).days >= 120]
+obs = [(round(f['part_14j'] * f['unites']), f['unites'], (FIN - datetime.strptime(f['premiere'], '%Y-%m-%d')).days) for f in lanc]
+pvals = [stats.binomtest(k, n, min(1.0, 14 / j)).pvalue for k, n, j in obs]
+signif = sum(1 for p in pvals if p < 0.05 / max(len(pvals), 1))
+print(f'{len(lanc)} parfums sortis après l\'ouverture (≥ 20 unités, ≥ 120 j de vie) : {signif} ont une concentration sur les 14 premiers jours significativement supérieure à un étalement régulier (binomiale, Bonferroni)')
+
+# ---------- stock immobilisé : produits actifs sans vente depuis 6 mois
+P = list(csv.DictReader(open(os.path.expanduser('~/Downloads/products.csv'), encoding='utf-8')))
+from common import cle_produit
+vendus_180 = defaultdict(int)
+for o in cmds:
+    if (FIN - o['dt']).days <= 180:
+        for l in o['lignes']: vendus_180[cle_produit(l['nom']).upper()] += l['qte']
+vendus_tout = set(cle_produit(l['nom']).upper() for o in cmds for l in o['lignes'])
+prods = {}
+for r in P:
+    t = (r['Title'] or '').strip()
+    if t: prods.setdefault(t, {'status': r['Status'], 'cle': cle_produit(t).upper(), 'stock': 0, 'valeur': 0.0})
+    if t in prods:
+        try:
+            q = float(r['Variant Inventory Qty'] or 0); pr = float(r['Variant Price'] or 0)
+            if q > 0: prods[t]['stock'] += q; prods[t]['valeur'] += q * pr
+        except Exception: pass
+actifs = {t: v for t, v in prods.items() if v['status'] == 'active'}
+sans_vente = {t: v for t, v in actifs.items() if vendus_180.get(v['cle'], 0) == 0}
+jamais = {t: v for t, v in actifs.items() if v['cle'] not in vendus_tout}
+stock_sv = sum(v['stock'] for v in sans_vente.values()); val_sv = sum(v['valeur'] for v in sans_vente.values())
+stock_tot = sum(v['stock'] for v in actifs.values()); val_tot = sum(v['valeur'] for v in actifs.values())
+print(f'produits actifs : {len(actifs)} ; sans aucune vente depuis 6 mois : {len(sans_vente)} (dont {len(jamais)} jamais vendus) ; stock correspondant {stock_sv:.0f} unités = {val_sv:.0f} € au prix de vente, sur un stock actif total de {stock_tot:.0f} unités ({val_tot:.0f} €)')
+ca_12 = sum(l['qte'] * l['prix'] for o in cmds if (FIN - o['dt']).days <= 365 for l in o['lignes'])
+
+json.dump({'tot_u': tot_u, 'ident_u': ident_u, 'n_parfums': len(data), 'ca_tot': ca_tot, 'ca_parfum': ca_parfum, 'fiches': fiches, 'classes': resume_classes,
+           'spearman': {'rho': float(rho), 'p': float(p_rho), 'ci': rho_ci, 'n': len(communs), 'A': 'juil.-déc. 2025', 'B': 'janv.-juin 2026'},
+           'top20_classes': dict(Counter(f['classe'] for f in top20)),
+           'concentration': {'n': len(lanc), 'signif': signif},
+           'stock': {'actifs': len(actifs), 'sans_vente_6m': len(sans_vente), 'jamais_vendus': len(jamais), 'unites_sv': stock_sv, 'valeur_sv': val_sv, 'unites_actifs': stock_tot, 'valeur_actifs': val_tot, 'ca_12m': ca_12}},
+          open('i2_gamme.json', 'w'), ensure_ascii=False, default=float)

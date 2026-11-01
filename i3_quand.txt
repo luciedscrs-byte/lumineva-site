@@ -1,0 +1,149 @@
+# encoding: utf-8
+"""Piste 3 : quand les clients commandent-ils (jour, heure, saison), et la météo joue-t-elle un rôle ?
+Aucune donnée personnelle : séries journalières de commandes + météo des départements des acheteurs (Open-Meteo)."""
+import csv, json, os
+from collections import Counter, OrderedDict, defaultdict
+from datetime import datetime, timedelta
+import numpy as np
+from scipy import stats
+import statsmodels.api as sm
+import meteo
+
+D0, D1 = datetime(2025, 6, 27).date(), datetime(2026, 9, 20).date()
+jours = [D0 + timedelta(days=i) for i in range((D1 - D0).days + 1)]
+idx = {j: i for i, j in enumerate(jours)}
+cmd = OrderedDict()
+for r in csv.DictReader(open(os.path.expanduser('~/Desktop/test/orders.csv'), encoding='utf-8')):
+    if r['order_key'] not in cmd and not r['Cancelled at'] and r['Total']: cmd[r['order_key']] = r
+dts = [datetime.strptime(r['Created at'][:19], '%Y-%m-%d %H:%M:%S') for r in cmd.values()]
+tot = [float(r['Total']) for r in cmd.values()]
+y = np.zeros(len(jours)); ca = np.zeros(len(jours))
+for dt, t in zip(dts, tot): y[idx[dt.date()]] += 1; ca[idx[dt.date()]] += t
+print('jours', len(jours), '| commandes', int(y.sum()), '| moyenne', round(y.mean(), 2), 'par jour')
+LANC = [datetime(2025, 9, 7).date(), datetime(2025, 11, 1).date(), datetime(2026, 9, 6).date(), datetime(2026, 9, 20).date()]
+PAUSE = (datetime(2025, 10, 16).date(), datetime(2025, 10, 31).date())      # pause repérée dans les données (peu de commandes) et confirmée par la gérante
+lanc_j = np.array([1 if j in LANC else 0 for j in jours]); pause_j = np.array([1 if PAUSE[0] <= j <= PAUSE[1] else 0 for j in jours])
+normal = (lanc_j == 0) & (pause_j == 0)
+print('jours « normaux » (hors 4 lancements et hors pause d’octobre 2025) :', int(normal.sum()))
+
+# ---------- 1) jour de la semaine
+NOMS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche']
+wd = np.array([j.weekday() for j in jours])
+mois_cles = sorted(set((j.year, j.month) for j in jours))
+def base_design(masque=None, lancements=True, extra=None):
+    cols, noms = [], []
+    for k in range(1, 7): cols.append((wd == k).astype(float)); noms.append(NOMS[k])
+    for (a, b) in mois_cles[1:]: cols.append(np.array([1.0 if (j.year, j.month) == (a, b) else 0.0 for j in jours])); noms.append(f'm{a}-{b}')
+    if lancements:
+        for L in LANC:
+            cols.append(np.array([1.0 if j == L else 0.0 for j in jours])); noms.append(f'L{L}')
+            cols.append(np.array([1.0 if 0 < (j - L).days <= 2 else 0.0 for j in jours])); noms.append(f'L+{L}')
+    if extra:
+        for nm, e in extra: cols.append(e); noms.append(nm)
+    M = np.column_stack(cols); keep = np.abs(M).sum(axis=0) > 0
+    return sm.add_constant(M[:, keep]), [n for n, k in zip(noms, keep) if k]
+Mx, nms = base_design()
+m_wd = sm.GLM(y[pause_j == 0], Mx[pause_j == 0], family=sm.families.Poisson()).fit(cov_type='HC3')
+rr = {}
+for k in range(1, 7):
+    i = nms.index(NOMS[k]) + 1; b, se = m_wd.params[i], m_wd.bse[i]
+    rr[NOMS[k]] = {'rr': float(np.exp(b)), 'lo': float(np.exp(b - 1.96 * se)), 'hi': float(np.exp(b + 1.96 * se)), 'p': float(m_wd.pvalues[i])}
+# test d'ensemble sur les 6 jours (Wald)
+ids = [nms.index(NOMS[k]) + 1 for k in range(1, 7)]
+R = np.zeros((6, len(m_wd.params)))
+for r_, i in enumerate(ids): R[r_, i] = 1
+wald = m_wd.wald_test(R, scalar=True)
+print('effet d’ensemble du jour de la semaine : Wald chi2 =', round(float(wald.statistic), 1), 'p =', round(float(wald.pvalue), 5))
+par_jour = []
+for k in range(7):
+    s = (wd == k) & normal
+    par_jour.append({'jour': NOMS[k], 'n_jours': int(s.sum()), 'cmd_par_jour': float(y[s].mean()), 'ca_par_jour': float(ca[s].mean()),
+                     'ic': [float(v) for v in stats.t.interval(0.95, s.sum() - 1, loc=y[s].mean(), scale=stats.sem(y[s]))]})
+    print(f"  {NOMS[k]:9s} {y[s].mean():5.2f} commandes/jour [{par_jour[-1]['ic'][0]:.2f} ; {par_jour[-1]['ic'][1]:.2f}]  CA {ca[s].mean():6.1f} €/jour")
+print('  rapports de taux (réf. lundi) :', {k: round(v['rr'], 2) for k, v in rr.items()}, {k: round(v['p'], 4) for k, v in rr.items()})
+
+# ---------- 2) heure de la journée
+h_all = Counter(dt.hour for dt in dts)
+h_norm = Counter(dt.hour for dt in dts if dt.date() not in LANC and not (PAUSE[0] <= dt.date() <= PAUSE[1]))
+n_all, n_norm = sum(h_all.values()), sum(h_norm.values())
+heures = [{'h': h, 'part_tous': 100 * h_all.get(h, 0) / n_all, 'part_normal': 100 * h_norm.get(h, 0) / n_norm, 'n_normal': h_norm.get(h, 0)} for h in range(24)]
+pic_all = max(h_all, key=h_all.get); pic_norm = max(h_norm, key=h_norm.get)
+print(f'heure de pointe : tous jours {pic_all} h ({100*h_all[pic_all]/n_all:.1f} %), hors lancements {pic_norm} h ({100*h_norm[pic_norm]/n_norm:.1f} %)')
+# la part des commandes à 10 h change-t-elle sans les jours de lancement ?  (test des proportions)
+n10_l = h_all[10] - h_norm[10]; nl = n_all - n_norm - sum(1 for dt in dts if PAUSE[0] <= dt.date() <= PAUSE[1]) 
+lanc_dts = [dt for dt in dts if dt.date() in LANC]
+part10_l = sum(1 for dt in lanc_dts if dt.hour == 10) / len(lanc_dts)
+print(f'commandes à 10 h : {100*part10_l:.1f} % les jours de lancement ({len(lanc_dts)} commandes) contre {100*h_norm[10]/n_norm:.1f} % les autres jours')
+plage = {'avant 9 h': sum(v for h, v in h_norm.items() if h < 9), '9 h-12 h': sum(v for h, v in h_norm.items() if 9 <= h < 12), '12 h-18 h': sum(v for h, v in h_norm.items() if 12 <= h < 18), '18 h-22 h': sum(v for h, v in h_norm.items() if 18 <= h < 22), '22 h et après': sum(v for h, v in h_norm.items() if h >= 22)}
+plage = {k: round(100 * v / n_norm, 1) for k, v in plage.items()}
+print('plages (hors lancements) :', plage)
+
+# ---------- 3) mois (saison) : indice de commandes par jour, avec rappel des pauses
+mois_tab = []
+for (a, b) in mois_cles:
+    s = np.array([(j.year, j.month) == (a, b) for j in jours]) & (lanc_j == 0)
+    mois_tab.append({'mois': f'{a}-{b:02d}', 'cmd_par_jour': float(y[s].mean()), 'jours': int(s.sum())})
+
+# ---------- 4) météo
+mt = meteo.construire(); total_poids = sum(v['commandes'] for v in mt['depts'].values())
+def serie(champ):
+    out = np.zeros(len(jours))
+    for dep, v in mt['depts'].items():
+        w = v['commandes'] / total_poids
+        tmp = {d: x for d, x in zip(v['jours'], v[champ])}
+        out += w * np.array([tmp.get(j.isoformat(), np.nan) or 0 for j in jours])
+    return out
+temp, pluie, soleil = serie('temp'), serie('pluie'), serie('soleil_h')
+print(f'météo pondérée ({len(mt["depts"])} départements, {100*mt["part_couverte"]:.0f} % des commandes françaises) : température moyenne {temp.mean():.1f} °C, pluie moyenne {pluie.mean():.1f} mm/j')
+# écart de température à la moyenne de son mois (la saison est déjà dans les effets de mois)
+temp_dev = temp.copy()
+for (a, b) in mois_cles:
+    s = np.array([(j.year, j.month) == (a, b) for j in jours]); temp_dev[s] = temp[s] - temp[s].mean()
+pluie_dev = pluie.copy()
+for (a, b) in mois_cles:
+    s = np.array([(j.year, j.month) == (a, b) for j in jours]); pluie_dev[s] = pluie[s] - pluie[s].mean()
+def ajuste(vars_, masque, cov='HC3'):
+    M, nm = base_design(extra=vars_)
+    Mm = M[masque]
+    garde = np.concatenate([[True], np.abs(Mm[:, 1:]).sum(axis=0) > 0])     # retire les colonnes vides une fois le masque appliqué
+    Mm = Mm[:, garde]; nm = [n for n, g in zip(nm, garde[1:]) if g]
+    kw = {'cov_type': 'HAC', 'cov_kwds': {'maxlags': 7}} if cov == 'HAC' else {'cov_type': 'HC3'}
+    m = sm.GLM(y[masque], Mm, family=sm.families.Poisson()).fit(**kw)
+    out = {}
+    for nom, _ in vars_:
+        i = nm.index(nom) + 1; b, se = m.params[i], m.bse[i]
+        out[nom] = {'rr': float(np.exp(b)), 'lo': float(np.exp(b - 1.96 * se)), 'hi': float(np.exp(b + 1.96 * se)), 'p': float(m.pvalues[i]), 'se': float(se), 'beta': float(b)}
+    return out
+masque = pause_j == 0
+mod_meteo = ajuste([('temp5', temp_dev / 5.0), ('pluie5', pluie_dev / 5.0)], masque)
+lead = lambda s: np.append(s[1:], s[-1])           # météo du lendemain : test témoin (ne devrait rien expliquer)
+mod_temoin = ajuste([('temp5', lead(temp_dev) / 5.0), ('pluie5', lead(pluie_dev) / 5.0)], masque)
+# sensibilité : sans les mois de pic
+pic = np.array([(j.year, j.month) not in [(2025, 9), (2025, 11), (2026, 9)] for j in jours]) & masque
+mod_hors_pics = ajuste([('temp5', temp_dev / 5.0), ('pluie5', pluie_dev / 5.0)], pic)
+# jour de pluie / pas de pluie (seuil 1 mm sur la moyenne pondérée)
+pl_flag = (pluie >= 1.0).astype(float)
+mod_flag = ajuste([('pluie_oui', pl_flag)], masque)
+mod_flag_hac = ajuste([('pluie_oui', pl_flag)], masque, cov='HAC')       # erreurs robustes à l'autocorrélation (météo et commandes sur plusieurs jours de suite)
+for k, v in mod_meteo.items(): print(f'  météo, {k}: ×{v["rr"]:.3f} [{v["lo"]:.3f} ; {v["hi"]:.3f}] p={v["p"]:.3f}')
+for k, v in mod_temoin.items(): print(f'  témoin (météo du lendemain), {k}: ×{v["rr"]:.3f} p={v["p"]:.3f}')
+for k, v in mod_hors_pics.items(): print(f'  hors mois de pic, {k}: ×{v["rr"]:.3f} [{v["lo"]:.3f} ; {v["hi"]:.3f}] p={v["p"]:.3f}')
+print('  jour de pluie, erreurs robustes à l’autocorrélation (HAC, 7 jours) :', {k: (round(v['rr'], 3), round(v['lo'], 3), round(v['hi'], 3), round(v['p'], 3)) for k, v in mod_flag_hac.items()})
+print('  jour de pluie (≥ 1 mm) :', {k: (round(v['rr'], 3), round(v['lo'], 3), round(v['hi'], 3), round(v['p'], 3)) for k, v in mod_flag.items()}, '| part des jours de pluie :', round(float(pl_flag.mean()), 2))
+
+# chiffre : commandes supplémentaires liées à la pluie sur une année
+panier = 63.09
+p_pluie = float(pl_flag[normal].mean()); moy_normal = float(y[normal].mean()); cmd_an = moy_normal * 365
+effet_an, effet_jour = {}, {}
+v = mod_flag['pluie_oui']
+for k, rr_ in {'bas': v['lo'], 'central': v['rr'], 'haut': v['hi']}.items():
+    d_sec = moy_normal / (1 + p_pluie * (rr_ - 1))                    # commandes d'un jour sec
+    effet_jour[k] = d_sec * (rr_ - 1)                                 # commandes en plus un jour de pluie
+    effet_an[k] = effet_jour[k] * p_pluie * 365
+print(f'part des jours de pluie : {100*p_pluie:.0f} % ; commandes en plus un jour de pluie :', {k: round(x, 2) for k, x in effet_jour.items()}, '| par an :', {k: round(x) for k, x in effet_an.items()}, '| en € :', {k: round(x * panier) for k, x in effet_an.items()}, f'| soit {100*effet_an["central"]/cmd_an:.0f} % des commandes')
+
+json.dump({'n_jours': len(jours), 'cmd_moy': float(y.mean()), 'jours_normaux': int(normal.sum()), 'par_jour': par_jour, 'rr_jour': rr, 'wald': {'chi2': float(wald.statistic), 'p': float(wald.pvalue)},
+           'heures': heures, 'pic': {'tous': [int(pic_all), 100 * h_all[pic_all] / n_all], 'normal': [int(pic_norm), 100 * h_norm[pic_norm] / n_norm]}, 'part10_lancement': 100 * part10_l, 'part10_normal': 100 * h_norm[10] / n_norm,
+           'plages': plage, 'n_lancement_cmd': len(lanc_dts), 'mois': mois_tab, 'meteo': {'depts': len(mt['depts']), 'part_couverte': mt['part_couverte'], 'temp_moy': float(temp.mean()), 'pluie_moy': float(pluie.mean()), 'jours_pluie': float(pl_flag.mean())},
+           'mod_meteo': mod_meteo, 'mod_temoin': mod_temoin, 'mod_hors_pics': mod_hors_pics, 'mod_flag': mod_flag, 'mod_flag_hac': mod_flag_hac, 'effet_an': effet_an, 'effet_jour': effet_jour, 'p_pluie': p_pluie, 'panier': panier, 'cmd_an': cmd_an,
+           'series': {'jours': [j.isoformat() for j in jours], 'cmd': y.tolist(), 'temp': temp.tolist(), 'pluie': pluie.tolist()}}, open('i3_quand.json', 'w'), default=float)

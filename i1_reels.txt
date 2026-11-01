@@ -1,0 +1,244 @@
+# encoding: utf-8
+"""Piste 1 : qu'est-ce qui fait « exploser » un réel, et un réel qui explose fait-il vendre ?
+Données : instagram_publications.csv (réels uniquement) + commandes (orders.csv).
+Aucune donnée personnelle : on travaille sur des publications et des jours."""
+import csv, json, os, re
+from collections import Counter, defaultdict
+from datetime import datetime, timedelta
+import numpy as np
+from scipy import stats
+import statsmodels.api as sm
+
+DL = os.path.expanduser('~/Downloads/')
+rows = list(csv.DictReader(open(DL + 'instagram_publications.csv', encoding='utf-8')))
+num = lambda x: float(x.replace(',', '.')) if x not in ('', None) else np.nan
+
+reels = []
+for r in rows:
+    if r['Type de publication'] != 'Reel IG': continue
+    dt = datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M')
+    d = r['Description'] or ''
+    reels.append({'dt': dt, 'date': dt.date(), 'dur': num(r['Durée (s)']), 'reach': num(r['Couverture']), 'views': num(r['Vues']),
+                  'likes': num(r['Mentions J’aime']), 'shares': num(r['Partages']), 'saves': num(r['Enregistrements']), 'comments': num(r['Commentaires']),
+                  'follow': num(r['Followers en plus']), 'desc': d})
+reels.sort(key=lambda x: x['dt'])
+N = len(reels)
+print('réels', N, reels[0]['date'], '->', reels[-1]['date'])
+
+reach = np.array([r['reach'] for r in reels])
+seuil = float(np.percentile(reach, 90))
+for r in reels:
+    r['viral'] = 1 if r['reach'] >= seuil else 0
+    r['dbin'] = '< 10 s' if r['dur'] < 10 else ('10 à 30 s' if r['dur'] < 30 else ('30 à 60 s' if r['dur'] <= 60 else '> 60 s'))
+    r['wd'] = r['dt'].weekday(); r['we'] = 1 if r['wd'] >= 5 else 0
+    h = r['dt'].hour; r['hbin'] = 'matin (avant 12 h)' if h < 12 else ('après-midi (12 h-18 h)' if h < 18 else 'soir (18 h et après)')
+    t = r['desc'].lower()
+    r['q'] = 1 if '?' in r['desc'] else 0
+    r['promo'] = 1 if re.search(r'code|promo|%|offert|-10|bienvenue|soldes|vente priv', t) else 0
+    r['lance'] = 1 if re.search(r'nouveaut|lancement|nouvelle collection|disponible|sortie|dispo ', t) else 0
+    r['coul'] = 1 if re.search(r'coulisse|fabrication|je fabrique|atelier|entrepreneu|mon quotidien|avec moi|pack', t) else 0
+    r['len'] = len(r['desc']); r['tags'] = r['desc'].count('#')
+print('seuil explosion (90e centile de la couverture) :', round(seuil), '→', sum(r['viral'] for r in reels), 'réels')
+print('part de la couverture totale des réels viraux :', round(100 * sum(r['reach'] for r in reels if r['viral']) / reach.sum(), 1), '%')
+
+# ---------- 1) profil des réels qui explosent : un test par caractéristique
+def rate(sel):
+    s = [r for r in reels if sel(r)]; return len(s), sum(r['viral'] for r in s)
+tests = []
+def test_cat(nom, groups):  # groups : liste (libellé, fonction)
+    tab, detail = [], []
+    for lab, f in groups:
+        n, v = rate(f); tab.append([v, n - v]); detail.append({'lab': lab, 'n': n, 'viraux': v, 'taux': round(100 * v / n, 1) if n else 0,
+                                                                 'med_reach': float(np.median([r['reach'] for r in reels if f(r)])) if n else None,
+                                                                 'med_follow': float(np.median([r['follow'] for r in reels if f(r)])) if n else None})
+    chi = stats.chi2_contingency(np.array(tab)) if all(sum(t) > 0 for t in tab) else None
+    # Kruskal-Wallis sur la couverture (pas de seuil arbitraire)
+    kw = stats.kruskal(*[[r['reach'] for r in reels if f(r)] for _, f in groups if any(f(r) for r in reels)])
+    tests.append({'nom': nom, 'detail': detail, 'p_chi2': float(chi[1]) if chi else None, 'p_kw': float(kw.pvalue)})
+test_cat('Durée de la vidéo', [(l, (lambda r, l=l: r['dbin'] == l)) for l in ('< 10 s', '10 à 30 s', '30 à 60 s', '> 60 s')])
+test_cat('Moment de la journée', [(l, (lambda r, l=l: r['hbin'] == l)) for l in ('matin (avant 12 h)', 'après-midi (12 h-18 h)', 'soir (18 h et après)')])
+test_cat('Jour de la semaine', [(n, (lambda r, i=i: r['wd'] == i)) for i, n in enumerate(['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'])])
+test_cat('Légende avec une question', [('oui', lambda r: r['q'] == 1), ('non', lambda r: r['q'] == 0)])
+test_cat('Légende parlant de promo ou de code', [('oui', lambda r: r['promo'] == 1), ('non', lambda r: r['promo'] == 0)])
+test_cat('Légende annonçant une nouveauté', [('oui', lambda r: r['lance'] == 1), ('non', lambda r: r['lance'] == 0)])
+test_cat('Légende sur les coulisses ou la fabrication', [('oui', lambda r: r['coul'] == 1), ('non', lambda r: r['coul'] == 0)])
+test_cat('Année de publication', [(str(y), (lambda r, y=y: r['dt'].year == y)) for y in sorted(set(r['dt'].year for r in reels))])
+m = len(tests)
+for t_ in tests:  # correction de Holm sur les m tests (p du test de Kruskal-Wallis, sans seuil arbitraire)
+    pass
+ps = sorted([(t_['p_kw'], i) for i, t_ in enumerate(tests)])
+holm = {}
+mx = 0
+for rang, (p, i) in enumerate(ps):
+    mx = max(mx, min(1.0, p * (m - rang))); holm[i] = mx
+for i, t_ in enumerate(tests): t_['p_holm'] = holm[i]
+for t_ in tests: print(f"{t_['nom']:46s} p(Kruskal)={t_['p_kw']:.4f} p(Holm)={t_['p_holm']:.4f}", [(d['lab'], d['n'], d['taux']) for d in t_['detail']][:4])
+
+# ---------- 2) modèle : effet de chaque caractéristique, toutes choses égales par ailleurs
+y = np.log(reach + 1)
+X = np.column_stack([
+    [1 if r['dbin'] == '10 à 30 s' else 0 for r in reels], [1 if r['dbin'] == '30 à 60 s' else 0 for r in reels], [1 if r['dbin'] == '> 60 s' else 0 for r in reels],
+    [1 if r['hbin'].startswith('après') else 0 for r in reels], [1 if r['hbin'].startswith('soir') else 0 for r in reels],
+    [r['we'] for r in reels], [r['q'] for r in reels], [r['promo'] for r in reels], [r['lance'] for r in reels], [r['coul'] for r in reels],
+    [1 if r['dt'].year == 2025 else 0 for r in reels], [1 if r['dt'].year == 2026 else 0 for r in reels]])
+noms = ['10 à 30 s (réf. < 10 s)', '30 à 60 s (réf. < 10 s)', '> 60 s (réf. < 10 s)', 'après-midi (réf. matin)', 'soir (réf. matin)', 'week-end', 'question dans la légende', 'promo / code', 'nouveauté', 'coulisses / fabrication', 'publié en 2025 (réf. 2024)', 'publié en 2026 (réf. 2024)']
+ols = sm.OLS(y, sm.add_constant(X)).fit(cov_type='HC3')
+modele = []
+for i, nom in enumerate(noms):
+    b, se, p = ols.params[i + 1], ols.bse[i + 1], ols.pvalues[i + 1]
+    lo, hi = b - 1.96 * se, b + 1.96 * se
+    modele.append({'var': nom, 'coef': float(b), 'mult': float(np.exp(b)), 'lo': float(np.exp(lo)), 'hi': float(np.exp(hi)), 'p': float(p)})
+print('R² du modèle :', round(ols.rsquared, 3), '(part de la variation de la couverture expliquée par ces caractéristiques)')
+for m_ in modele: print(f"  {m_['var']:34s} ×{m_['mult']:.2f} [{m_['lo']:.2f} ; {m_['hi']:.2f}] p={m_['p']:.4f}")
+# même modèle sur les abonnés gagnés
+yf = np.log(np.array([r['follow'] for r in reels]) + 1)
+olsf = sm.OLS(yf, sm.add_constant(X)).fit(cov_type='HC3')
+modele_f = [{'var': nom, 'mult': float(np.exp(olsf.params[i + 1])), 'p': float(olsf.pvalues[i + 1])} for i, nom in enumerate(noms)]
+
+# ---------- 3) chiffre : ce que vaudrait un changement de format
+dur = {l: [r for r in reels if r['dbin'] == l] for l in ('< 10 s', '10 à 30 s', '30 à 60 s', '> 60 s')}
+par_duree = {l: {'n': len(v), 'med_reach': float(np.median([r['reach'] for r in v])), 'moy_reach': float(np.mean([r['reach'] for r in v])),
+                 'med_follow': float(np.median([r['follow'] for r in v])), 'moy_follow': float(np.mean([r['follow'] for r in v])),
+                 'viraux': sum(r['viral'] for r in v), 'taux_viral': round(100 * sum(r['viral'] for r in v) / len(v), 1)} for l, v in dur.items() if v}
+r26 = [r for r in reels if r['dt'].year == 2026]
+mois_actifs = len(set((r['dt'].year, r['dt'].month) for r in r26))
+cadence = len(r26) / max(mois_actifs, 1)
+print('cadence 2026 :', round(cadence, 1), 'réels / mois ; répartition des durées en 2026 :', Counter(r['dbin'] for r in r26))
+
+# ---------- 4) un réel qui explose fait-il vendre ?
+orders = {}
+for r in csv.DictReader(open(os.path.expanduser('~/Desktop/test/orders.csv'), encoding='utf-8')):
+    if r['Cancelled at'] or r['order_key'] in orders: continue
+    orders[r['order_key']] = r['Created at'][:10]
+j0, j1 = datetime(2025, 6, 27).date(), datetime(2026, 9, 20).date()
+jours = [j0 + timedelta(days=i) for i in range((j1 - j0).days + 1)]
+cmd = Counter(datetime.strptime(d, '%Y-%m-%d').date() for d in orders.values())
+y_o = np.array([cmd.get(j, 0) for j in jours], dtype=float)
+LANCEMENTS = [datetime(2025, 9, 7).date(), datetime(2025, 11, 1).date(), datetime(2026, 9, 6).date(), datetime(2026, 9, 20).date()]
+reach_j = defaultdict(float); follow_j = defaultdict(float); nviral = defaultdict(int)
+for r in reels:
+    reach_j[r['date']] += r['reach']; follow_j[r['date']] += r['follow']; nviral[r['date']] += r['viral']
+rj = np.array([reach_j.get(j, 0) for j in jours]); fj = np.array([follow_j.get(j, 0) for j in jours]); vj = np.array([nviral.get(j, 0) for j in jours])
+reels_fenetre = [r for r in reels if j0 <= r['date'] <= j1]
+viraux_f = [r for r in reels_fenetre if r['viral']]
+print('réels dans la période commune :', len(reels_fenetre), '| viraux :', len(viraux_f))
+
+# base de comparaison : commandes dans les 3 jours après (jour J à J+2) pour chaque réel viral, face à ce qu'on attend le même jour de semaine (modèle)
+# modèle de référence : Poisson avec jour de semaine, mois et jours de lancement (±1 jour) ; on regarde ensuite si la couverture des 3 jours précédents ajoute quelque chose
+def design(extra=None):
+    cols = []
+    for k in range(1, 7): cols.append([1.0 if j.weekday() == k else 0.0 for j in jours])
+    mois = sorted(set((j.year, j.month) for j in jours))
+    for (a, b) in mois[1:]: cols.append([1.0 if (j.year, j.month) == (a, b) else 0.0 for j in jours])
+    for L in LANCEMENTS: cols.append([1.0 if abs((j - L).days) <= 0 else 0.0 for j in jours]); cols.append([1.0 if 0 < (j - L).days <= 2 else 0.0 for j in jours])
+    if extra is not None:
+        for e in extra: cols.append(e)
+    M = np.column_stack(cols)
+    M = M[:, (np.abs(M).sum(axis=0) > 0)]          # retire les colonnes entièrement nulles (fenêtre qui dépasse la fin des données)
+    return sm.add_constant(M)
+def fenetre(serie, a, b):  # somme de serie sur les jours t-b..t-a
+    out = np.zeros(len(serie))
+    for i in range(len(serie)):
+        lo, hi = max(0, i - b), max(0, i - a + 1)
+        out[i] = serie[lo:hi].sum()
+    return out
+base = sm.GLM(y_o, design(), family=sm.families.Poisson()).fit(cov_type='HC3')
+res_lag = {}
+for nom, (a, b) in {'même jour': (0, 0), '1 à 3 jours après': (1, 3), '4 à 7 jours après': (4, 7), '8 à 14 jours après': (8, 14)}.items():
+    ex = fenetre(rj, a, b) / 100000.0                       # couverture en centaines de milliers
+    mod = sm.GLM(y_o, design([ex]), family=sm.families.Poisson()).fit(cov_type='HC3')
+    b_, se = mod.params[-1], mod.bse[-1]
+    res_lag[nom] = {'effet_pct_par_100k': float(100 * (np.exp(b_) - 1)), 'lo': float(100 * (np.exp(b_ - 1.96 * se) - 1)), 'hi': float(100 * (np.exp(b_ + 1.96 * se) - 1)), 'p': float(mod.pvalues[-1])}
+    print(f'  couverture des réels, {nom:20s}: {res_lag[nom]["effet_pct_par_100k"]:+.1f} % de commandes par 100 000 de couverture  [{res_lag[nom]["lo"]:+.1f} ; {res_lag[nom]["hi"]:+.1f}]  p={res_lag[nom]["p"]:.3f}')
+# même test pour les abonnés gagnés (la couverture amène-t-elle des abonnés qui achètent ensuite ?)
+res_f = {}
+for nom, (a, b) in {'1 à 3 jours après': (1, 3), '4 à 14 jours après': (4, 14)}.items():
+    ex = fenetre(fj, a, b) / 1000.0
+    mod = sm.GLM(y_o, design([ex]), family=sm.families.Poisson()).fit(cov_type='HC3')
+    b_, se = mod.params[-1], mod.bse[-1]
+    res_f[nom] = {'effet_pct_par_1000': float(100 * (np.exp(b_) - 1)), 'lo': float(100 * (np.exp(b_ - 1.96 * se) - 1)), 'hi': float(100 * (np.exp(b_ + 1.96 * se) - 1)), 'p': float(mod.pvalues[-1])}
+    print(f'  abonnés gagnés, {nom:20s}: {res_f[nom]["effet_pct_par_1000"]:+.1f} % de commandes pour 1 000 abonnés gagnés [{res_f[nom]["lo"]:+.1f} ; {res_f[nom]["hi"]:+.1f}] p={res_f[nom]["p"]:.3f}')
+# test d'événement avec permutation : commandes J..J+2 après un réel viral, face à des dates tirées au hasard (même nombre, hors jours de lancement)
+exclus = set()
+for L in LANCEMENTS:
+    for k in range(-1, 4): exclus.add(L + timedelta(days=k))
+idx = {j: i for i, j in enumerate(jours)}
+def surplus(dates):
+    s = []
+    for d in dates:
+        i = idx[d]
+        if i + 3 >= len(jours) or i < 14: continue
+        s.append(y_o[i:i + 3].mean() - y_o[i - 14:i].mean())     # commandes/jour après, moins moyenne des 14 jours d'avant
+    return float(np.mean(s)), len(s)
+dv = [r['date'] for r in viraux_f if r['date'] not in exclus]
+obs, nv = surplus(dv)
+candidats = [j for j in jours if j not in exclus]
+rng = np.random.default_rng(11)
+perm = np.array([surplus(list(rng.choice(candidats, size=len(dv), replace=False)))[0] for _ in range(3000)])
+p_perm = float((np.sum(perm >= obs) + 1) / (len(perm) + 1))
+print(f'événement : {nv} réels viraux hors lancements ; surplus de commandes/jour dans les 3 jours après : {obs:+.2f} (hasard : moyenne {perm.mean():+.2f}, IC95 [{np.percentile(perm,2.5):+.2f} ; {np.percentile(perm,97.5):+.2f}]) p={p_perm:.3f}')
+
+
+panier = 63.09     # panier moyen (€) de l'ensemble des commandes
+# ---------- 4 bis) contrôles de robustesse sur le lien « couverture → commandes »
+def fen(serie, a_, b_):   # somme de la série sur les jours t-b..t-a ; a_, b_ négatifs = jours futurs (test témoin)
+    out = np.zeros(len(serie))
+    for i in range(len(serie)):
+        lo, hi = max(i - b_, 0), min(i - a_, len(serie) - 1)
+        out[i] = serie[lo:hi + 1].sum() if hi >= lo else 0
+    return out
+def effet(ex, masque=None):
+    M = design([ex])
+    yy = y_o
+    if masque is not None: M, yy = M[masque], y_o[masque]
+    M = M[:, (np.abs(M).sum(axis=0) > 0)]
+    m_ = sm.GLM(yy, M, family=sm.families.Poisson()).fit(cov_type='HC3')
+    b_, se = m_.params[-1], m_.bse[-1]
+    return {'pct': float(100 * (np.exp(b_) - 1)), 'lo': float(100 * (np.exp(b_ - 1.96 * se) - 1)), 'hi': float(100 * (np.exp(b_ + 1.96 * se) - 1)), 'p': float(m_.pvalues[-1]), 'beta': float(b_)}
+cumul = fen(rj, 1, 14) / 1e5
+principal = effet(cumul)
+temoin = effet(fen(rj, -14, -1) / 1e5)                       # couverture des 14 jours À VENIR : ne devrait rien expliquer
+masque = np.array([(j.year, j.month) not in [(2025, 9), (2025, 11), (2026, 9)] for j in jours])
+hors_pics = effet(cumul, masque)
+# correction de Holm sur les 4 fenêtres testées
+ps_ = sorted([(v['p'], k) for k, v in res_lag.items()]); mxp = 0
+for rang, (p_, k) in enumerate(ps_):
+    mxp = max(mxp, min(1.0, p_ * (len(ps_) - rang))); res_lag[k]['p_holm'] = mxp
+# conversion en commandes et en euros : commandes supplémentaires associées à 100 000 comptes touchés (étalées sur 14 jours)
+nl = np.array([not any(abs((j - L).days) <= 2 for L in LANCEMENTS) for j in jours])
+base_j = float(y_o[nl].mean())
+conv = {}
+for k, v in {'central': principal['beta'], 'bas': np.log(1 + principal['lo'] / 100), 'haut': np.log(1 + principal['hi'] / 100)}.items():
+    conv[k] = 14 * base_j * (np.exp(v) - 1)
+conv_eur = {k: v * panier for k, v in conv.items()}
+print(f'témoin (couverture à venir) : {temoin["pct"]:+.1f} % p={temoin["p"]:.3f} | hors mois de pic : {hors_pics["pct"]:+.1f} % p={hors_pics["p"]:.3f}')
+print(f'effet principal 14 jours : {principal["pct"]:+.1f} % [{principal["lo"]:+.1f} ; {principal["hi"]:+.1f}] p={principal["p"]:.4f} ; commandes/jour de base hors lancements : {base_j:.2f}')
+print('commandes associées à 100 000 comptes touchés :', {k: round(v, 2) for k, v in conv.items()}, '| en € :', {k: round(v) for k, v in conv_eur.items()})
+rjw = rj.sum(); print('couverture totale des réels sur la période commune :', round(rjw), '=', round(rjw / 1e5, 1), 'x 100 000')
+
+# ---------- 5) chiffre : passer en 30-60 s (modèle à une seule indicatrice « 30 à 60 s » contre le reste)
+X2 = X.copy(); X2[:, 0] = X2[:, 0] + X2[:, 2]                      # 10-30 s et > 60 s regroupés avec < 10 s : on ne garde que « 30 à 60 s »
+X2 = np.delete(X2, [0, 2], axis=1)
+# colonnes restantes : [30-60, après-midi, soir, week-end, question, promo, nouveauté, coulisses, 2025, 2026]
+o2 = sm.OLS(y, sm.add_constant(X2)).fit(cov_type='HC3')
+b30, se30 = o2.params[1], o2.bse[1]
+mult30 = {'central': float(np.exp(b30)), 'bas': float(np.exp(b30 - 1.96 * se30)), 'haut': float(np.exp(b30 + 1.96 * se30))}
+autres26 = [r for r in r26 if r['dbin'] != '30 à 60 s']
+reach_autres = float(np.mean([r['reach'] for r in autres26]))
+mois_2026 = (max(r['dt'] for r in r26) - min(r['dt'] for r in r26)).days / 30.44
+gain_reach = {k: len(autres26) * reach_autres * (v - 1) * (12 / mois_2026) for k, v in mult30.items()}
+gain_cmd = {k: v / 1e5 * conv[k if k != 'central' else 'central'] for k, v in gain_reach.items()}  # même scénario bas / central / haut sur les deux estimations
+gain_eur = {k: v * panier for k, v in gain_cmd.items()}
+print('30-60 s contre les autres formats :', {k: round(v, 2) for k, v in mult30.items()})
+print(f'2026 : {len(r26)} réels sur {mois_2026:.1f} mois ; {len(autres26)} ne durent pas 30-60 s (couverture moyenne {reach_autres:,.0f})')
+print('gain de couverture par an si tous passaient à 30-60 s :', {k: round(v) for k, v in gain_reach.items()}, '| commandes :', {k: round(v) for k, v in gain_cmd.items()}, '| € :', {k: round(v) for k, v in gain_eur.items()})
+# publications autour des lancements : les réels sont-ils concentrés autour des jours de lancement ?
+pub_lancement = sum(1 for r in reels_fenetre if any(abs((r['date'] - L).days) <= 3 for L in LANCEMENTS))
+
+json.dump({'N': N, 'seuil': seuil, 'n_viraux': int(sum(r['viral'] for r in reels)), 'part_reach_viraux': round(100 * sum(r['reach'] for r in reels if r['viral']) / reach.sum(), 1),
+           'tests': tests, 'modele': modele, 'r2': float(ols.rsquared), 'modele_follow': modele_f, 'par_duree': par_duree,
+           'cadence_2026': cadence, 'n_2026': len(r26), 'duree_2026': dict(Counter(r['dbin'] for r in r26)),
+           'periode_commune': {'n_reels': len(reels_fenetre), 'n_viraux': len(viraux_f), 'n_viraux_hors_lancement': nv},
+           'lag': res_lag, 'lag_follow': res_f, 'evenement': {'obs': obs, 'perm_moy': float(perm.mean()), 'lo': float(np.percentile(perm, 2.5)), 'hi': float(np.percentile(perm, 97.5)), 'p': p_perm, 'n': nv},
+           'pub_lancement': pub_lancement, 'panier': panier, 'principal14': principal, 'temoin14': temoin, 'hors_pics14': hors_pics, 'base_j': base_j, 'conv': conv, 'conv_eur': conv_eur, 'mult30': mult30, 'n_autres26': len(autres26), 'reach_autres26': reach_autres, 'mois_2026': mois_2026, 'gain_reach': gain_reach, 'gain_cmd': gain_cmd, 'gain_eur': gain_eur, 'reach_periode': float(rjw), 'reach_total': float(reach.sum()), 'follow_total': float(sum(r['follow'] for r in reels)),
+           'series': {'jours': [j.isoformat() for j in jours], 'commandes': y_o.tolist(), 'reach': rj.tolist()}}, open('i1_reels.json', 'w'), default=float)

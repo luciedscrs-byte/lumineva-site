@@ -1,0 +1,61 @@
+# encoding: utf-8
+"""Météo quotidienne (température moyenne, précipitations, ensoleillement) dans les départements où se trouvent la plupart des acheteurs.
+Source : Open-Meteo, archive météo (https://open-meteo.com), sans clé, usage non commercial. Résultats mis en cache dans cache/."""
+import csv, json, os, re, time, urllib.request, urllib.parse
+from collections import Counter
+
+HERE = os.path.dirname(os.path.abspath(__file__)); CACHE = os.path.join(HERE, 'cache')
+DEBUT, FIN = '2025-06-27', '2026-09-20'
+
+def get(url, essais=3):
+    for i in range(essais):
+        try:
+            return json.load(urllib.request.urlopen(url, timeout=30))
+        except Exception as e:
+            time.sleep(2 + 2 * i); err = e
+    raise err
+
+def departements_principaux(part=0.70):
+    comm = json.load(open(os.path.join(CACHE, 'communes_par_cp.json')))
+    cnt = Counter()
+    for r in csv.DictReader(open(os.path.expanduser('~/Desktop/test/orders.csv'), encoding='utf-8')):
+        if r['Cancelled at'] or not r['Total']: continue
+        if (r['Shipping Country'] or r['Billing Country']) != 'FR': continue
+        cp = re.sub(r'\D', '', r['Shipping Zip'] or r['Billing Zip'] or '').zfill(5)[:5]
+        cs = comm.get(cp)
+        if cs: cnt[cs[0]['codeDepartement']] += 1
+    tot = sum(cnt.values()); sel, cum = [], 0
+    for d, n in cnt.most_common():
+        sel.append((d, n)); cum += n
+        if cum / tot >= part: break
+    return sel, tot, comm
+
+def centre_departement(dep, comm):
+    """commune la plus peuplée du département parmi les codes postaux des clients -> ses coordonnées (geo.api.gouv.fr)"""
+    best = None
+    for cp, cs in comm.items():
+        for c in cs:
+            if c['codeDepartement'] == dep and (best is None or (c.get('population') or 0) > (best.get('population') or 0)): best = c
+    u = 'https://geo.api.gouv.fr/communes/' + best['code'] + '?fields=centre,nom'
+    d = get(u); lon, lat = d['centre']['coordinates']
+    return {'commune': d['nom'], 'lat': lat, 'lon': lon}
+
+def construire():
+    sel, tot, comm = departements_principaux()
+    fic = os.path.join(CACHE, 'meteo_depts.json')
+    if os.path.exists(fic): return json.load(open(fic))
+    out = {'periode': [DEBUT, FIN], 'depts': {}}
+    for dep, n in sel:
+        c = centre_departement(dep, comm)
+        q = urllib.parse.urlencode({'latitude': round(c['lat'], 3), 'longitude': round(c['lon'], 3), 'start_date': DEBUT, 'end_date': FIN,
+                                    'daily': 'temperature_2m_mean,precipitation_sum,sunshine_duration', 'timezone': 'Europe/Paris'})
+        d = get('https://archive-api.open-meteo.com/v1/archive?' + q)
+        out['depts'][dep] = {'commandes': n, 'centre': c, 'jours': d['daily']['time'], 'temp': d['daily']['temperature_2m_mean'],
+                             'pluie': d['daily']['precipitation_sum'], 'soleil_h': [None if x is None else x / 3600 for x in d['daily']['sunshine_duration']]}
+        print(dep, n, c['commune'], 'ok'); time.sleep(0.7)
+    out['part_couverte'] = sum(v['commandes'] for v in out['depts'].values()) / tot
+    json.dump(out, open(fic, 'w'), ensure_ascii=False)
+    return out
+
+if __name__ == '__main__':
+    o = construire(); print(len(o['depts']), 'départements ; part des commandes françaises couverte :', round(100 * o['part_couverte'], 1), '%')

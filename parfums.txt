@@ -1,0 +1,37 @@
+# encoding: utf-8
+"""Extraction du PARFUM d'une ligne de commande (la gérante raisonne en parfums : « 8 parfums présents toute l'année »)."""
+import re, unicodedata
+
+def sans_accent(s):
+    return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
+
+# regroupements de graphies d'un même parfum
+ALIAS = {'MONOI DES ILES': 'MONOI DES ILES', 'FLEUR DES ILES': 'FLEUR DES ILES', 'VANILLE DES ILES': 'VANILLE DES ILES',
+         'CITROUILLE MERVEILLEUSE': 'CITROUILLE MERVEILLEUSE', 'MYSTIC PUMPKIN': 'MYSTIC PUMPKIN'}
+NON_PARFUM = re.compile(r'(PARFUMS? AU CHOIX|DECOUVERTE|ASSORTIMENT|COFFRET|PACK|CARTE|BON CADEAU|LIVRAISON|POURBOIRE|TIP)')
+
+PREFIXES = ('BOUGIE GOURMANDE ', 'ELIXIR PARFUME ', 'ELIXIR ', 'BOUQUET DE FONDANTS S ', 'BOUQUET DE FONDANTS ', 'BOUGIE BOISSON ', 'BOUGIE FANTAISIE ', 'BOUGIE SIGNATURE ', 'TABLETTES FONDANTS ', 'TABLETTE FONDANTS ', 'TABLETTE FONDANT ')
+HORS = ('PETIT FORMAT',)
+
+def parfum(nom):
+    """renvoie le parfum (texte normalisé) ou None si la ligne n'a pas de parfum identifiable (accessoire, coffret, formation…)"""
+    n = sans_accent(nom.upper()).strip()
+    n = re.sub(r'\s+-\s*|\s*-\s+', ' - ', n)                    # « BOX DE FONDANTS -CAPPUCCINO » -> « … - CAPPUCCINO »
+    if 'AMBASSADRICE' in n: return None                         # collaborations : pas un parfum
+    p = None
+    for pre in PREFIXES:
+        if n.startswith(pre):
+            p = n[len(pre):]; break
+    if p is not None:
+        p = p.split(' - ')[0]                                   # « BALINEVA - FRANGIPANIER » -> « BALINEVA »
+    elif ' - ' in n:
+        segs = [x.strip() for x in n.split(' - ') if x.strip()]
+        segs = [x for x in segs if not re.fullmatch(r'\d+ PARFUMS? AU CHOIX', x)]
+        if len(segs) < 2: return None
+        p = segs[-1]
+    else:
+        return None
+    p = re.sub(r'\s*/\s*\d+\s*G\b', '', p).strip()
+    p = re.sub(r'\s+', ' ', p)
+    if not p or NON_PARFUM.search(p) or p in HORS: return None
+    return ALIAS.get(p, p)
