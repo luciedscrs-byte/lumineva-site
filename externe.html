@@ -6,12 +6,12 @@
 <title>Données externes et géographie · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=17">
+<link rel="stylesheet" href="style.css?v=17">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="../index.html">Lumineva · données</a><div class="links"><a href="../index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="automatisations.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="analyses.html" aria-current="page">Premières analyses</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="automatisations.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="analyses.html" aria-current="page">Premières analyses</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
 <nav class="subnav meta" aria-label="Premières analyses"><div class="wrap"><span class="lab">Premières analyses</span><a href="analyses.html">Présentation</a><a href="perimetre.html">Périmètre</a><a href="observations.html">Observations</a><a href="explications.html">Explications</a><a href="externe.html" aria-current="page">Externe</a><a href="decision.html">Décisions</a></div></nav>
 <header class="hero"><div class="wrap"><p class="kicker">Croiser (séance du 21 octobre)</p><h1>Données externes et géographie</h1><p class="lead">Ce que des sources extérieures à la boutique apportent pour comprendre ses données, avec la source, sa fiabilité et ses limites.</p></div></header>
 <main class="wrap" id="contenu">
@@ -660,7 +660,7 @@
 </div>
 <p class="hint" style="margin-top:12px"><b>Signal de trafic non humain</b> : 25 des 106 visites « direct » viennent de villes connues pour héberger des centres de données (Boardman OR, Council Bluffs IA, Ashburn VA) plutôt que de vrais visiteurs domiciliés là. Une partie du trafic « direct » est donc probablement automatisée (robots d’indexation ou de surveillance), pas des clientes potentielles.</p></section></div></div></div></details>
 <details class="pli" name="ext-c"><summary>Concurrents et réglementation</summary><div class="corps"><div class="placeholder"><b>À rédiger.</b> Seuils de livraison et prix de quelques concurrents ; règles d’étiquetage et d’origine. Non traité pour l’instant.</div></div></details>
-<details class="pli" name="ext-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-geo.py"><summary><code>geo.py</code> · Coordonnées des codes postaux et contours des régions.</summary><div class="corps"><p class="meta">68 lignes · <a href="../code/geo.txt" download>télécharger le fichier</a></p><pre class="code"><code>import csv, json, math
+<details class="pli" name="ext-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-geo.py"><summary><code>geo.py</code> · Coordonnées des codes postaux et contours des régions.</summary><div class="corps"><p class="meta">68 lignes · <a href="geo.txt" download>télécharger le fichier</a></p><pre class="code"><code>import csv, json, math
 from collections import defaultdict
 
 # ---- 1) Table code postal -&gt; (lat, lon) moyenne, et ville la plus fréquente
@@ -727,7 +727,7 @@ print("top 5:", points[:5])
 json.dump({'points': points, 'matched_orders': matched_orders, 'fr_orders': fr_orders,
            'countries': country_count, 'unmatched_zip_count': sum(unmatched.values())},
           open('map_points.json','w'), ensure_ascii=False)
-</code></pre></div></details><details class="pli" name="code-mkmap.py"><summary><code>mkmap.py</code> · Carte des acheteurs en France : une bulle par commune, plus grosse si le panier moyen est plus élevé.</summary><div class="corps"><p class="meta">81 lignes · <a href="../code/mkmap.txt" download>télécharger le fichier</a></p><pre class="code"><code>import json, math
+</code></pre></div></details><details class="pli" name="code-mkmap.py"><summary><code>mkmap.py</code> · Carte des acheteurs en France : une bulle par commune, plus grosse si le panier moyen est plus élevé.</summary><div class="corps"><p class="meta">81 lignes · <a href="mkmap.txt" download>télécharger le fichier</a></p><pre class="code"><code>import json, math
 
 DOM = {"Guadeloupe","Martinique","Guyane","La Réunion","Mayotte"}
 gj = json.load(open('regions-avec-outre-mer.geojson'))
@@ -807,7 +807,7 @@ out_of_bounds = sum(1 for p in proj_pts if p.get('out'))
 print("points hors cadre (DOM/erreur):", out_of_bounds)
 
 json.dump({'W':W,'H':H,'regions':region_paths,'points':proj_pts}, open('map_svg_data.json','w'), ensure_ascii=False)
-</code></pre></div></details><details class="pli" name="code-a2_income.py"><summary><code>a2_income.py</code> · Niveau de vie médian du département (Insee) rapporté au panier moyen.</summary><div class="corps"><p class="meta">60 lignes · <a href="../code/a2_income.txt" download>télécharger le fichier</a></p><pre class="code"><code>import csv, json, re
+</code></pre></div></details><details class="pli" name="code-a2_income.py"><summary><code>a2_income.py</code> · Niveau de vie médian du département (Insee) rapporté au panier moyen.</summary><div class="corps"><p class="meta">60 lignes · <a href="a2_income.txt" download>télécharger le fichier</a></p><pre class="code"><code>import csv, json, re
 from collections import defaultdict
 from scipy import stats
 
@@ -866,7 +866,7 @@ print(f"Corrélation sans le 64 (n={len(points_no64)}): r={r2:.3f} p={pval2:.4f}
 json.dump({'points': points, 'r_all': round(r,3), 'p_all': round(pval,4),
            'r_no64': round(r2,3), 'p_no64': round(pval2,4), 'n_no64': len(points_no64)},
           open('a2_income.json','w'), ensure_ascii=False)
-</code></pre></div></details><details class="pli" name="code-a4_trends.py"><summary><code>a4_trends.py</code> · Recherches Google (Google Trends) comparées aux commandes.</summary><div class="corps"><p class="meta">51 lignes · <a href="../code/a4_trends.txt" download>télécharger le fichier</a></p><pre class="code"><code>import csv, json, time
+</code></pre></div></details><details class="pli" name="code-a4_trends.py"><summary><code>a4_trends.py</code> · Recherches Google (Google Trends) comparées aux commandes.</summary><div class="corps"><p class="meta">51 lignes · <a href="a4_trends.txt" download>télécharger le fichier</a></p><pre class="code"><code>import csv, json, time
 from datetime import datetime
 from collections import defaultdict
 from pytrends.request import TrendReq
@@ -916,7 +916,7 @@ for k in kw:
 json.dump({'months': common, 'orders': ord_vals,
            'trend': {k: [round(trend_month[k][m],1) for m in common] for k in kw},
            'corr': res}, open('a4_trends.json','w'), ensure_ascii=False)
-</code></pre></div></details><details class="pli" name="code-e2_visites_referent.py"><summary><code>e2_visites_referent.py</code> · Lecture du rapport de visites par référent (période inconnue : sans conclusion de conversion).</summary><div class="corps"><p class="meta">34 lignes · <a href="../code/e2_visites_referent.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+</code></pre></div></details><details class="pli" name="code-e2_visites_referent.py"><summary><code>e2_visites_referent.py</code> · Lecture du rapport de visites par référent (période inconnue : sans conclusion de conversion).</summary><div class="corps"><p class="meta">34 lignes · <a href="e2_visites_referent.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Analyse du rapport Shopify 'Visites par référent' fourni par l'enseignant le 22/09.
 ATTENTION : ce fichier ne contient aucune date -&gt; la période exacte est inconnue,
 à confirmer avec l'équipe avant toute conclusion liée à une date précise."""

@@ -6,12 +6,12 @@
 <title>La formation vaut-elle d’être développée ? · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=17">
+<link rel="stylesheet" href="style.css?v=17">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="../index.html">Lumineva · données</a><div class="links"><a href="../index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="automatisations.html">Automatisations</a><a href="q-formation.html" aria-current="page">Formation</a><a href="recommandations.html">Recommandations</a><a href="analyses.html">Premières analyses</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="automatisations.html">Automatisations</a><a href="q-formation.html" aria-current="page">Formation</a><a href="recommandations.html">Recommandations</a><a href="analyses.html">Premières analyses</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
 
 <header class="hero"><div class="wrap"><p class="kicker">Formation</p><h1>La formation vaut-elle d’être développée ?</h1><p class="lead">Les ventes suivent les e-mails, mais peu d’inscrits achètent : les analyses déjà faites et les nouvelles.</p></div></header>
 <main class="wrap" id="contenu">
@@ -20,7 +20,7 @@
 <section class="brique"><h2>Les inscrits et les clients</h2><div class="dash"><ul class="fl"><li><span class="tag f">Fait</span>Sur 306 inscrits, <b>35 (11 %) sont aussi clients</b> de la boutique. Sur les 12 acheteurs de formation, 7 sont inscrits ; 3 avaient déjà acheté des bougies avant.</li><li><span class="tag f">Fait</span>Conversion des inscrits : 6 sur 306 (2,0 %) ont acheté une formation. Valeur d’un inscrit : environ <b>7,9 €</b>.</li><li><span class="tag f">Fait</span>Hors formation, les inscrits qui sont clients dépensent 154 € en moyenne contre 103 € pour les autres clients, mais l’écart n’est pas démontrable (médianes égales, p = 0,64).</li><li><span class="tag i">Interprétation possible</span>La liste formation est surtout une audience distincte de celle des bougies : peu d’inscrits sont clients, et ceux qui le sont ne dépensent pas plus.</li></ul></div></section>
 <div class="cols2"><div><h3>Les analyses qui manquent</h3><ul><li>La <b>marge d’une formation</b> et le temps qu’elle demande : inconnus, ils décident de la rentabilité.</li><li>Où se paient les packs : si une partie se règle hors Shopify, les ventes sont sous-estimées.</li><li>L’origine des 5 acheteurs non inscrits (publications, bouche-à-oreille ?) : non mesurable avec les fichiers.</li><li>Combien d’inscrits réels (400 selon la gérante, 306 dans les fichiers).</li></ul></div></div>
 <div class="verdict"><h3>Premier constat, avec ce qu’on a déjà</h3><ul><li><b>Développer la formation par vagues de lancement</b> : chaque lancement par e-mail déclenche des ventes dans les jours qui suivent (8 juillet : 840 €). Un module ou une formation de plus, annoncé de la même façon, se chiffre autour de quelques centaines d’euros de chiffre d’affaires par envoi.</li><li>La conversion des inscrits reste faible (2,0 %) : le levier est l’audience (grossir la liste) et la répétition des lancements, pas la liste actuelle.</li><li>À confirmer avec la marge d’une formation.</li></ul></div>
-<details class="pli" name="q-code"><summary>Le code des analyses reprises</summary><div class="corps"><div class="codes"><details class="pli" name="code-l3_formation.py"><summary><code>l3_formation.py</code> · Formation : ventes autour des e-mails, recoupement inscrits et clients, valeur d'un inscrit.</summary><div class="corps"><p class="meta">64 lignes · <a href="../code/l3_formation.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+<details class="pli" name="q-code"><summary>Le code des analyses reprises</summary><div class="corps"><div class="codes"><details class="pli" name="code-l3_formation.py"><summary><code>l3_formation.py</code> · Formation : ventes autour des e-mails, recoupement inscrits et clients, valeur d'un inscrit.</summary><div class="corps"><p class="meta">64 lignes · <a href="l3_formation.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """La formation : ventes jour par jour autour des e-mails, recoupement inscrits / clients, valeur d'un inscrit.
 Aucune donnée personnelle affichée : comptes et totaux."""
 import csv, json, os
@@ -83,7 +83,7 @@ json.dump({'n_ventes': len(rows), 'ca_lignes': sum(r['ca_lignes'] for r in rows)
            'inscrits': n_ins, 'inscrits_clients': len(inscrits_clients), 'acheteurs': len(buyers), 'acheteurs_payants': len(buyers_pay), 'acheteurs_inscrits': len(buyers &amp; tagF),
            'dep_inscrits_moy': float(np.mean(dep_ins)), 'dep_inscrits_med': float(np.median(dep_ins)), 'dep_autres_moy': float(np.mean(dep_autres)), 'dep_autres_med': float(np.median(dep_autres)), 'p_mw': float(mw.pvalue),
            'valeur_inscrit': ca_form / n_ins, 'conversion': len(buyers_pay &amp; tagF) / n_ins}, open('l3_formation.json', 'w'), default=float)
-</code></pre></div></details><details class="pli" name="code-e1_rentree_explication.py"><summary><code>e1_rentree_explication.py</code> · Explication du chiffre d’affaires de septembre 2026 ; fidélité des acheteurs de lancement.</summary><div class="corps"><p class="meta">88 lignes · <a href="../code/e1_rentree_explication.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+</code></pre></div></details><details class="pli" name="code-e1_rentree_explication.py"><summary><code>e1_rentree_explication.py</code> · Explication du chiffre d’affaires de septembre 2026 ; fidélité des acheteurs de lancement.</summary><div class="corps"><p class="meta">88 lignes · <a href="e1_rentree_explication.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Explique la hausse de CA de septembre 2026 vs septembre 2025, et teste si les
 acheteurs des jours de lancement deviennent des clients fidèles."""
 import csv
@@ -170,7 +170,7 @@ json.dump({
     'n6': n6, 'mean_n_other': round(mean_n, 2), 'p_poisson': p_extreme,
     'fidelite_tous': res_all, 'fidelite_90j': res_90j,
 }, open('./e1_rentree_explication.json', 'w'), ensure_ascii=False)
-</code></pre></div></details><details class="pli" name="code-j1_emailing.py"><summary><code>j1_emailing.py</code> · Piste 4 : résultats des newsletters et des automatisations (intervalles, tests de permutation, rythme, jours d'envoi).</summary><div class="corps"><p class="meta">212 lignes · <a href="../code/j1_emailing.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+</code></pre></div></details><details class="pli" name="code-j1_emailing.py"><summary><code>j1_emailing.py</code> · Piste 4 : résultats des newsletters et des automatisations (intervalles, tests de permutation, rythme, jours d'envoi).</summary><div class="corps"><p class="meta">212 lignes · <a href="j1_emailing.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Analyse des newsletters et automatisations (Shopify Messaging) : quel e-mail marche le mieux, quelles caractéristiques et quels moments.
 Données : ~/Desktop/test/Newsletter Lumineva/donnees/*.json (un fichier par e-mail : résultats + caractéristiques relevées à la main sur l'aperçu).
 Aucune donnée personnelle : chiffres agrégés par e-mail."""

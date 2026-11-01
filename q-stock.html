@@ -6,12 +6,12 @@
 <title>Faut-il une alerte de retour en stock ou de lancement ? · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=17">
+<link rel="stylesheet" href="style.css?v=17">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="../index.html">Lumineva · données</a><div class="links"><a href="../index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="automatisations.html" aria-current="page">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="analyses.html">Premières analyses</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="automatisations.html" aria-current="page">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="analyses.html">Premières analyses</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
 <nav class="subnav" aria-label="Automatisations"><div class="wrap"><span class="lab">Automatisations</span><a href="automatisations.html">Vue d’ensemble</a><a href="q-relance.html">Relance après la 1re commande</a><a href="q-stock.html" aria-current="page">Retour en stock</a></div></nav>
 <header class="hero"><div class="wrap"><p class="kicker">Automatisations · question 3</p><h1>Faut-il une alerte de retour en stock ou de lancement ?</h1><p class="lead">Les lancements s’épuisent vite : les analyses déjà faites sur le stock, les délais et les e-mails de retour de produit.</p></div></header>
 <main class="wrap" id="contenu">
@@ -21,7 +21,7 @@
 <div class="dash"><div class="grid"><section class="panel c12"><div class="tablewrap"><table><tr><th>Date</th><th>Objet</th><th class="r">Envois</th><th class="r">Ouverture</th><th class="r">Clic</th><th class="r">Commandes</th><th class="r">CA</th></tr><tr><td>20/09/26</td><td>🎃 Elle est de retour... mais pour combien de temps ?</td><td class="r">1 421</td><td class="r">35,2 %</td><td class="r">3,05 %</td><td class="r">0</td><td class="r">0 €</td></tr><tr><td>09/10/26</td><td>🍄🌲 Épuisée en moins de 24h... Forêt Magique est de retour !</td><td class="r">1 442</td><td class="r">37,6 %</td><td class="r">3,29 %</td><td class="r">1</td><td class="r">28 €</td></tr></table></div></section></div></div>
 <div class="cols2"><div><h3>Les analyses qui manquent</h3><ul><li>Les <b>ventes perdues par rupture</b> : on ne voit que les ventes réalisées. Il faut estimer la demande non servie (par exemple à partir de l’écart entre les ajouts au panier et les achats, dans Shopify).</li><li>Le <b>nombre de personnes prêtes à s’inscrire</b> à une alerte : inconnu, il se mesure avec un formulaire « prévenez-moi » sur la fiche produit.</li><li>Le <b>calendrier des réassorts</b> et la capacité de production par lancement, pour dire quelle part de la demande une alerte pourrait capter.</li></ul></div></div>
 <div class="verdict"><h3>Premier constat, avec ce qu’on a déjà</h3><ul><li>Les lancements s’épuisent et les délais s’allongent : une liste d’attente ou une alerte a une logique forte.</li><li>On ne peut pas encore chiffrer ce qu’elle rapporterait.</li></ul></div>
-<details class="pli" name="q-code"><summary>Le code des analyses reprises</summary><div class="corps"><div class="codes"><details class="pli" name="code-e1_rentree_explication.py"><summary><code>e1_rentree_explication.py</code> · Explication du chiffre d’affaires de septembre 2026 ; fidélité des acheteurs de lancement.</summary><div class="corps"><p class="meta">88 lignes · <a href="../code/e1_rentree_explication.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+<details class="pli" name="q-code"><summary>Le code des analyses reprises</summary><div class="corps"><div class="codes"><details class="pli" name="code-e1_rentree_explication.py"><summary><code>e1_rentree_explication.py</code> · Explication du chiffre d’affaires de septembre 2026 ; fidélité des acheteurs de lancement.</summary><div class="corps"><p class="meta">88 lignes · <a href="e1_rentree_explication.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Explique la hausse de CA de septembre 2026 vs septembre 2025, et teste si les
 acheteurs des jours de lancement deviennent des clients fidèles."""
 import csv
@@ -108,7 +108,7 @@ json.dump({
     'n6': n6, 'mean_n_other': round(mean_n, 2), 'p_poisson': p_extreme,
     'fidelite_tous': res_all, 'fidelite_90j': res_90j,
 }, open('./e1_rentree_explication.json', 'w'), ensure_ascii=False)
-</code></pre></div></details><details class="pli" name="code-f2_concentration.py"><summary><code>f2_concentration.py</code> · La concentration du chiffre d’affaires sur les jours de lancement : cas isolé ou systématique ?</summary><div class="corps"><p class="meta">42 lignes · <a href="../code/f2_concentration.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+</code></pre></div></details><details class="pli" name="code-f2_concentration.py"><summary><code>f2_concentration.py</code> · La concentration du chiffre d’affaires sur les jours de lancement : cas isolé ou systématique ?</summary><div class="corps"><p class="meta">42 lignes · <a href="f2_concentration.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Généralise le constat de septembre 2026 : la concentration du CA sur les jours de
 lancement est-elle systématique à chaque sortie de collection, ou un cas isolé ?"""
 import csv, json
@@ -149,7 +149,7 @@ for L in LAUNCHES:
 avg_part = sum(r['part_ca_pct'] for r in results) / len(results)
 print(f"\nMoyenne : le jour de lancement pèse {avg_part:.1f}% du CA des 30 jours autour de lui, sur les {len(LAUNCHES)} lancements documentés.")
 json.dump({'results': results, 'avg_part_ca_pct': round(avg_part,1)}, open('f2_concentration.json','w'), ensure_ascii=False)
-</code></pre></div></details><details class="pli" name="code-j1_emailing.py"><summary><code>j1_emailing.py</code> · Piste 4 : résultats des newsletters et des automatisations (intervalles, tests de permutation, rythme, jours d'envoi).</summary><div class="corps"><p class="meta">212 lignes · <a href="../code/j1_emailing.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+</code></pre></div></details><details class="pli" name="code-j1_emailing.py"><summary><code>j1_emailing.py</code> · Piste 4 : résultats des newsletters et des automatisations (intervalles, tests de permutation, rythme, jours d'envoi).</summary><div class="corps"><p class="meta">212 lignes · <a href="j1_emailing.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Analyse des newsletters et automatisations (Shopify Messaging) : quel e-mail marche le mieux, quelles caractéristiques et quels moments.
 Données : ~/Desktop/test/Newsletter Lumineva/donnees/*.json (un fichier par e-mail : résultats + caractéristiques relevées à la main sur l'aperçu).
 Aucune donnée personnelle : chiffres agrégés par e-mail."""
