@@ -11,8 +11,8 @@
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="automatisations.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="analyses.html" aria-current="page">Premières analyses</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
-<nav class="subnav meta" aria-label="Premières analyses"><div class="wrap"><span class="lab">Premières analyses</span><a href="analyses.html">Présentation</a><a href="perimetre.html" aria-current="page">Périmètre</a><a href="observations.html">Observations</a><a href="explications.html">Explications</a><a href="externe.html">Externe</a><a href="decision.html">Décisions</a></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Accueil</a><a href="contexte.html">Contexte</a><a href="analyses.html" aria-current="page">Premières analyses</a><a href="choix.html">Notre choix</a><a href="automatisations.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="faq.html">FAQ</a><a href="methode.html">Méthode</a></div></div></nav>
+<nav class="subnav meta" aria-label="Premières analyses"><div class="wrap"><span class="lab">Premières analyses</span><a href="analyses.html">Présentation</a><a href="perimetre.html" aria-current="page">Périmètre</a><a href="observations.html">Observations</a><a href="explications.html">Explications</a><a href="externe.html">Externe</a><a href="decision-emailing.html">Décision e-mailing</a></div></nav>
 <header class="hero"><div class="wrap"><p class="kicker">Fondations</p><h1>Périmètre des données</h1><p class="lead">Avant toute analyse : quelles données, quelles règles de comptage, quels contrôles. Un périmètre faux fausse tout le reste, c’est donc la page la plus importante du site.</p></div></header>
 <main class="wrap" id="contenu">
 <details class="pli" name="per" open><summary>Les fichiers utilisés</summary><div class="corps"><div class="tablewrap"><table><tr><th>Fichier</th><th>Une ligne =</th><th>Taille</th><th>Période</th></tr><tr><td><code>orders.csv</code></td><td>un produit commandé (une commande en a plusieurs)</td><td>4 537 lignes, 1 445 commandes dont 7 annulées</td><td>27 juin 2025 → 20 sept. 2026</td></tr><tr><td><code>customers.csv</code></td><td>une fiche client (compte ou acheteur)</td><td>1 923 fiches</td><td>—</td></tr><tr><td><code>payment_transactions.csv</code></td><td>un mouvement de paiement</td><td>1 473 mouvements</td><td>—</td></tr><tr><td><code>payouts.csv</code></td><td>un versement de Shopify</td><td>439 versements</td><td>28 juin 2025 → 21 sept. 2026</td></tr><tr><td><code>products.csv</code></td><td>un produit (et ses variantes)</td><td>480 produits, 780 variantes</td><td>état à l’export</td></tr><tr><td><code>inventory.csv</code></td><td>une ligne de stock (produit × variante)</td><td>726 lignes</td><td>état à l’export</td></tr><tr><td><code>instagram_publications.csv</code></td><td>une publication</td><td>714 publications</td><td>24 févr. 2024 → 10 sept. 2026</td></tr><tr><td>Rapport « Visites par référent »</td><td>une source de trafic</td><td>reçu le 22 septembre</td><td><b>inconnue</b> (question posée à l’enseignant)</td></tr></table></div><p class="meta">Un export de commandes non pseudonymisé a aussi été remis : il n’est ni utilisé, ni recopié, ni cité dans ce site.</p></div></details>
@@ -41,8 +41,21 @@ Fiches clients                                           1923       1923  OK
 Total dépensé des fiches clients (€)                    89718      89718  OK
 Fiches clients avec dépense &gt; 0 (« ont acheté »)          840        840  OK
 Mouvements de paiement                                   1473       1473  OK
+OCT. Commandes non annulées (accueil : 1 595)            1595       1595  OK
+OCT. Chiffre d'affaires facturé (accueil : 99 629 €)        99629      99629  OK
+OCT. Panier moyen (accueil : 62 €)                         62         62  OK
+OCT. Dernière commande = 2026-10-22                         1          1  OK
+OCT. Commandes (script automatisations)                  1595       1595  OK
+OCT. Jours de pointe (20 commandes ou plus)                 4          4  OK
+OCT. Clients suivis (relance)                             913        913  OK
+OCT. Commandes de formation (accueil : 18)                 18         18  OK
+OCT. Avis publiés (page demande d'avis : 313)             313        313  OK
+OCT. Avis à 5 étoiles (95 %)                               95         95  OK
+OCT. Demandes d'avis envoyées (2 911)                    2911       2911  OK
+OCT. Codes AUTO (33)                                       33         33  OK
+OCT. Produits actifs (page retouche photo : 133)          133        133  OK
 
- 23 contrôles OK sur 23
+ 36 contrôles OK sur 36
 </code></pre><p class="meta">Ce contrôle a déjà servi : il a révélé que le total « 475 commandes avec code promo » affiché dans une première version était en réalité la somme des six codes les plus utilisés ; le total exact est de 516 commandes (35,9 %), corrigé partout.</p></div></details>
 <details class="pli" name="per"><summary>Ce que le périmètre ne couvre pas</summary><div class="corps"><ul><li>Marge : seule la marge de 50 % sur les bougies (indiquée par la gérante) est connue ; la colonne « coût par article » du catalogue est vide. Les bougies font 71 % du chiffre d’affaires des lignes de commande.</li><li>Coût des colis : les fichiers donnent le port <b>facturé aux clients</b> (5,90 € en point relais, 9,90 € à domicile ; 5 648 € au total), pas ce que la boutique paie au transporteur.</li><li>Aucune donnée de trafic datée, de conversion ni de provenance par commande : la colonne « Source » des commandes ne contient aucune valeur Instagram.</li><li>Aucune information sur les actions marketing (e-mails, publicités, calendrier de lancement).</li><li>Quinze mois d’historique : les corrélations calculées portent sur très peu de points.</li></ul></div></details>
 <details class="pli" name="per"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-common.py"><summary><code>common.py</code> · Lit les commandes, classe les produits en familles, regroupe les commandes par client. Base des analyses « parcours clients ».</summary><div class="corps"><p class="meta">78 lignes · <a href="common.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
@@ -53,7 +66,7 @@ from datetime import datetime
 from collections import defaultdict
 
 ORDERS_CSV = '../DONNEES/orders.csv'
-REF = datetime(2026, 9, 21)
+REF = datetime(2026, 10, 23)
 
 FAMILLES = ['Bougies gourmandes', 'Bougies boisson', 'Bougies taille S', 'Autres bougies', 'Fondants',
             'Voiture', 'Diffuseurs maison', 'Poudre parfumée', 'Élixirs', 'Accessoires et cadeaux', 'Formation']
@@ -197,14 +210,15 @@ print("commandes préparées:", len(orders))
 print("exemple:", {k:v for k,v in orders[0].items() if k not in ('r','items')})
 print("moyens de paiement trouvés:", set(o['pay'] for o in orders if o['pay']))
 print("commandes sans paiement apparié:", sum(1 for o in orders if not o['pay']))
-</code></pre></div></details><details class="pli" name="code-verif_chiffres_cles.py"><summary><code>verif_chiffres_cles.py</code> · Recalcule les chiffres clés depuis les fichiers sources et les compare à ceux affichés.</summary><div class="corps"><p class="meta">64 lignes · <a href="verif_chiffres_cles.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+</code></pre></div></details><details class="pli" name="code-verif_chiffres_cles.py"><summary><code>verif_chiffres_cles.py</code> · Recalcule les chiffres clés depuis les fichiers sources et les compare à ceux affichés.</summary><div class="corps"><p class="meta">89 lignes · <a href="verif_chiffres_cles.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Recalcule depuis les fichiers sources les chiffres clés affichés sur le site, et les compare aux valeurs affichées.
 Sert de contrôle : si une ligne affiche « ÉCART », le chiffre du site doit être revu."""
 import csv, os, re
 from collections import Counter, OrderedDict
 from datetime import datetime
 
-D = os.path.expanduser('~/Desktop/test/orders.csv'); DL = os.path.expanduser('~/Downloads/')
+# Bloc 1 : pages « Premières analyses » = export de septembre (au 20/09/2026). Bloc 2 : pages mises à jour = livraison d'octobre (au 22/10/2026).
+D = '../DONNEES/archive_septembre/orders.csv'; DL = '../DONNEES/archive_septembre/'; DP = '../DONNEES/'
 rows = list(csv.DictReader(open(D, encoding='utf-8')))
 num = lambda x: float(x.replace(',', '.')) if x not in ('', None) else 0.0
 cmd = OrderedDict()
@@ -254,14 +268,38 @@ controle('Fiches clients', len(cl), 1923)
 controle('Total dépensé des fiches clients (€)', round(sum(num(r['Total Spent']) for r in cl)), 89718, 1)
 controle('Fiches clients avec dépense &gt; 0 (« ont acheté »)', sum(1 for r in cl if num(r['Total Spent']) &gt; 0), 840)
 # paiements
-pt = list(csv.DictReader(open(DL + 'payment_transactions.csv', encoding='utf-8')))
+pt = list(csv.DictReader(open(DP + 'payment_transactions.csv', encoding='utf-8')))
 controle('Mouvements de paiement', len(pt), 1473)
 
+# ---- bloc 2 : livraison d'octobre, comparée aux chiffres affichés sur l'accueil et dans les pages Automatisations / Formation
+import json
+oc = [r for r in csv.DictReader(open(DP + 'orders.csv', encoding='utf-8')) if r['Total']]
+ocv = [r for r in oc if not r['Cancelled at']]
+ca_oc = sum(num(r['Total']) for r in ocv)
+controle('OCT. Commandes non annulées (accueil : 1 595)', len(ocv), 1595)
+controle("OCT. Chiffre d'affaires facturé (accueil : 99 629 €)", round(ca_oc), 99629, 1)
+controle('OCT. Panier moyen (accueil : 62 €)', round(ca_oc / len(ocv)), 62)
+controle('OCT. Dernière commande = 2026-10-22', 1 if max(r['Created at'][:10] for r in ocv) == '2026-10-22' else 0, 1)
+q1j = json.load(open('q1_automatisations.json', encoding='utf-8')); l3j = json.load(open('l3_formation.json', encoding='utf-8')); l1j = json.load(open('l1_relance.json', encoding='utf-8'))
+controle('OCT. Commandes (script automatisations)', q1j['n_commandes'], len(ocv))
+controle('OCT. Jours de pointe (20 commandes ou plus)', len(q1j['pics']), sum(1 for d in set(r['Created at'][:10] for r in ocv) if sum(1 for r in ocv if r['Created at'][:10] == d) &gt;= 20))
+controle('OCT. Clients suivis (relance)', l1j['N'], len(q1j and set(r['customer_key'] for r in ocv if r['customer_key'])))
+controle('OCT. Commandes de formation (accueil : 18)', l3j['n_ventes'], 18)
+q2j = json.load(open('q2_avis_catalogue.json', encoding='utf-8'))
+_av = list(csv.DictReader(open(DP + 'avis.csv', encoding='utf-8')))
+controle('OCT. Avis publiés (page demande d\'avis : 313)', q2j['avis']['n'], len(_av))
+controle('OCT. Avis à 5 étoiles (95 %)', round(100 * sum(1 for r in _av if r['rating'] == '5') / len(_av)), 95)
+_ar = {(r['rubrique'], r['libelle'], r['serie']): r['valeur'] for r in csv.DictReader(open(DP + 'avis_rapport.csv', encoding='utf-8'))}
+controle('OCT. Demandes d\'avis envoyées (2 911)', q2j['rapport']['envoyes'], int(float(_ar[('All emails', 'Total Count', 'Emails sent')])))
+controle('OCT. Codes AUTO (33)', q2j['codes']['auto_codes'], sum(1 for r in csv.DictReader(open(DP + 'discounts.csv', encoding='utf-8')) if r['Name'].startswith('AUTO-')))
+q3j = json.load(open('q3_photos.json', encoding='utf-8'))
+_pr = list(csv.DictReader(open(DP + 'products.csv', encoding='utf-8')))
+controle('OCT. Produits actifs (page retouche photo : 133)', q3j['produits_actifs'], len({r['Handle'] for r in _pr if r['Status'] == 'active'}))
 print(f'{"Contrôle":48s} {"Recalculé":&gt;12s} {"Affiché":&gt;10s}  Verdict')
 for nom, a, b, v in resultats: print(f'{nom:48s} {a:&gt;12} {b:&gt;10}  {v}')
 print('\n', sum(1 for r in resultats if r[3] == 'OK'), 'contrôles OK sur', len(resultats))
 </code></pre></div></details></div></div></details>
 </main>
-<footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version de travail du 23 octobre 2026. Rendu : 18 novembre 2026.</p></div></footer>
+<footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version de travail du 12 novembre 2026. Rendu : 18 novembre 2026.</p></div></footer>
 </body>
 </html>

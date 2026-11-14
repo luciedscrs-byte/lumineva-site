@@ -9,7 +9,7 @@ from common import charger, famille, REF
 
 CHAMPS = ('customer_key', 'Tags', 'Accepts Email Marketing', 'Default Address Zip', 'Default Address Country Code')     # liste blanche : pas de prénom
 cm = {}
-for r in csv.DictReader(open(os.path.expanduser('~/Downloads/customers.csv'), encoding='utf-8')):
+for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8')):
     cm[r['customer_key']] = {c: r[c] for c in CHAMPS}
 cmds, clients = charger()
 avis = {k for k, r in cm.items() if 'Judge.me' in (r['Tags'] or '')}

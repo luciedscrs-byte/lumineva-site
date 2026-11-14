@@ -7,7 +7,7 @@ import numpy as np
 from common import charger, REF
 
 cmds, clients = charger()
-cm = {r['customer_key']: r for r in csv.DictReader(open(os.path.expanduser('~/Downloads/customers.csv'), encoding='utf-8'))}
+cm = {r['customer_key']: r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
 rows = []
 for k, os_ in clients.items():
     p = os_[0]; d1 = p['dt']

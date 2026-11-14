@@ -6,7 +6,7 @@ from datetime import datetime
 from collections import defaultdict
 
 ORDERS_CSV = '../DONNEES/orders.csv'
-REF = datetime(2026, 9, 21)
+REF = datetime(2026, 10, 23)
 
 FAMILLES = ['Bougies gourmandes', 'Bougies boisson', 'Bougies taille S', 'Autres bougies', 'Fondants',
             'Voiture', 'Diffuseurs maison', 'Poudre parfumée', 'Élixirs', 'Accessoires et cadeaux', 'Formation']

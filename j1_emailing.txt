@@ -9,7 +9,7 @@ import numpy as np
 from scipy import stats
 import statsmodels.api as sm
 
-DOSSIER = os.path.expanduser('~/Desktop/test/Newsletter Lumineva/donnees/')
+DOSSIER = '../DONNEES/bilan_emailing/'
 inv = json.load(open(DOSSIER + 'inventaire.json', encoding='utf-8'))
 liste = {x['id']: x for x in inv['newsletters'] + inv['automatisations']}
 E = []
@@ -158,10 +158,10 @@ print(f'heure d’envoi : corrélation avec le clic rho={rho_h:.2f} p={p_h:.2f} 
 import csv
 cmdj = {}
 seen = set()
-for r in csv.DictReader(open(os.path.expanduser('~/Desktop/test/orders.csv'), encoding='utf-8')):
+for r in csv.DictReader(open('../DONNEES/orders.csv', encoding='utf-8')):
     if r['Cancelled at'] or r['order_key'] in seen or not r['Total']: continue
     seen.add(r['order_key']); d_ = r['Created at'][:10]; cmdj[d_] = cmdj.get(d_, 0) + 1
-j0 = datetime(2025, 6, 27).date(); j1 = datetime(2026, 9, 20).date(); jours = [j0 + timedelta(days=i) for i in range((j1 - j0).days + 1)]
+j0 = datetime(2025, 6, 27).date(); j1 = max(e['dt'] for e in ords).date(); jours = [j0 + timedelta(days=i) for i in range((j1 - j0).days + 1)]
 y = np.array([cmdj.get(j.isoformat(), 0) for j in jours], dtype=float)
 LANC = [datetime(2025, 9, 7).date(), datetime(2025, 11, 1).date(), datetime(2026, 9, 6).date(), datetime(2026, 9, 20).date()]
 envois = [e['dt'].date() for e in BOUT if j0 <= e['dt'].date() <= j1 and e['dt'].date() not in LANC]
@@ -197,7 +197,9 @@ rr_rel = (rel['cmd'] / rel['envoyes']) / (nl['cmd'] / nl['envoyes'])
 lo_, hi_ = np.exp(np.log(rr_rel) - 1.96 * np.sqrt(1 / rel['cmd'] + 1 / nl['cmd'])), np.exp(np.log(rr_rel) + 1.96 * np.sqrt(1 / rel['cmd'] + 1 / nl['cmd']))
 print(f'paiement vs panier abandonné : Fisher p={fp:.2f} | relances (722 envois) vs newsletters boutique : ×{rr_rel:.0f} de commandes par envoi [{lo_:.0f} ; {hi_:.0f}], Fisher p={p_rel_nl:.5f}')
 ca_tot_mail = G['boutique']['ca'] + rel['ca']
-print('CA attribué à l’e-mail (newsletters boutique + relances) :', round(ca_tot_mail, 2), '€ soit', round(100 * ca_tot_mail / 90721, 1), '% du CA facturé (90 721 €)')
+from common import charger as _ch
+CA_FACTURE = sum(o['total'] for o in _ch()[0])
+print('CA attribué à l’e-mail (newsletters boutique + relances) :', round(ca_tot_mail, 2), '€ soit', round(100 * ca_tot_mail / CA_FACTURE, 1), '% du CA facturé (' + format(round(CA_FACTURE), ',').replace(',', ' ') + ' €)')
 
 def clean(o):
     if isinstance(o, dict): return {k: clean(v) for k, v in o.items() if k != 'dt'}
@@ -208,4 +210,4 @@ def clean(o):
 json.dump(clean({'emails': E, 'groupes': G, 'p_listes_clic': float(mw.pvalue), 'p_listes_cmd': float(p_vente), 'criteres': CRIT, 'fatigue': {'rho_ecart': float(rho_ec), 'p_ecart': float(p_ec), 'rho_ordre': float(rho_idx), 'p_ordre': float(p_idx),
           'auto_rho': float(rho_auto), 'auto_p': float(p_auto), 'pente': float(lr.slope), 'pente_ic': [float(v) for v in ic_pente], 'pente_p': float(lr.pvalue), 'n_auto': len(auto)},
           'heure': {'rho_clic': float(rho_h), 'p_clic': float(p_h), 'rho_ouv': float(rho_ho), 'p_ouv': float(p_ho)}, 'moments': moments, 'evenement': ev, 'n_envois_fenetre': len(envois),
-          'auto': aut, 'p_paiement_panier': float(fp), 'relances_vs_news': {'rr': float(rr_rel), 'lo': float(lo_), 'hi': float(hi_), 'p': float(p_rel_nl)}, 'ca_mail': float(ca_tot_mail)}), open('j1_emailing.json', 'w'), ensure_ascii=False, default=str)
+          'auto': aut, 'p_paiement_panier': float(fp), 'relances_vs_news': {'rr': float(rr_rel), 'lo': float(lo_), 'hi': float(hi_), 'p': float(p_rel_nl)}, 'ca_facture': float(CA_FACTURE), 'ca_mail': float(ca_tot_mail)}), open('j1_emailing.json', 'w'), ensure_ascii=False, default=str)

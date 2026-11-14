@@ -8,7 +8,7 @@ from scipy import stats
 from common import charger, famille
 
 cmds, clients = charger()
-cm = {r['customer_key']: r for r in csv.DictReader(open(os.path.expanduser('~/Downloads/customers.csv'), encoding='utf-8'))}
+cm = {r['customer_key']: r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
 tagF = {k for k, r in cm.items() if 'Formation' in (r['Tags'] or '')}
 j1 = json.load(open('j1_emailing.json', encoding='utf-8'))
 envois = sorted([datetime.strptime(e['date'][:10], '%Y-%m-%d').date() for e in j1['emails'] if e['type'] == 'newsletter' and e['liste'] != 'Tous les abonnés' and e['date'] >= '2026-01-01'])
@@ -26,7 +26,7 @@ dl = [delai(r['date']) for r in rows if r['date'] >= envois[0] and r['total'] > 
 print('délai (jours) entre chaque vente de formation et le dernier envoi :', dl)
 dans4 = sum(1 for x in dl if x is not None and x <= 4); n = len(dl)
 # probabilité d'une telle coïncidence si les ventes tombaient au hasard dans la période : part des jours situés à 0-4 jours après un envoi
-debut, fin = envois[0], datetime(2026, 9, 20).date()
+debut, fin = envois[0], max(o['dt'].date() for o in cmds)   # fin de période = dernière commande des données (toutes commandes)
 jours = [debut + timedelta(days=i) for i in range((fin - debut).days + 1)]
 couv = sum(1 for j in jours if any(0 <= (j - e).days <= 4 for e in envois)) / len(jours)
 p_bin = stats.binomtest(dans4, n, couv, alternative='greater').pvalue
