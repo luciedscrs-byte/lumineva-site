@@ -3,7 +3,7 @@
  A. lancements et retour en stock : qui achète les jours de pointe, délais d'expédition ces jours-là, clients joignables ;
  B. relances panier et paiement : entonnoir (envoyés, ouverts, clics, commandes) et poids dans le chiffre d'affaires ;
  C. cohérence du gain de la relance après la 1re commande avec ce que les e-mails rapportent déjà."""
-import json, csv
+import json, csv, collections
 import numpy as np
 from datetime import datetime
 from scipy import stats
@@ -31,6 +31,7 @@ for d in PICS:
                  'connus_joignables': sum(1 for o in ret if accepte.get(o['cle'])), 'ca': round(sum(o['total'] for o in os_)),
                  'part_ca_mois': round(100 * sum(o['total'] for o in os_) / mois_ca[d[:7]], 1)})
 out['pics'] = pics
+out['commandes_par_mois'] = dict(sorted(collections.Counter(o['date'][:7] for o in commandes).items()))
 out['n_commandes'] = len(commandes)
 out['n_clients'] = len(clients)
 

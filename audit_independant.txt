@@ -205,6 +205,24 @@ ok('  dont reliés au catalogue', len(ph), q3['reliees_catalogue']); ok('  photo
 ok('  photos à retoucher par an (estimation)', round(len(douze) * np.mean(ph)), q3['photos_an'], 1)
 pm = sort.str[:7].value_counts(); ok('Sorties en novembre 2025', pm['2025-11'], q3['par_mois']['2025-11']); ok('Sorties en mars 2026', pm['2026-03'], q3['par_mois']['2026-03']); ok('Sorties en septembre 2026', pm['2026-09'], q3['par_mois']['2026-09'])
 
+# =================== Quatrième série : phrases de la version courte du site (Contexte, Données) ===================
+prem1 = cl.sort_values('dt').groupby('cle').first()
+pays = prem1['Shipping Country'].fillna(prem1['Billing Country']).fillna('')
+cp = prem1['Shipping Zip'].fillna(prem1['Billing Zip']).fillna('').str.replace(r'\D', '', regex=True).str.zfill(5).str[:2]
+fr = pays == 'FR'
+ok('Clients en France (%) (page Contexte : 94)', 100 * fr.mean(), 94, 0.5)
+ok('Pyrénées-Atlantiques (64) parmi les clients de France (%) (page : 14)', 100 * (cp[fr] == '64').mean(), 14, 0.6)
+lig_all = o[o['order_key'].ffill().isin(set(val['order_key'])) & o['Lineitem name'].notna() & (o['Lineitem name'] != 'Tip')].copy()
+def fam_b(nm):
+    nm = nm.upper(); return nm.startswith('BOUGIE')
+lig_all['v'] = lig_all['Lineitem quantity'].astype(float) * lig_all['Lineitem price'].astype(float)
+ok('Part des bougies dans le chiffre d\'affaires des lignes (%) (page : 71)', 100 * lig_all[lig_all['Lineitem name'].map(fam_b)]['v'].sum() / lig_all['v'].sum(), 71, 0.5)
+inv = J('../../scripts/bilan_emailing_inventaire.json') if False else json.load(open(D + 'bilan_emailing/inventaire.json', encoding='utf-8'))
+ok('Newsletters (page : 19)', len(inv['newsletters']), 19); ok('Automatisations (page : 7)', len(inv['automatisations']), 7)
+ok('Newsletters à la liste « Tous les abonnés » (page : 12)', sum(1 for e in j1['emails'] if e['type'] == 'newsletter' and e['liste'] == 'Tous les abonnés'), 12)
+
+_e8 = pd.Timestamp('2026-07-08'); _v8 = paye[(pd.to_datetime(paye['jour']) >= _e8) & (pd.to_datetime(paye['jour']) <= _e8 + pd.Timedelta(days=4))]
+ok('Envoi du 8 juillet : ventes payantes dans les 4 jours (page : 4)', len(_v8), [x for x in l3['par_envoi'] if x['date'] == '2026-07-08'][0]['ventes_0_4j']); ok('Envoi du 8 juillet : montant (page : 840 €)', _v8['t'].sum(), 840, 1)
 print(f'{"Contrôle":66s} {"Recalculé":>12s} {"Site":>12s}  Verdict')
 for nom, a, b_, v_ in res: print(f'{nom:66s} {a:>12} {b_:>12}  {v_}')
 print('\n', sum(1 for x in res if x[3] == 'OK'), 'contrôles OK sur', len(res))
