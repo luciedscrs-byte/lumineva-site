@@ -31,14 +31,14 @@
 <h2>5 · Les anciens flux inactifs</h2><p class="meta">Anciens flux « Recover abandoned checkout » (en anglais, inactifs, e-mail en brouillon) : 20 envois au total, 0 commande. À supprimer pour y voir clair (pas d’effet sur les ventes).</p>
 <div class="reco"><h3>Ce qu’on conseille</h3><ul><li><b>Réparer le flux « navigations abandonnées »</b> : ouvrir l’e-mail en brouillon, corriger l’erreur, remplir le bloc « produits tendance », publier. Il a déjà été ouvert par 77 % des 26 destinataires.</li><li><b>Tester un lien de paiement plus direct</b> : retirer « Visiter notre boutique » de l’e-mail de paiement, puis comparer le nombre de clics vers le paiement et de commandes (idée à tester, pas un résultat).</li><li><b>Essayer un 2e rappel</b> quelques jours après le 1er : environ 48 % à 51 % des destinataires n’ont pas ouvert le 1er e-mail. Aucun 2e rappel n’existe d’après le relevé. Idée, pas un résultat.</li><li><b>Relever chaque mois, pour chaque flux</b> : e-mails envoyés, clics, commandes et nombre de paniers abandonnés (inconnu aujourd’hui).</li></ul></div>
 <div class="cols2"><div><h3>Limites et ce qui manque</h3><ul><li>Très peu de commandes (7) : la plage va de 0,39 à 2,00 pour 100 e-mails.</li><li>Le nombre de paniers abandonnés est inconnu : on ne sait pas quelle part est récupérée.</li><li>Shopify rattache à l’e-mail des commandes qui seraient peut-être venues seules (et rate celles qui passent par un autre chemin).</li><li>Le taux d’ouverture est une mesure approximative : certaines messageries ouvrent les e-mails automatiquement.</li><li>Les e-mails sont cumulés depuis leur création ; la date de création du flux « paiement » n’est pas lisible (« 26 sept. », sans année) : on ne calcule aucun rythme par mois.</li><li>Un test d’un 2e rappel demanderait environ 2 393 e-mails par groupe : on décide sur la logique.</li></ul></div></div>
-<details class="pli" name="q-abandon-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-q4_approfondi.py"><summary><code>q4_approfondi.py</code> · </summary><div class="corps"><p class="meta">166 lignes · <a href="q4_approfondi.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+<details class="pli" name="q-abandon-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-q4_approfondi.py"><summary><code>q4_approfondi.py</code> · </summary><div class="corps"><p class="meta">193 lignes · <a href="q4_approfondi.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Approfondissement (15/11/2026) des trois questions d'automatisation et de la formation.
 Aucune donnée personnelle : comptes, taux et montants agrégés. Tout vient de orders.csv, customers.csv et du bilan e-mailing (fichiers JSON du prof).
   A. Relance après la 1re commande : taux de retour en fenêtre fixe, retours un jour de pointe, qui revient (par groupe)
   B. Relances panier et paiement : entonnoir de chaque e-mail, comparaison aux newsletters, résultats des newsletters par thème
   C. Lancement et retour en stock : les jours de pointe et les e-mails envoyés avant, heures de commande, expéditions
   D. Formation : produit par produit, prix et remises, vague par vague, part du chiffre d'affaires"""
-import csv, json, glob, os, collections, math
+import csv, json, glob, os, collections, math, statistics
 from datetime import datetime, timedelta
 from scipy import stats
 from common import charger, REF, famille
@@ -136,6 +136,33 @@ out['jour_newsletter_20_9'] = {'avant': sum(1 for o in o20 if o['dt'] &lt; env),
 # semaine moyenne : combien de commandes par jour hors pics (pour comparer)
 jours_actifs = collections.Counter(o['date'] for o in cmds)
 out['jour_moyen'] = {'commandes_par_jour_hors_pics': sum(k for d, k in jours_actifs.items() if d not in PICS) / (len(jours_actifs) - len(PICS)), 'jours_avec_commande': len(jours_actifs)}
+
+
+# =================================================================== C bis. RÉSEAUX SOCIAUX AUTOUR DES JOURS DE POINTE (publications Instagram et Facebook)
+def posts(f, reseau):
+    out_ = []
+    for r in csv.DictReader(open(f, encoding='utf-8')):
+        d = datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M')
+        out_.append({'reseau': reseau, 'dt': d, 'vues': int(r['Vues'] or 0), 'texte': (r['Description'] or '').replace('\n', ' ').strip()})
+    return out_
+PO = posts('../DONNEES/instagram_publications.csv', 'Instagram') + posts('../DONNEES/facebook_publications.csv', 'Facebook')
+MOTS = ('en ligne', 'sortira', 'collection', 'dévoile', 'dévoil', 'de retour', 'disponible')
+res = []
+for d in PICS:
+    dd = datetime.strptime(d, '%Y-%m-%d')
+    fen_ = [x for x in PO if dd - timedelta(days=3) &lt;= datetime(x['dt'].year, x['dt'].month, x['dt'].day) &lt;= dd]
+    ig = [x for x in fen_ if x['reseau'] == 'Instagram']
+    ann = sorted([x for x in fen_ if any(m in x['texte'].lower() for m in MOTS)], key=lambda x: x['dt'])
+    res.append({'date': d, 'ig_posts': len(ig), 'ig_vues': sum(x['vues'] for x in ig), 'ig_max': max([x['vues'] for x in ig] or [0]),
+                'annonces': [{'reseau': x['reseau'], 'quand': x['dt'].strftime('%d/%m %H:%M'), 'jour_j': datetime(x['dt'].year, x['dt'].month, x['dt'].day) == dd, 'vues': x['vues'], 'texte': x['texte'][:70]} for x in ann]})
+# repère : vues Instagram cumulées sur n'importe quelle fenêtre de 4 jours (médiane), pour situer les fenêtres de pointe
+ig_all = [x for x in PO if x['reseau'] == 'Instagram']
+jours_v = collections.defaultdict(int)
+for x in ig_all: jours_v[datetime(x['dt'].year, x['dt'].month, x['dt'].day)] += x['vues']
+d0, d1 = min(jours_v), max(jours_v); vals = []; cur = d0
+while cur + timedelta(days=3) &lt;= d1:
+    vals.append(sum(jours_v.get(cur + timedelta(days=i), 0) for i in range(4))); cur += timedelta(days=1)
+out['reseaux_pics'] = {'fenetres': res, 'mediane_4j_vues': statistics.median(vals) if False else sorted(vals)[len(vals) // 2], 'n_fenetres': len(vals), 'periode': [d0.strftime('%Y-%m-%d'), d1.strftime('%Y-%m-%d')]}
 
 # =================================================================== D. FORMATION
 def est_formation(nom): return famille(nom) == 'Formation'

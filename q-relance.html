@@ -32,14 +32,14 @@
 <div class="dash"><ul class="fl"><li><span class="tag f">Fait</span>Les clients non relancés qui n’avaient pas recommandé à J+45 recommandent dans les 30 jours suivants dans 8,3 % des cas (13,1 % en 60 jours) : c’est la base à battre.</li><li><span class="tag f">Fait</span>Avec 474 clients relancés, la marge d’erreur de cette mesure est d’environ ±2,5 points : un effet de +1 ou +2 points ne se verra pas, seul un effet d’au moins +5 points serait visible. Un vrai test A/B demanderait environ 603 clients par groupe.</li></ul></div>
 <div class="reco"><h3>Ce qu’on conseille</h3><ul><li><b>Créer cette relance à J+45</b> pour les clients à une seule commande qui acceptent les e-mails, avec un produit proche de leur achat, <b>sans remise</b>.</li><li><b>Suivre le retour dans les 30 jours</b> des clients relancés, chaque mois, et le comparer à 8,3 %.</li><li><b>Inciter les clients à accepter les e-mails au moment de la commande</b> : 19 % des clients ne peuvent aujourd’hui pas être relancés (173 sur 913).</li></ul></div>
 <div class="cols2"><div><h3>Limites et ce qui manque</h3><ul><li>L’effet réel d’une relance est inconnu : aucun groupe témoin, test A/B impossible. Les gains sont des hypothèses.</li><li>Les montants incluent livraison (6 %) et TVA : la marge réelle est plus basse. On ne sait pas si les 50 % de marge sont hors taxes.</li><li>Le délai de 45 jours est un choix raisonné (avant la médiane de 66 jours), pas un optimum démontré ; 60 jours est une autre option.</li><li>Le statut « accepte les e-mails » est celui de la livraison des fichiers (22 octobre 2026), pas celui du jour de la commande.</li><li>Les taux à 90 jours et plus ne portent que sur les clients suivis assez longtemps : les plus récents n’y figurent pas.</li></ul></div></div>
-<details class="pli" name="q-relance-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-q4_approfondi.py"><summary><code>q4_approfondi.py</code> · </summary><div class="corps"><p class="meta">166 lignes · <a href="q4_approfondi.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+<details class="pli" name="q-relance-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-q4_approfondi.py"><summary><code>q4_approfondi.py</code> · </summary><div class="corps"><p class="meta">193 lignes · <a href="q4_approfondi.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Approfondissement (15/11/2026) des trois questions d'automatisation et de la formation.
 Aucune donnée personnelle : comptes, taux et montants agrégés. Tout vient de orders.csv, customers.csv et du bilan e-mailing (fichiers JSON du prof).
   A. Relance après la 1re commande : taux de retour en fenêtre fixe, retours un jour de pointe, qui revient (par groupe)
   B. Relances panier et paiement : entonnoir de chaque e-mail, comparaison aux newsletters, résultats des newsletters par thème
   C. Lancement et retour en stock : les jours de pointe et les e-mails envoyés avant, heures de commande, expéditions
   D. Formation : produit par produit, prix et remises, vague par vague, part du chiffre d'affaires"""
-import csv, json, glob, os, collections, math
+import csv, json, glob, os, collections, math, statistics
 from datetime import datetime, timedelta
 from scipy import stats
 from common import charger, REF, famille
@@ -137,6 +137,33 @@ out['jour_newsletter_20_9'] = {'avant': sum(1 for o in o20 if o['dt'] &lt; env),
 # semaine moyenne : combien de commandes par jour hors pics (pour comparer)
 jours_actifs = collections.Counter(o['date'] for o in cmds)
 out['jour_moyen'] = {'commandes_par_jour_hors_pics': sum(k for d, k in jours_actifs.items() if d not in PICS) / (len(jours_actifs) - len(PICS)), 'jours_avec_commande': len(jours_actifs)}
+
+
+# =================================================================== C bis. RÉSEAUX SOCIAUX AUTOUR DES JOURS DE POINTE (publications Instagram et Facebook)
+def posts(f, reseau):
+    out_ = []
+    for r in csv.DictReader(open(f, encoding='utf-8')):
+        d = datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M')
+        out_.append({'reseau': reseau, 'dt': d, 'vues': int(r['Vues'] or 0), 'texte': (r['Description'] or '').replace('\n', ' ').strip()})
+    return out_
+PO = posts('../DONNEES/instagram_publications.csv', 'Instagram') + posts('../DONNEES/facebook_publications.csv', 'Facebook')
+MOTS = ('en ligne', 'sortira', 'collection', 'dévoile', 'dévoil', 'de retour', 'disponible')
+res = []
+for d in PICS:
+    dd = datetime.strptime(d, '%Y-%m-%d')
+    fen_ = [x for x in PO if dd - timedelta(days=3) &lt;= datetime(x['dt'].year, x['dt'].month, x['dt'].day) &lt;= dd]
+    ig = [x for x in fen_ if x['reseau'] == 'Instagram']
+    ann = sorted([x for x in fen_ if any(m in x['texte'].lower() for m in MOTS)], key=lambda x: x['dt'])
+    res.append({'date': d, 'ig_posts': len(ig), 'ig_vues': sum(x['vues'] for x in ig), 'ig_max': max([x['vues'] for x in ig] or [0]),
+                'annonces': [{'reseau': x['reseau'], 'quand': x['dt'].strftime('%d/%m %H:%M'), 'jour_j': datetime(x['dt'].year, x['dt'].month, x['dt'].day) == dd, 'vues': x['vues'], 'texte': x['texte'][:70]} for x in ann]})
+# repère : vues Instagram cumulées sur n'importe quelle fenêtre de 4 jours (médiane), pour situer les fenêtres de pointe
+ig_all = [x for x in PO if x['reseau'] == 'Instagram']
+jours_v = collections.defaultdict(int)
+for x in ig_all: jours_v[datetime(x['dt'].year, x['dt'].month, x['dt'].day)] += x['vues']
+d0, d1 = min(jours_v), max(jours_v); vals = []; cur = d0
+while cur + timedelta(days=3) &lt;= d1:
+    vals.append(sum(jours_v.get(cur + timedelta(days=i), 0) for i in range(4))); cur += timedelta(days=1)
+out['reseaux_pics'] = {'fenetres': res, 'mediane_4j_vues': statistics.median(vals) if False else sorted(vals)[len(vals) // 2], 'n_fenetres': len(vals), 'periode': [d0.strftime('%Y-%m-%d'), d1.strftime('%Y-%m-%d')]}
 
 # =================================================================== D. FORMATION
 def est_formation(nom): return famille(nom) == 'Formation'

@@ -88,6 +88,22 @@ cmp('Commandes expédiées (paiement et expédition connus)', len(dl), 1582, 0)
 cmp('Expédiées après plus de 7 jours, jours de pointe (%)', 100 * sum(1 for x, p in dl if p and x > 7) / sum(1 for x, p in dl if p), 23.9, 0.1)
 cmp('Expédiées après plus de 7 jours, autres jours (%)', 100 * sum(1 for x, p in dl if not p and x > 7) / sum(1 for x, p in dl if not p), 13.1, 0.1)
 
+
+print('--- C bis. Réseaux sociaux autour des pointes (publications Instagram)')
+ig = []
+for r in csv.DictReader(open('../DONNEES/instagram_publications.csv', encoding='utf-8')):
+    ig.append((datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M'), int(r['Vues'] or 0)))
+for d in ('2026-09-06', '2026-09-20', '2025-09-07', '2025-11-01'):
+    dd = datetime.strptime(d, '%Y-%m-%d'); w = [v for x, v in ig if dd - timedelta(days=3) <= x.replace(hour=0, minute=0) <= dd]
+    f = [x for x in Q['reseaux_pics']['fenetres'] if x['date'] == d][0]
+    cmp('Vues Instagram des 4 jours jusqu’au ' + d, sum(w), f['ig_vues'], 0)
+jv = collections.defaultdict(int)
+for x, v in ig: jv[x.replace(hour=0, minute=0)] += v
+a_, b_ = min(jv), max(jv); vals = []; cur = a_
+while cur + timedelta(days=3) <= b_:
+    vals.append(sum(jv.get(cur + timedelta(days=i), 0) for i in range(4))); cur += timedelta(days=1)
+cmp('Médiane des vues Instagram sur une fenêtre de 4 jours', sorted(vals)[len(vals) // 2], Q['reseaux_pics']['mediane_4j_vues'], 0)
+
 print('--- B. E-mails (fichiers JSON du professeur)')
 E = [json.load(open(f, encoding='utf-8')) for f in sorted(glob.glob('../DONNEES/bilan_emailing/1*.json'))]
 rel = [e for e in E if e['id'] in ('191033671947', '191033737483')]

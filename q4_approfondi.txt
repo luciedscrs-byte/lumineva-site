@@ -5,7 +5,7 @@ Aucune donnée personnelle : comptes, taux et montants agrégés. Tout vient de 
   B. Relances panier et paiement : entonnoir de chaque e-mail, comparaison aux newsletters, résultats des newsletters par thème
   C. Lancement et retour en stock : les jours de pointe et les e-mails envoyés avant, heures de commande, expéditions
   D. Formation : produit par produit, prix et remises, vague par vague, part du chiffre d'affaires"""
-import csv, json, glob, os, collections, math
+import csv, json, glob, os, collections, math, statistics
 from datetime import datetime, timedelta
 from scipy import stats
 from common import charger, REF, famille
@@ -103,6 +103,33 @@ out['jour_newsletter_20_9'] = {'avant': sum(1 for o in o20 if o['dt'] < env), 'a
 # semaine moyenne : combien de commandes par jour hors pics (pour comparer)
 jours_actifs = collections.Counter(o['date'] for o in cmds)
 out['jour_moyen'] = {'commandes_par_jour_hors_pics': sum(k for d, k in jours_actifs.items() if d not in PICS) / (len(jours_actifs) - len(PICS)), 'jours_avec_commande': len(jours_actifs)}
+
+
+# =================================================================== C bis. RÉSEAUX SOCIAUX AUTOUR DES JOURS DE POINTE (publications Instagram et Facebook)
+def posts(f, reseau):
+    out_ = []
+    for r in csv.DictReader(open(f, encoding='utf-8')):
+        d = datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M')
+        out_.append({'reseau': reseau, 'dt': d, 'vues': int(r['Vues'] or 0), 'texte': (r['Description'] or '').replace('\n', ' ').strip()})
+    return out_
+PO = posts('../DONNEES/instagram_publications.csv', 'Instagram') + posts('../DONNEES/facebook_publications.csv', 'Facebook')
+MOTS = ('en ligne', 'sortira', 'collection', 'dévoile', 'dévoil', 'de retour', 'disponible')
+res = []
+for d in PICS:
+    dd = datetime.strptime(d, '%Y-%m-%d')
+    fen_ = [x for x in PO if dd - timedelta(days=3) <= datetime(x['dt'].year, x['dt'].month, x['dt'].day) <= dd]
+    ig = [x for x in fen_ if x['reseau'] == 'Instagram']
+    ann = sorted([x for x in fen_ if any(m in x['texte'].lower() for m in MOTS)], key=lambda x: x['dt'])
+    res.append({'date': d, 'ig_posts': len(ig), 'ig_vues': sum(x['vues'] for x in ig), 'ig_max': max([x['vues'] for x in ig] or [0]),
+                'annonces': [{'reseau': x['reseau'], 'quand': x['dt'].strftime('%d/%m %H:%M'), 'jour_j': datetime(x['dt'].year, x['dt'].month, x['dt'].day) == dd, 'vues': x['vues'], 'texte': x['texte'][:70]} for x in ann]})
+# repère : vues Instagram cumulées sur n'importe quelle fenêtre de 4 jours (médiane), pour situer les fenêtres de pointe
+ig_all = [x for x in PO if x['reseau'] == 'Instagram']
+jours_v = collections.defaultdict(int)
+for x in ig_all: jours_v[datetime(x['dt'].year, x['dt'].month, x['dt'].day)] += x['vues']
+d0, d1 = min(jours_v), max(jours_v); vals = []; cur = d0
+while cur + timedelta(days=3) <= d1:
+    vals.append(sum(jours_v.get(cur + timedelta(days=i), 0) for i in range(4))); cur += timedelta(days=1)
+out['reseaux_pics'] = {'fenetres': res, 'mediane_4j_vues': statistics.median(vals) if False else sorted(vals)[len(vals) // 2], 'n_fenetres': len(vals), 'periode': [d0.strftime('%Y-%m-%d'), d1.strftime('%Y-%m-%d')]}
 
 # =================================================================== D. FORMATION
 def est_formation(nom): return famille(nom) == 'Formation'
