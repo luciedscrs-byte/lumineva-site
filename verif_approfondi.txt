@@ -142,4 +142,39 @@ for c, _ in pay_:
 cmp('Ventes de personnes sans commande de bougies avant', sans, 13, 0)
 cmp('Part de la formation dans le CA total (%)', 100 * sum(float(c['r']['Total']) for c, _ in pay_) / sum(float(c['r']['Total']) for c in vivantes), 3.25, 0.05)
 cmp('Panier moyen de la boutique (€)', sum(float(c['r']['Total']) for c in vivantes) / len(vivantes), 62.46, 0.01)
+print('--- E. Segments par nombre de commandes, paniers, fidèles, frais de paiement')
+def qte(c): return sum(i[1] for i in c['items'] if i[0] != 'TIP')
+an = REF - timedelta(days=365)
+cmp('Clients à 2 commandes', sum(1 for v in par_client.values() if len(v) == 2), Q['segments_commandes']['2']['clients'], 0)
+cmp('Clients à 3 commandes ou plus', sum(1 for v in par_client.values() if len(v) >= 3), Q['segments_commandes']['3+']['clients'], 0)
+cmp('Clients à 3 commandes ou plus, joignables', sum(1 for k, v in par_client.items() if len(v) >= 3 and oui(k)), Q['segments_commandes']['3+']['joignables'], 0)
+cmp('Part du CA des clients à 3 commandes ou plus (%)', 100 * sum(float(c['r']['Total']) for v in par_client.values() if len(v) >= 3 for c in v) / sum(float(c['r']['Total']) for c in vivantes), Q['segments_commandes']['3+']['part_ca'], 0.05)
+el = [k for k, v in par_client.items() if len(v) >= 2 and (REF - dt(v[1])).days >= 90]
+r3 = [k for k in el if len(par_client[k]) > 2 and (dt(par_client[k][2]) - dt(par_client[k][1])).days <= 90]
+cmp('2e vers 3e commande en 90 j : suivis', len(el), Q['fenetres_2e_3e']['90']['suivis'], 0); cmp('2e vers 3e commande en 90 j : ont commandé', len(r3), Q['fenetres_2e_3e']['90']['ont_commande'], 0)
+cib = [k for k, v in par_client.items() if len(v) >= 2 and an <= dt(v[1]) <= REF - timedelta(days=45) and not (len(v) > 2 and (dt(v[2]) - dt(v[1])).days <= 45)]
+cmp('Cible relance après la 2e commande (joignables, par an)', sum(1 for k in cib if oui(k)), Q['cible_3e_commande']['joignables'], 0)
+f3 = [k for k, v in par_client.items() if len(v) >= 3]; act = [k for k in f3 if any(dt(c) >= an for c in par_client[k])]
+cmp('Fidèles avec une commande sur les 12 derniers mois', len(act), Q['fideles']['actifs_12m'], 0)
+cmp('Fidèles actifs : dépense médiane sur 12 mois (€)', statistics.median(sum(float(c['r']['Total']) for c in par_client[k] if dt(c) >= an) for k in act), Q['fideles']['depense_12m_mediane'], 0.01)
+cmp('Fidèles actifs avec 6 commandes ou plus sur 12 mois', sum(1 for k in act if sum(1 for c in par_client[k] if dt(c) >= an) >= 6), Q['fideles']['six_commandes_ou_plus'], 0)
+mois = lambda v: len({(dt(c).year, dt(c).month) for c in v if dt(c) >= an})
+cmp('Clients commandant dans 6 mois différents ou plus (12 derniers mois)', sum(1 for v in par_client.values() if mois(v) >= 6), 11, 0)
+cmp('Clients commandant dans 4 mois différents ou plus (12 derniers mois)', sum(1 for v in par_client.values() if mois(v) >= 4), 42, 0)
+o12 = [c for c in vivantes if dt(c) >= an and c['items']]
+cmp('Commandes des 12 derniers mois', len(o12), Q['paniers']['commandes_12m'], 0)
+cmp('… dont 2 articles', sum(1 for c in o12 if qte(c) == 2), Q['paniers']['deux_articles_12m'], 0); cmp('… dont 3 articles ou plus', sum(1 for c in o12 if qte(c) >= 3), Q['paniers']['trois_plus_12m'], 0)
+tous = [c for c in vivantes if c['items']]
+cmp('Nombre moyen d’articles par commande', sum(qte(c) for c in tous) / len(tous), Q['paniers']['qte_moyenne'], 0.01)
+cmp('Prix moyen d’un article (€)', sum(i[2] for c in tous for i in c['items'] if i[0] != 'TIP') / sum(1 for c in tous for i in c['items'] if i[0] != 'TIP'), Q['paniers']['prix_moyen_article'], 0.01)
+tr = [(float(r['Amount']), float(r['Fee'] or 0)) for r in csv.DictReader(open('../DONNEES/payment_transactions.csv', encoding='utf-8')) if r['Type'] == 'charge' and r['Amount']]
+n_ = len(tr); sx = sum(a for a, _ in tr); sy = sum(f for _, f in tr); sxx = sum(a * a for a, _ in tr); sxy = sum(a * f for a, f in tr)
+b_ = (n_ * sxy - sx * sy) / (n_ * sxx - sx * sx); a0 = (sy - b_ * sx) / n_
+cmp('Frais de paiement : part fixe (€)', a0, Q['frais_paiement']['fixe'], 0.001); cmp('Frais de paiement : part variable (%)', 100 * b_, 100 * Q['frais_paiement']['variable'], 0.01)
+cmp('Produits avec un coût renseigné dans products.csv', sum(1 for r in csv.DictReader(open('../DONNEES/products.csv', encoding='utf-8')) if r['Cost per item'].strip()), 0, 0)
+
+cmp('Clients ayant utilisé un code à chaque commande', sum(1 for v in par_client.values() if all(c['r']['Discount Code'] for c in v)), Q['promo']['clients_toujours_code'], 0)
+cmp('Commandes avec le code BIENVENUE10', sum(1 for c in vivantes if c['r']['Discount Code'] == 'BIENVENUE10'), Q['promo']['commandes_code_bienvenue'], 0)
+cmp('Commandes avec un code promo', sum(1 for c in vivantes if c['r']['Discount Code']), Q['promo']['commandes_avec_code'], 0)
+cmp('Sous-total moyen des commandes à 2 articles (€)', sum(float(c['r']['Subtotal']) for c in tous if qte(c) == 2) / sum(1 for c in tous if qte(c) == 2), Q['paniers']['sous_total_moyen_2'], 0.01)
 print('\n%d contrôles OK, %d écart(s)' % (ok, ko))
