@@ -6,22 +6,198 @@
 <title>Faut-il relancer après la 1re commande, et quand ? · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Accueil</a><a href="contexte.html">Contexte et FAQ</a><a href="donnees.html">Données et choix</a><a href="q-relance.html" aria-current="page">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="methode.html">Méthode</a></div></div></nav>
-<nav class="subnav" aria-label="Automatisations"><div class="wrap"><span class="lab">Automatisations</span><a href="q-relance.html" aria-current="page">1 · Relance après la 1re commande</a><a href="q-abandon.html">2 · Relances panier et paiement</a><a href="q-avis.html">3 · Demande d’avis</a><a href="q-stock.html">4 · Lancement et retour en stock</a><a href="q-photo.html">5 · Retouche photo</a></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html" aria-current="page">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="methode.html">Méthode</a></div></div></nav>
+<nav class="subnav" aria-label="Automatisations"><div class="wrap"><span class="lab">Automatisations</span><a href="q-relance.html" aria-current="page">1 · Relance après la 1re commande</a><a href="q-abandon.html">2 · Relances panier et paiement</a><a href="q-stock.html">3 · Lancement et retour en stock</a></div></nav>
 <header class="hero"><div class="wrap"><p class="kicker">Automatisations · 1</p><h1>Faut-il relancer après la 1re commande, et quand ?</h1><p class="lead">Les clients reviennent peu et tard : on regarde quand les relancer et ce que cela peut rapporter.</p></div></header>
 <main class="wrap" id="contenu">
-<section class="panel c12"><h3>En sept lignes</h3><div class="tablewrap"><table><tr><th class="">Étape</th><th class="">Pour cette question</th></tr><tr><td class="">La question</td><td class="">Faut-il relancer un client après sa 1re commande, et quand ?</td></tr><tr><td class="">L’hypothèse</td><td class="">Une relance avant le délai médian de retour fait revenir des clients qui ne seraient pas revenus seuls.</td></tr><tr><td class="">Le périmètre</td><td class="">913 clients (23 juin 2025 au 22 octobre 2026) ; cible : environ 474 clients joignables par an.</td></tr><tr><td class="">Le test</td><td class="">Courbe de retour (Kaplan-Meier), comparaison 1re et 2e commande (Wilcoxon), arbre de décision (AUC), taille d’échantillon.</td></tr><tr><td class="">L’effet</td><td class="">11 % ont recommandé à J+45, 21 % à J+90 ; 2e commande +3,76 € ; aucun critère ne prédit le retour (AUC 0,55).</td></tr><tr><td class="">Le chiffre</td><td class="">Gain prudent (+1 à +2 points de retour) : 115 € à 321 € de marge par an.</td></tr><tr><td class="">La décision</td><td class="">Relancer tous les clients à une commande, à J+45, sans remise, avec un produit voisin.</td></tr></table></div></section>
-<p class="petit"><b>Niveau de preuve :</b> <span class="pill done">Démontré</span> pour le délai de retour ; <span class="pill todo">Hypothèse</span> pour le gain (l’effet de la relance n’est pas mesuré)</p>
-<div class="dash"><div class="grid"><section class="panel c6"><h3>Quelle part des clients a recommandé, jour après jour ?</h3><p class="hint">913 clients suivis ; les clients récents sont gardés « en attente » (méthode de Kaplan-Meier).</p><div class="chart short"><svg viewBox="0 0 700 250" width="100%" role="img" style="display:block"><line x1="46" x2="688" y1="220.0" y2="220.0" style="stroke:var(--grid)"/><text x="40" y="224.0" text-anchor="end" font-size="11" style="fill:var(--muted)">0 %</text><line x1="46" x2="688" y1="160.6" y2="160.6" style="stroke:var(--grid)"/><text x="40" y="164.6" text-anchor="end" font-size="11" style="fill:var(--muted)">10 %</text><line x1="46" x2="688" y1="101.1" y2="101.1" style="stroke:var(--grid)"/><text x="40" y="105.1" text-anchor="end" font-size="11" style="fill:var(--muted)">20 %</text><line x1="46" x2="688" y1="41.7" y2="41.7" style="stroke:var(--grid)"/><text x="40" y="45.7" text-anchor="end" font-size="11" style="fill:var(--muted)">30 %</text><text x="46.0" y="242" text-anchor="middle" font-size="11" style="fill:var(--muted)">0 j</text><text x="153.0" y="242" text-anchor="middle" font-size="11" style="fill:var(--muted)">30 j</text><text x="260.0" y="242" text-anchor="middle" font-size="11" style="fill:var(--muted)">60 j</text><text x="367.0" y="242" text-anchor="middle" font-size="11" style="fill:var(--muted)">90 j</text><text x="474.0" y="242" text-anchor="middle" font-size="11" style="fill:var(--muted)">120 j</text><text x="581.0" y="242" text-anchor="middle" font-size="11" style="fill:var(--muted)">150 j</text><text x="688.0" y="242" text-anchor="middle" font-size="11" style="fill:var(--muted)">180 j</text><line x1="206.5" x2="206.5" y1="12" y2="220" style="stroke:var(--flame);stroke-width:1.6;stroke-dasharray:5 4"/><text x="210.5" y="24" font-size="11" style="fill:var(--flame)">J+45</text><line x1="281.4" x2="281.4" y1="12" y2="220" style="stroke:var(--flame);stroke-width:1.6;stroke-dasharray:5 4"/><text x="285.4" y="38" font-size="11" style="fill:var(--flame)">médiane</text><path d="M46.0,220.0 L46.0,220.0 L46.0,220.0 L46.0,220.0 L46.0,216.7 L49.6,216.7 L49.6,214.8 L53.1,214.8 L53.1,212.8 L60.3,212.8 L60.3,208.9 L67.4,208.9 L67.4,206.9 L71.0,206.9 L71.0,205.6 L74.5,205.6 L74.5,203.6 L78.1,203.6 L78.1,202.3 L81.7,202.3 L81.7,201.7 L85.2,201.7 L85.2,199.7 L88.8,199.7 L88.8,199.0 L95.9,199.0 L95.9,195.0 L99.5,195.0 L99.5,194.3 L103.1,194.3 L103.1,192.9 L106.6,192.9 L106.6,190.9 L110.2,190.9 L110.2,190.2 L113.8,190.2 L113.8,188.8 L117.3,188.8 L117.3,185.4 L120.9,185.4 L120.9,184.7 L124.5,184.7 L124.5,182.7 L128.0,182.7 L128.0,181.3 L131.6,181.3 L131.6,177.8 L135.2,177.8 L135.2,177.1 L138.7,177.1 L138.7,175.7 L142.3,175.7 L142.3,172.9 L145.9,172.9 L145.9,170.8 L149.4,170.8 L149.4,170.1 L153.0,170.1 L153.0,168.0 L160.1,168.0 L160.1,167.3 L163.7,167.3 L163.7,164.4 L170.8,164.4 L170.8,163.6 L174.4,163.6 L174.4,162.2 L178.0,162.2 L178.0,161.4 L181.5,161.4 L181.5,159.9 L192.2,159.9 L192.2,158.4 L195.8,158.4 L195.8,156.9 L199.4,156.9 L199.4,155.4 L206.5,155.4 L206.5,152.4 L210.1,152.4 L210.1,150.2 L213.6,150.2 L213.6,148.6 L217.2,148.6 L217.2,147.8 L220.8,147.8 L220.8,146.2 L231.5,146.2 L231.5,144.7 L235.0,144.7 L235.0,143.9 L238.6,143.9 L238.6,141.5 L242.2,141.5 L242.2,136.1 L245.7,136.1 L245.7,134.5 L249.3,134.5 L249.3,131.4 L252.9,131.4 L252.9,128.2 L260.0,128.2 L260.0,126.6 L263.6,126.6 L263.6,125.8 L267.1,125.8 L267.1,125.1 L270.7,125.1 L270.7,123.5 L274.3,123.5 L274.3,121.1 L277.8,121.1 L277.8,120.3 L281.4,120.3 L281.4,118.8 L285.0,118.8 L285.0,118.0 L288.5,118.0 L288.5,115.6 L292.1,115.6 L292.1,113.3 L295.7,113.3 L295.7,112.5 L306.4,112.5 L306.4,110.9 L309.9,110.9 L309.9,109.3 L313.5,109.3 L313.5,108.5 L317.1,108.5 L317.1,106.9 L320.6,106.9 L320.6,106.1 L331.3,106.1 L331.3,103.8 L338.5,103.8 L338.5,103.0 L342.0,103.0 L342.0,102.2 L345.6,102.2 L345.6,100.6 L349.2,100.6 L349.2,99.0 L359.9,99.0 L359.9,98.2 L363.4,98.2 L363.4,97.4 L367.0,97.4 L367.0,96.6 L374.1,96.6 L374.1,95.0 L377.7,95.0 L377.7,94.2 L381.3,94.2 L381.3,93.4 L384.8,93.4 L384.8,91.8 L399.1,91.8 L399.1,88.5 L406.2,88.5 L406.2,87.7 L409.8,87.7 L409.8,86.1 L413.4,86.1 L413.4,84.5 L420.5,84.5 L420.5,83.7 L424.1,83.7 L424.1,82.9 L441.9,82.9 L441.9,82.0 L452.6,82.0 L452.6,80.4 L456.2,80.4 L456.2,78.8 L459.7,78.8 L459.7,78.0 L463.3,78.0 L463.3,77.1 L470.4,77.1 L470.4,74.7 L477.6,74.7 L477.6,73.9 L481.1,73.9 L481.1,73.0 L488.3,73.0 L488.3,72.2 L502.5,72.2 L502.5,69.7 L506.1,69.7 L506.1,68.9 L509.7,68.9 L509.7,68.1 L513.2,68.1 L513.2,66.5 L520.4,66.5 L520.4,65.6 L534.6,65.6 L534.6,64.0 L545.3,64.0 L545.3,61.5 L548.9,61.5 L548.9,60.7 L556.0,60.7 L556.0,59.9 L559.6,59.9 L559.6,58.2 L563.2,58.2 L563.2,57.4 L570.3,57.4 L570.3,55.7 L595.3,55.7 L595.3,54.8 L620.2,54.8 L620.2,54.0 L638.1,54.0 L638.1,53.1 L648.8,53.1 L648.8,51.4 L652.3,51.4 L652.3,50.5 L659.5,50.5 L659.5,49.6 L670.2,49.6 L670.2,48.7 L673.7,48.7 L673.7,47.8 L680.9,47.8 L680.9,46.0 L688.0,46.0" fill="none" style="stroke:var(--accent);stroke-width:2.4"/></svg></div></section><section class="panel c6"><h3>Ce que pourrait rapporter la relance</h3><p class="hint">Effet supposé, non mesuré. Montants facturés (TVA et livraison comprises) : les marges sont des plafonds.</p><div class="tablewrap"><table><tr><th class="">Retour en plus</th><th class="r">Commandes par an</th><th class="r">Chiffre d’affaires</th><th class="r">Marge (36 à 50 %)</th></tr><tr><td class="">+1 point</td><td class="r">5</td><td class="r">321 €</td><td class="r">115 € à 161 €</td></tr><tr><td class="">+2 points</td><td class="r">10</td><td class="r">642 €</td><td class="r">229 € à 321 €</td></tr><tr><td class="">+5 points</td><td class="r">24</td><td class="r">1 605 €</td><td class="r">573 € à 803 €</td></tr></table></div></section></div></div>
-<div class="dash"><ul class="fl"><li><span class="tag f">Fait</span>Le panier monte de 3,76 € à la 2e commande, par le prix des articles (+0,16 € par article), pas par leur nombre (p = 0,028). 25 % rachètent le même produit, 81 % la même famille.</li><li><span class="tag f">Fait</span>49 % des 1res commandes utilisent déjà le code de bienvenue : une relance avec remise s’adresse à des clients déjà remisés.</li><li><span class="tag i">Interprétation possible</span>J+45 est un compromis raisonné : avant le délai médian, quand le retour naturel (environ 8 % dans les 30 jours suivants) reste faible. Il n’est pas démontré.</li><li><span class="tag l">Limite</span>Le scénario à +5 points (573 € à 803 €) suppose 5 commandes pour 100 e-mails, plus du double de ce que les relances panier obtiennent (1,0 commande pour 100 e-mails) : c’est le cas favorable.</li></ul></div>
-<div class="reco"><h3>Ce qu’on conseille</h3><ul><li><b>Relancer à J+45, sans remise</b>, en proposant un produit voisin de ce que le client a acheté.</li><li><b>Suivre le retour à J+90 des clients relancés</b> : un test A/B est impossible (il faudrait environ 603 clients par groupe, plus de deux ans de flux).</li></ul></div>
-<div class="cols2"><div><h3>Limites et ce qui manque</h3><ul><li>L’effet réel d’une relance est inconnu : les gains sont des hypothèses.</li><li>Les montants incluent livraison (6 %) et TVA (5 % du total, 16 % depuis le 28 mai 2026) : la marge réelle est plus basse.</li><li>On ne sait pas si les 50 % de marge sont calculés hors taxes.</li></ul></div></div>
-<details class="pli" name="q-relance-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-l1_relance.py"><summary><code>l1_relance.py</code> · Relance après la 1re commande : courbe de retour (Kaplan-Meier), moments d'envoi, scénarios de gain.</summary><div class="corps"><p class="meta">87 lignes · <a href="l1_relance.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+<div class="enclair"><h3>En clair</h3><p><b>La question.</b> Faut-il relancer un client après sa 1re commande, et quand ?</p><p class="rep"><b>Notre réponse.</b> Oui : un e-mail automatique <b>45 jours après la 1re commande</b>, envoyé aux clients qui n’ont pas recommandé et qui acceptent les e-mails, <b>sans remise</b>.</p><p style="margin-bottom:0"><b>Trois chiffres qui la soutiennent :</b></p><ol><li>69 % des clients n’ont commandé qu’une fois : seuls 10,6 % recommandent dans les 45 jours, 20,4 % dans les 90 jours (150 sur 736 clients suivis).</li><li>Aucune des 7 automatisations actuelles ne s’adresse à un client après sa commande (elles visent l’inscription, le panier et le paiement).</li><li>La cible existe : environ 474 clients par an sont encore sans 2e commande à J+45 et acceptent les e-mails.</li></ol><p class="petit" style="margin-top:10px"><b>Niveau de preuve :</b> <span class="pill done">Démontré</span> pour les délais et les taux de retour ; <span class="pill todo">Hypothèse</span> pour le gain (l’effet de la relance n’est mesuré nulle part)</p></div>
+<h2>1 · Quand les clients reviennent-ils ?</h2><p class="meta">Pour chaque durée, on garde les clients dont la 1re commande date d’au moins ce nombre de jours (les plus récents n’ont pas encore eu le temps de revenir), et on compte ceux qui ont passé une 2e commande dans ce délai.</p>
+<div class="dash"><div class="panel c12"><h3>Part des clients qui ont recommandé, selon le temps écoulé</h3><div class="chart" style="min-width:0"><div style="min-width:640px"><svg viewBox="0 0 900 190" width="100%" role="img" aria-label="Part des clients qui ont recommandé au bout de 30, 45, 60, 90, 120 et 180 jours" style="display:block"><line x1="30" x2="870" y1="100" y2="100" style="stroke:var(--line);stroke-width:3"/><circle cx="30.0" cy="100" r="9" style="fill:var(--accent)"/><text x="30.0" y="164" font-size="13" font-weight="700" text-anchor="start" style="fill:var(--ink)">1re commande (jour 0)</text><line x1="170.0" x2="170.0" y1="90" y2="110" style="stroke:var(--accent);stroke-width:2"/><text x="170.0" y="128" font-size="12" text-anchor="middle" style="fill:var(--muted)">J+30</text><rect x="139.0" y="48" width="62" height="30" rx="8" style="fill:var(--accent)"/><text x="170.0" y="69" font-size="15" font-weight="700" text-anchor="middle" style="fill:#fff">8,4 %</text><line x1="240.0" x2="240.0" y1="90" y2="110" style="stroke:var(--flame);stroke-width:2"/><text x="240.0" y="128" font-size="12" text-anchor="middle" style="fill:var(--muted)">J+45</text><rect x="209.0" y="48" width="62" height="30" rx="8" style="fill:var(--flame)"/><text x="240.0" y="69" font-size="15" font-weight="700" text-anchor="middle" style="fill:#fff">10,6 %</text><line x1="310.0" x2="310.0" y1="90" y2="110" style="stroke:var(--accent);stroke-width:2"/><text x="310.0" y="128" font-size="12" text-anchor="middle" style="fill:var(--muted)">J+60</text><rect x="279.0" y="48" width="62" height="30" rx="8" style="fill:var(--accent)"/><text x="310.0" y="69" font-size="15" font-weight="700" text-anchor="middle" style="fill:#fff">15,2 %</text><line x1="450.0" x2="450.0" y1="90" y2="110" style="stroke:var(--accent);stroke-width:2"/><text x="450.0" y="128" font-size="12" text-anchor="middle" style="fill:var(--muted)">J+90</text><rect x="419.0" y="48" width="62" height="30" rx="8" style="fill:var(--accent)"/><text x="450.0" y="69" font-size="15" font-weight="700" text-anchor="middle" style="fill:#fff">20,4 %</text><line x1="590.0" x2="590.0" y1="90" y2="110" style="stroke:var(--accent);stroke-width:2"/><text x="590.0" y="128" font-size="12" text-anchor="middle" style="fill:var(--muted)">J+120</text><rect x="559.0" y="48" width="62" height="30" rx="8" style="fill:var(--accent)"/><text x="590.0" y="69" font-size="15" font-weight="700" text-anchor="middle" style="fill:#fff">24,0 %</text><line x1="870.0" x2="870.0" y1="90" y2="110" style="stroke:var(--accent);stroke-width:2"/><text x="870.0" y="128" font-size="12" text-anchor="middle" style="fill:var(--muted)">J+180</text><rect x="839.0" y="48" width="62" height="30" rx="8" style="fill:var(--accent)"/><text x="870.0" y="69" font-size="15" font-weight="700" text-anchor="middle" style="fill:#fff">29,1 %</text><text x="240.0" y="146" font-size="12" font-weight="700" text-anchor="middle" style="fill:var(--flame)">relance proposée</text><text x="30" y="18" font-size="12" style="fill:var(--muted)">Part des clients ayant recommandé (clients suivis assez longtemps pour chaque point)</text></svg></div></div></div></div>
+<div class="tablewrap"><table><tr><th class="">Délai après la 1re commande</th><th class="r">Clients suivis assez longtemps</th><th class="r">Ont recommandé dans ce délai</th><th class="r">Part</th></tr><tr><td class="">Au bout de 30 jours</td><td class="r">836</td><td class="r">70</td><td class="r"><b>8,4 %</b></td></tr><tr><td class=""><b>Au bout de 45 jours</b></td><td class="r">782</td><td class="r">83</td><td class="r"><b>10,6 %</b></td></tr><tr><td class="">Au bout de 60 jours</td><td class="r">751</td><td class="r">114</td><td class="r"><b>15,2 %</b></td></tr><tr><td class="">Au bout de 90 jours</td><td class="r">736</td><td class="r">150</td><td class="r"><b>20,4 %</b></td></tr><tr><td class="">Au bout de 120 jours</td><td class="r">718</td><td class="r">172</td><td class="r"><b>24,0 %</b></td></tr><tr><td class="">Au bout de 180 jours</td><td class="r">649</td><td class="r">189</td><td class="r"><b>29,1 %</b></td></tr></table></div>
+<p class="meta">Contrôle : la méthode de Kaplan-Meier, qui garde aussi les clients récents, donne 8,8 % à 30 jours, 11,4 % à 45 jours et 20,8 % à 90 jours, à moins d’un point près.</p>
+<div class="dash"><div class="grid"><section class="panel c6"><h3>Parmi les 280 clients qui ont recommandé : après combien de temps ?</h3><p class="hint">Délai entre la 1re et la 2e commande. Médiane : 66 jours. En rose : la tranche où tombe la relance proposée.</p><div class="dash"><ul class="bars"><li><span class="name">moins de 30 jours</span><span class="val">74 clients (26 %)</span><span class="track"><i style="width:100.0%"></i></span></li><li><span class="name">30 à 44 jours</span><span class="val">20 clients (7 %)</span><span class="track"><i style="width:27.0%"></i></span></li><li class="fort"><span class="name">45 à 59 jours</span><span class="val">35 clients (12 %)</span><span class="track"><i style="width:47.3%"></i></span></li><li><span class="name">60 à 89 jours</span><span class="val">39 clients (14 %)</span><span class="track"><i style="width:52.7%"></i></span></li><li><span class="name">3 à 6 mois</span><span class="val">62 clients (22 %)</span><span class="track"><i style="width:83.8%"></i></span></li><li><span class="name">plus de 6 mois</span><span class="val">50 clients (18 %)</span><span class="track"><i style="width:67.6%"></i></span></li></ul></div></section><section class="panel c6"><h3>Comment lire</h3><ul><li>Plus d’un client sur quatre (26 % de ceux qui reviennent) revient seul en moins de 30 jours : la relance ne les concerne pas.</li><li>Les autres reviennent tard et de façon étalée : la moitié après 66 jours. Avant la médiane, il reste de la place pour un rappel.</li><li>Les retours ne se concentrent pas sur les jours de lancement : 8,6 % des 2es commandes tombent les 4 jours de pointe, comme 8,7 % de toutes les commandes. Les retours semblent donc répartis dans le temps, pas liés aux lancements : un envoi à date fixe est cohérent (interprétation).</li></ul></section></div></div>
+<h2>2 · Qui revient ?</h2><p class="meta">Part des clients qui ont recommandé dans les 90 jours, selon leur profil (clients suivis depuis au moins 90 jours : 736). « p » : probabilité que l’écart vienne du hasard, corrigée du fait qu’on compare 5 groupes (Holm).</p>
+<div class="tablewrap"><table><tr><th class="">Groupe de clients</th><th class="r">Oui</th><th class="r">Non</th><th class="r">Écart</th><th class="r">Hasard ?</th></tr><tr><td class="">Accepte les e-mails marketing</td><td class="r">23,0 %<br><span class="petit">138 sur 600</span></td><td class="r">8,8 %<br><span class="petit">12 sur 136</span></td><td class="r">+14,2 pt</td><td class="r">p &lt; 0,001</td></tr><tr><td class="">1re commande avec le code de bienvenue</td><td class="r">18,4 %<br><span class="petit">66 sur 359</span></td><td class="r">22,3 %<br><span class="petit">84 sur 377</span></td><td class="r">−3,9 pt</td><td class="r">p = 0,40</td></tr><tr><td class="">1re commande d’au moins la médiane (50 €)</td><td class="r">24,6 %<br><span class="petit">93 sur 378</span></td><td class="r">15,9 %<br><span class="petit">57 sur 358</span></td><td class="r">+8,7 pt</td><td class="r">p = 0,018</td></tr><tr><td class="">1re commande avec une bougie gourmande</td><td class="r">21,3 %<br><span class="petit">105 sur 493</span></td><td class="r">18,5 %<br><span class="petit">45 sur 243</span></td><td class="r">+2,8 pt</td><td class="r">p = 0,44</td></tr><tr><td class="">Livraison dans les Pyrénées-Atlantiques</td><td class="r">30,2 %<br><span class="petit">35 sur 116</span></td><td class="r">18,5 %<br><span class="petit">115 sur 620</span></td><td class="r">+11,6 pt</td><td class="r">p = 0,018</td></tr></table></div>
+<div class="dash"><ul class="fl"><li><span class="tag f">Fait</span>Les clients qui <b>acceptent les e-mails marketing</b> recommandent plus : 23,0 % contre 8,8 % (p &lt; 0,001). 81 % des clients acceptent : seuls eux peuvent être relancés.</li><li><span class="tag f">Fait</span>Une 1re commande d’au moins la médiane (50 €) et une livraison dans les Pyrénées-Atlantiques vont avec plus de retours (24,6 % contre 15,9 % ; 30,2 % contre 18,5 %).</li><li><span class="tag f">Fait</span>Le code de bienvenue et la bougie gourmande ne changent pas le retour de façon démontrée (p = 0,40 ; p = 0,44).</li><li><span class="tag i">Interprétation possible</span>Ces écarts décrivent le passé, pas l’effet d’une relance. Un client qui accepte les e-mails est peut-être simplement plus attaché à la boutique. Pris ensemble, ces critères prédisent à peine mieux que le hasard (AUC 0,55 ; 0,5 = hasard) : on ne peut pas viser un sous-groupe, on relance tous les clients joignables.</li></ul></div>
+<h2>3 · Ce que cela pourrait rapporter</h2><p class="meta">Calcul pas à pas. L’effet de la relance n’est pas mesuré : on suppose un retour en plus de 1, 2 ou 5 points. Montants facturés (TVA et livraison comprises) : la marge est un plafond.</p>
+<div class="tablewrap"><table><tr><th class="">Si la relance fait revenir…</th><th class="">Calcul</th><th class="r">Commandes par an</th><th class="r">Chiffre d’affaires</th><th class="r">Marge (36 à 50 %)</th></tr><tr><td class="">+1 point</td><td class="">474 × 1 % × 67,73 €</td><td class="r">4,7</td><td class="r">321 €</td><td class="r">115 € à 161 €</td></tr><tr><td class="">+2 points</td><td class="">474 × 2 % × 67,73 €</td><td class="r">9,5</td><td class="r">642 €</td><td class="r">229 € à 321 €</td></tr><tr><td class="">+5 points</td><td class="">474 × 5 % × 67,73 €</td><td class="r">23,7</td><td class="r">1 605 €</td><td class="r">573 € à 803 €</td></tr></table></div>
+<div class="dash"><ul class="fl"><li><span class="tag f">Fait</span>Où vient « 474 » : parmi les 663 clients dont la 1re commande date de moins de 12 mois (et d’au moins 45 jours), 601 n’ont pas recommandé à J+45, et 474 acceptent les e-mails. Où vient « 67,73 € » : le panier moyen des 2es commandes (67,73 €, 280 clients).</li><li><span class="tag f">Fait</span>Repère : les deux relances de panier et de paiement obtiennent 0,97 commande pour 100 e-mails ; le scénario +1 point correspond à 1 commande pour 100 clients relancés.</li><li><span class="tag i">Interprétation possible</span>Le scénario +1 point est donc du même ordre que ce que font déjà les relances de panier : c’est le scénario prudent. Le scénario +5 points est le cas favorable.</li><li><span class="tag f">Fait</span>49 % des 1res commandes utilisent déjà le code de bienvenue (−10 %).</li><li><span class="tag i">Interprétation possible</span>Une remise coûterait aussi sur les clients qui seraient revenus seuls : on propose de s’en passer pour cette 1re relance.</li><li><span class="tag l">Limite</span>Marge : 36 % à 50 % (50 % sur les bougies seules, qui font 71 % du chiffre d’affaires ; 50 % sur tout). On ne sait pas si ces 50 % sont hors taxes (question à poser).</li></ul></div>
+<h2>4 · À quoi ressemblerait l’automatisation</h2><p class="meta">Proposition de l’équipe (rien de cela n’existe aujourd’hui dans la boutique).</p>
+<div class="flux"><div class="etape"><span class="num">1</span><b>Une 1re commande est passée</b>Le client devient « client à une commande ».</div><div class="etape"><span class="num">2</span><b>On attend 45 jours</b>Avant la médiane de 66 jours, après les 8 % qui reviennent seuls dans le 1er mois.</div><div class="etape"><span class="num">3</span><b>On vérifie</b>Le client n’a pas recommandé et accepte les e-mails : environ 474 clients par an.</div><div class="etape"><span class="num">4</span><b>On envoie un e-mail court</b>Un produit proche de son achat : 25 % rachètent le même produit, 81 % la même famille. Pas de remise.</div><div class="etape"><span class="num">5</span><b>On mesure</b>Part des clients relancés qui recommandent dans les 30 jours : à comparer à 8,3 % (ce que font ceux qui n’ont pas été relancés).</div></div>
+<div class="dash"><ul class="fl"><li><span class="tag f">Fait</span>Les clients non relancés qui n’avaient pas recommandé à J+45 recommandent dans les 30 jours suivants dans 8,3 % des cas (13,1 % en 60 jours) : c’est la base à battre.</li><li><span class="tag f">Fait</span>Avec 474 clients relancés, la marge d’erreur de cette mesure est d’environ ±2,5 points : un effet de +1 ou +2 points ne se verra pas, seul un effet d’au moins +5 points serait visible. Un vrai test A/B demanderait environ 603 clients par groupe.</li></ul></div>
+<div class="reco"><h3>Ce qu’on conseille</h3><ul><li><b>Créer cette relance à J+45</b> pour les clients à une seule commande qui acceptent les e-mails, avec un produit proche de leur achat, <b>sans remise</b>.</li><li><b>Suivre le retour dans les 30 jours</b> des clients relancés, chaque mois, et le comparer à 8,3 %.</li><li><b>Inciter les clients à accepter les e-mails au moment de la commande</b> : 19 % des clients ne peuvent aujourd’hui pas être relancés (173 sur 913).</li></ul></div>
+<div class="cols2"><div><h3>Limites et ce qui manque</h3><ul><li>L’effet réel d’une relance est inconnu : aucun groupe témoin, test A/B impossible. Les gains sont des hypothèses.</li><li>Les montants incluent livraison (6 %) et TVA : la marge réelle est plus basse. On ne sait pas si les 50 % de marge sont hors taxes.</li><li>Le délai de 45 jours est un choix raisonné (avant la médiane de 66 jours), pas un optimum démontré ; 60 jours est une autre option.</li><li>Le statut « accepte les e-mails » est celui de la livraison des fichiers (22 octobre 2026), pas celui du jour de la commande.</li><li>Les taux à 90 jours et plus ne portent que sur les clients suivis assez longtemps : les plus récents n’y figurent pas.</li></ul></div></div>
+<details class="pli" name="q-relance-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-q4_approfondi.py"><summary><code>q4_approfondi.py</code> · </summary><div class="corps"><p class="meta">166 lignes · <a href="q4_approfondi.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+"""Approfondissement (15/11/2026) des trois questions d'automatisation et de la formation.
+Aucune donnée personnelle : comptes, taux et montants agrégés. Tout vient de orders.csv, customers.csv et du bilan e-mailing (fichiers JSON du prof).
+  A. Relance après la 1re commande : taux de retour en fenêtre fixe, retours un jour de pointe, qui revient (par groupe)
+  B. Relances panier et paiement : entonnoir de chaque e-mail, comparaison aux newsletters, résultats des newsletters par thème
+  C. Lancement et retour en stock : les jours de pointe et les e-mails envoyés avant, heures de commande, expéditions
+  D. Formation : produit par produit, prix et remises, vague par vague, part du chiffre d'affaires"""
+import csv, json, glob, os, collections, math
+from datetime import datetime, timedelta
+from scipy import stats
+from common import charger, REF, famille
+
+cmds, clients = charger()
+cm = {r['customer_key'].strip(): r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
+BIL = '../DONNEES/bilan_emailing/'
+EM = [json.load(open(f, encoding='utf-8')) for f in sorted(glob.glob(BIL + '1*.json'))]
+out = {}
+
+
+def fisher(a, na, b, nb):
+    """a/na contre b/nb (succès / effectif) : test exact de Fisher"""
+    return float(stats.fisher_exact([[a, na - a], [b, nb - b]])[1])
+
+
+# =================================================================== A. RELANCE APRÈS LA 1re COMMANDE
+def fenetre(T, filtre=lambda k: True):
+    el = [k for k, v in clients.items() if (REF - v[0]['dt']).days &gt;= T and filtre(k)]
+    ret = [k for k in el if len(clients[k]) &gt; 1 and (clients[k][1]['dt'] - clients[k][0]['dt']).days &lt;= T]
+    return {'suivis': len(el), 'ont_recommande': len(ret), 'taux': 100 * len(ret) / len(el) if el else None}
+
+out['fenetres'] = {str(T): fenetre(T) for T in (30, 45, 60, 90, 120, 180)}
+tot1 = sorted(v[0]['total'] for v in clients.values()); med_panier = tot1[len(tot1) // 2]
+seg = {
+    'Accepte les e-mails marketing': lambda k: cm.get(k, {}).get('Accepts Email Marketing') == 'yes',
+    '1re commande avec le code de bienvenue': lambda k: clients[k][0]['code'] == 'BIENVENUE10',
+    '1re commande d’au moins la médiane (' + str(round(med_panier)) + ' €)': lambda k: clients[k][0]['total'] &gt;= med_panier,
+    '1re commande avec une bougie gourmande': lambda k: 'Bougies gourmandes' in clients[k][0]['familles'],
+    'Livraison dans les Pyrénées-Atlantiques': lambda k: clients[k][0]['cp'][:2] == '64',
+}
+segs = []
+for nom, f in seg.items():
+    oui, non = fenetre(90, f), fenetre(90, lambda k, f=f: not f(k))
+    segs.append({'groupe': nom, 'oui': oui, 'non': non, 'p': fisher(oui['ont_recommande'], oui['suivis'], non['ont_recommande'], non['suivis'])})
+out['segments_90j'] = segs
+PICS = sorted(d for d, k in collections.Counter(o['date'] for o in cmds).items() if k &gt;= 20)
+out['pics'] = PICS
+tous = [o for v in clients.values() for o in v]
+r2 = [o for o in tous if o['rang'] == 2]; r2plus = [o for o in tous if o['rang'] &gt;= 2]
+out['retours_jour_pointe'] = {'commandes_totales': len(cmds), 'part_pics_toutes': 100 * sum(1 for o in cmds if o['date'] in PICS) / len(cmds),
+                              'deuxiemes': len(r2), 'deuxiemes_pics': sum(1 for o in r2 if o['date'] in PICS),
+                              'rang2plus': len(r2plus), 'rang2plus_pics': sum(1 for o in r2plus if o['date'] in PICS),
+                              'premieres': sum(1 for o in tous if o['rang'] == 1), 'premieres_pics': sum(1 for o in tous if o['rang'] == 1 and o['date'] in PICS)}
+# délai entre la 1re et la 2e commande : répartition (parmi ceux qui ont recommandé)
+dl = [(v[1]['dt'] - v[0]['dt']).days for v in clients.values() if len(v) &gt; 1]
+bornes = [(0, 30), (30, 45), (45, 60), (60, 90), (90, 180), (180, 999)]
+out['delais_2e'] = {'n': len(dl), 'tranches': [{'a': a, 'b': b, 'n': sum(1 for d in dl if a &lt;= d &lt; b)} for a, b in bornes]}
+
+# =================================================================== B. RELANCES PANIER ET PAIEMENT, NEWSLETTERS
+def fiche(e):
+    k, c = e['kpi'], e.get('contenu') or {}
+    return {'id': e['id'], 'objet': e['objet'], 'type': e['type'], 'liste': e['destinataires'], 'date': e['date'], 'theme': c.get('theme'),
+            'envoyes': k['emails_envoyes'], 'ouverture': k['taux_ouverture'], 'clic': k['taux_clic'], 'visites': k['visites'], 'commandes': k['commandes'],
+            'ventes': k['ventes_totales'], 'panier_moyen': k['panier_moyen'], 'entonnoir': k['entonnoir'], 'liens': e['liens'], 'cta': [x['texte'] for x in c.get('cta', [])],
+            'offre': c.get('offre'), 'image': e['image']}
+F = [fiche(e) for e in EM]
+out['emails'] = F
+flux = {f['id']: f for f in F if f['type'] == 'automatisation'}
+news = [f for f in F if f['type'] == 'newsletter']
+boutique = [f for f in news if f['liste'] == 'Tous les abonnés']
+# comparaison à nombre égal d'e-mails : newsletters de la boutique (liste « Tous les abonnés »)
+def agr(L):
+    env = sum(f['envoyes'] for f in L)
+    return {'n': len(L), 'envoyes': env, 'commandes': sum(f['commandes'] for f in L), 'ventes': sum(f['ventes'] for f in L), 'visites': sum(f['visites'] for f in L),
+            'cmd_100': 100 * sum(f['commandes'] for f in L) / env if env else None, 'ventes_1000': 1000 * sum(f['ventes'] for f in L) / env if env else None,
+            'visites_100': 100 * sum(f['visites'] for f in L) / env if env else None}
+out['themes'] = {t: agr([f for f in boutique if f['theme'] == t]) for t in sorted({f['theme'] for f in boutique})}
+out['boutique'] = agr(boutique)
+out['relances'] = agr([flux['191033671947'], flux['191033737483']])
+out['formation_listes'] = agr([f for f in news if f['liste'] == 'Client intéressé par la formation'])
+out['ouverture_moy_boutique'] = sum(f['ouverture'] * f['envoyes'] for f in boutique) / sum(f['envoyes'] for f in boutique)
+out['clic_moy_boutique'] = sum(f['clic'] * f['envoyes'] for f in boutique) / sum(f['envoyes'] for f in boutique)
+
+# =================================================================== C. LANCEMENT ET RETOUR EN STOCK
+dnews = sorted(datetime.strptime(e['date'][:10], '%Y-%m-%d') for e in json.load(open(BIL + 'inventaire.json', encoding='utf-8'))['newsletters'])
+dnews_all = [(datetime.strptime(e['date'][:16], '%Y-%m-%d %H:%M'), e['objet_liste']) for e in json.load(open(BIL + 'inventaire.json', encoding='utf-8'))['newsletters']]
+pk = []
+for d in PICS:
+    dd = datetime.strptime(d, '%Y-%m-%d')
+    avant = [x for x in dnews if x &lt;= dd]
+    jours = (dd - avant[-1]).days if avant else None
+    os_ = [o for o in cmds if o['date'] == d]
+    h = collections.Counter(o['dt'].hour for o in os_)
+    pk.append({'date': d, 'commandes': len(os_), 'derniere_newsletter_jours': jours, 'newsletter_le_jour': any(x.date() == dd.date() for x, _ in dnews_all),
+               'heures': {str(k): h[k] for k in sorted(h)}, 'avant_10h': sum(1 for o in os_ if o['dt'].hour &lt; 10), 'de_10h_a_12h': sum(1 for o in os_ if 10 &lt;= o['dt'].hour &lt; 12),
+               'apres_12h': sum(1 for o in os_ if o['dt'].hour &gt;= 12), 'clients_connus': sum(1 for o in os_ if o.get('rang', 0) &gt;= 2)})
+out['pics_detail'] = pk
+# le 20 septembre 2026 : commandes avant et après l'envoi de la newsletter de 10 h 02
+env = datetime(2026, 9, 20, 10, 2)
+o20 = [o for o in cmds if o['date'] == '2026-09-20']
+out['jour_newsletter_20_9'] = {'avant': sum(1 for o in o20 if o['dt'] &lt; env), 'apres': sum(1 for o in o20 if o['dt'] &gt;= env),
+                               'apres_heure_suivante': sum(1 for o in o20 if env &lt;= o['dt'] &lt; env + timedelta(hours=2)),
+                               'avec_psl': sum(1 for o in o20 if any('PUMPKIN SPICE LATTE' in l['nom'].upper() for l in o['lignes']))}
+# semaine moyenne : combien de commandes par jour hors pics (pour comparer)
+jours_actifs = collections.Counter(o['date'] for o in cmds)
+out['jour_moyen'] = {'commandes_par_jour_hors_pics': sum(k for d, k in jours_actifs.items() if d not in PICS) / (len(jours_actifs) - len(PICS)), 'jours_avec_commande': len(jours_actifs)}
+
+# =================================================================== D. FORMATION
+def est_formation(nom): return famille(nom) == 'Formation'
+cl = [o for o in cmds if 'Formation' in o['familles']]
+lignes = []
+for o in cl:
+    for l in o['lignes']:
+        if est_formation(l['nom']): lignes.append({'date': o['date'], 'produit': l['nom'], 'prix': l['prix'], 'total': o['total'], 'code': o['code'], 'cle': o['cle'], 'dt': o['dt']})
+payantes = [x for x in lignes if x['total'] &gt; 0]
+out['formation_n'] = {'commandes': len(cl), 'payantes': len(payantes), 'ca_paye': sum(x['total'] for x in payantes), 'acheteurs_payants': len({x['cle'] for x in payantes}),
+                      'a_zero': sum(1 for x in lignes if x['total'] == 0)}
+def nom_court(p):
+    p = p.upper()
+    if 'CONSULTING' in p: return 'Consulting (session privée)'
+    if 'RÉGLEMENTATION' in p or 'REGLEMENTATION' in p: return 'Réglementation et sécurité'
+    for k, lab in (('COMPLET', 'Pack Complet'), ('CHANTILLY', 'Pack Chantilly'), ('COUL', 'Pack Coulées'), ('MOUL', 'Pack Moulées')):
+        if k in p: return lab
+    return p
+par_prod = collections.defaultdict(lambda: {'ventes': 0, 'ca': 0.0, 'prix_liste': [], 'avec_code': 0})
+for x in payantes:
+    q_ = par_prod[nom_court(x['produit'])]; q_['ventes'] += 1; q_['ca'] += x['total']; q_['prix_liste'].append(x['prix']); q_['avec_code'] += 1 if x['code'] else 0
+out['formation_produits'] = {k: {'ventes': v['ventes'], 'ca': v['ca'], 'prix_liste_min': min(v['prix_liste']), 'prix_liste_max': max(v['prix_liste']), 'avec_code': v['avec_code']} for k, v in sorted(par_prod.items(), key=lambda kv: -kv[1]['ca'])}
+# prix de liste du Pack Complet dans le temps
+out['pack_complet_prix'] = sorted({(x['date'][:7], x['prix']) for x in payantes if nom_court(x['produit']) == 'Pack Complet'})
+out['formation_codes'] = dict(collections.Counter(x['code'] or 'aucun' for x in payantes))
+# vagues : e-mails à la liste formation de 2026 (objet et dates du relevé du prof)
+liste_form = [f for f in news if f['liste'] == 'Client intéressé par la formation']
+dates_form = {'192541884683': '2026-04-21', '192559186187': '2026-04-25', '192859767051': '2026-07-08', '192892961035': '2026-07-18', '193087373579': '2026-09-11', '193101037835': '2026-09-15'}
+vagues = []
+for f in liste_form:
+    if f['id'] not in dates_form: continue
+    d = datetime.strptime(dates_form[f['id']], '%Y-%m-%d')
+    v4 = [x for x in payantes if d &lt;= datetime(x['dt'].year, x['dt'].month, x['dt'].day) &lt;= d + timedelta(days=4)]
+    vagues.append({'date': dates_form[f['id']], 'objet': f['objet'], 'envoyes': f['envoyes'], 'ouverture': f['ouverture'], 'clic': f['clic'], 'visites': f['visites'],
+                   'ventes_4j': len(v4), 'ca_4j': sum(x['total'] for x in v4)})
+out['formation_vagues'] = vagues
+dates_env = sorted(datetime.strptime(v['date'], '%Y-%m-%d') for v in vagues)
+tab = []
+for x in sorted(payantes, key=lambda x: x['dt']):
+    dd = datetime(x['dt'].year, x['dt'].month, x['dt'].day)
+    prev = [e for e in dates_env if e &lt;= dd]
+    tab.append({'date': x['date'], 'produit': nom_court(x['produit']), 'paye': x['total'], 'code': x['code'], 'jours_depuis_envoi': (dd - prev[-1]).days if prev else None})
+out['formation_ventes'] = tab
+debut = datetime(2026, 4, 21)
+ca_apres = sum(o['total'] for o in cmds if o['dt'] &gt;= debut); ca_form_apres = sum(x['total'] for x in payantes if x['dt'] &gt;= debut)
+out['formation_part_ca'] = {'ca_total': sum(o['total'] for o in cmds), 'ca_depuis_21_avril': ca_apres, 'ca_formation_depuis_21_avril': ca_form_apres,
+                            'part_depuis_21_avril': 100 * ca_form_apres / ca_apres, 'panier_moyen_tous': sum(o['total'] for o in cmds) / len(cmds)}
+out['formation_mois'] = dict(sorted(collections.Counter(x['date'][:7] for x in payantes).items()))
+# les ventes de formation viennent-elles de clients de bougies ? (clients ayant commandé des bougies avant)
+av = 0
+for x in payantes:
+    prec = [o for o in clients.get(x['cle'], []) if o['dt'] &lt; x['dt'] and 'Formation' not in o['familles']]
+    av += 1 if prec else 0
+out['formation_acheteurs_deja_clients'] = {'ventes': len(payantes), 'avec_commande_bougies_avant': av}
+# données du graphique « commandes par jour » et dates des e-mails
+out['commandes_par_jour'] = dict(sorted(jours_actifs.items()))
+_inv = {x['id']: x for x in json.load(open(BIL + 'inventaire.json', encoding='utf-8'))['newsletters']}
+out['newsletters_dates'] = sorted([{'date': _inv[f['id']]['date'][:10], 'objet': f['objet'], 'liste': f['liste'], 'theme': f['theme']} for f in news], key=lambda x: x['date'])
+json.dump(out, open('q4_approfondi.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1, default=str)
+print(json.dumps({k: out[k] for k in ('fenetres', 'retours_jour_pointe', 'delais_2e', 'relances', 'boutique', 'formation_n', 'formation_produits', 'pack_complet_prix', 'formation_codes', 'formation_part_ca', 'formation_acheteurs_deja_clients')}, ensure_ascii=False, indent=1, default=str))
+</code></pre></div></details><details class="pli" name="code-l1_relance.py"><summary><code>l1_relance.py</code> · Relance après la 1re commande : courbe de retour (Kaplan-Meier), moments d'envoi, scénarios de gain.</summary><div class="corps"><p class="meta">87 lignes · <a href="l1_relance.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Relance après la 1re commande : quand l'envoyer, combien de clients visés, et ce qu'elle pourrait rapporter (scénarios).
 Aucune donnée personnelle : comptes et délais agrégés."""
 import csv, json, os
@@ -416,6 +592,6 @@ def charger():
     return commandes, clients
 </code></pre></div></details></div></div></details>
 </main>
-<footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version du 14 novembre 2026. Rendu : 18 novembre 2026.</p></div></footer>
+<footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version du 15 novembre 2026. Rendu : 18 novembre 2026.</p></div></footer>
 </body>
 </html>

@@ -291,3 +291,29 @@ pre.code{max-height:560px}
 .topnav .wrap{gap:6px 10px}
 section.brique{margin:34px 0 0}section.brique>h2{font-size:24px;margin:0 0 8px}
 main.wrap{overflow-x:hidden}
+
+/* ---- 15/11/2026 : pages de questions approfondies (en clair, barres, étapes, e-mails) ---- */
+.enclair{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--brand);border-radius:0 12px 12px 0;padding:16px 20px;margin:18px 0}
+.enclair h3{margin:0 0 8px;font-size:18px;color:var(--brand-dark)}
+.enclair p{margin:6px 0;max-width:none}
+.enclair ol,.enclair ul{margin:6px 0 0 20px}
+.enclair .rep{font-size:17px}
+.dash .bars .track{grid-column:1/-1;height:10px;background:var(--grid);border-radius:6px;overflow:hidden}
+.dash .bars .track i{display:block;height:100%;background:var(--accent)}
+.dash .bars.rose .track i{background:var(--flame)}
+.dash .bars li.fort .track i{background:var(--flame)}
+.flux{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.flux .etape{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px}
+.flux .etape b{display:block;color:var(--brand-dark);margin-bottom:4px}
+.flux .etape .num{display:inline-block;background:var(--brand);color:var(--cream);border-radius:99px;width:24px;height:24px;text-align:center;line-height:24px;font-size:13px;margin-bottom:6px}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:16px 0}
+.duo figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.duo figcaption{font-size:14px;margin-top:8px;color:var(--muted)}
+.duo figcaption b{color:var(--ink)}
+.mailbox{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mailbox img{width:100%;display:block}
+.calc{font-variant-numeric:tabular-nums}
+.chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0}
+.chiffres .c{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.chiffres .c .v{display:block;font-family:var(--display);font-size:26px;font-weight:700;color:var(--brand-dark);line-height:1.2}
+.chiffres .c .l{font-size:14px;color:var(--muted)}

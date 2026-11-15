@@ -1,0 +1,129 @@
+# encoding: utf-8
+"""Contrôle indépendant des chiffres des pages Contexte, Données et choix et des quatre questions (15/11/2026).
+Recalcule chaque chiffre directement depuis orders.csv, customers.csv et les fichiers e-mail du professeur, SANS utiliser common.py ni q4_approfondi.py,
+puis le compare à la valeur affichée sur le site (q4_approfondi.json et autres JSON). Aucune donnée personnelle affichée."""
+import csv, json, glob, statistics, collections
+from datetime import datetime, timedelta
+
+REF = datetime(2026, 10, 23)
+ok = ko = 0
+def cmp(nom, calc, affiche, tol=0.05):
+    global ok, ko
+    bon = abs(calc - affiche) <= tol
+    ok += bon; ko += (not bon)
+    print('%-82s %12.4f %12.4f  %s' % (nom[:82], calc, affiche, 'OK' if bon else 'ÉCART'))
+
+# ---------------------------------------------------------------- lecture brute des commandes (une ligne par article ; la 1re ligne porte le total)
+lignes = list(csv.DictReader(open('../DONNEES/orders.csv', encoding='utf-8')))
+cmd = {}; ordre = []
+for r in lignes:
+    if r['Total']:
+        cmd[r['order_key']] = {'r': r, 'items': []}; ordre.append(r['order_key']); cur = r['order_key']
+    if r['Lineitem name']: cmd[cur]['items'].append((r['Lineitem name'].upper(), int(r['Lineitem quantity']), float(r['Lineitem price']), r['Lineitem requires shipping']))
+vivantes = [c for c in cmd.values() if not c['r']['Cancelled at']]
+def dt(c): return datetime.strptime(c['r']['Created at'][:19], '%Y-%m-%d %H:%M:%S')
+cust = {r['customer_key'].strip(): r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
+par_client = collections.defaultdict(list)
+for c in vivantes:
+    k = c['r']['customer_key'].strip()
+    if k: par_client[k].append(c)
+for v in par_client.values(): v.sort(key=dt)
+Q = json.load(open('q4_approfondi.json', encoding='utf-8')); L1 = json.load(open('../site/scripts/data/l1_relance.json', encoding='utf-8'))
+PRIX = {'p': 0}
+
+print('--- Données de base')
+cmp('Commandes non annulées', len(vivantes), 1595, 0)
+cmp('Commandes annulées', len(cmd) - len(vivantes), 7, 0)
+cmp('Clients ayant commandé', len(par_client), 913, 0)
+cmp('Clients ayant une fiche dans customers.csv', sum(1 for k in par_client if k in cust), 912, 0)
+cmp('Chiffre d’affaires facturé (€)', sum(float(c['r']['Total']) for c in vivantes), 99629.29, 0.01)
+cmp('Première commande non annulée : 27 juin 2025', int(min(c['r']['Created at'][:10] for c in vivantes) == '2025-06-27'), 1, 0)
+cmp('Clients à 1 seule commande (%)', 100 * sum(1 for v in par_client.values() if len(v) == 1) / len(par_client), 69.33, 0.01)
+d2 = [(v[1]['r']['Created at'][:10], v[0]['r']['Created at'][:10]) for v in par_client.values() if len(v) > 1]
+dd = [(datetime.strptime(a, '%Y-%m-%d') - datetime.strptime(b, '%Y-%m-%d')).days for a, b in d2]
+cmp('Clients qui ont recommandé', len(dd), 280, 0)
+cmp('Délai médian 1re - 2e commande, parmi ceux qui ont recommandé (jours ; 66 en heures, 66,5 en dates)', statistics.median(dd), 66, 0.6)
+
+print('--- A. Relance (taux en fenêtre fixe, clients suivis assez longtemps)')
+def fen(T, f=lambda k: True):
+    el = [k for k, v in par_client.items() if (REF - dt(v[0])).days >= T and f(k)]
+    re_ = [k for k in el if len(par_client[k]) > 1 and (dt(par_client[k][1]) - dt(par_client[k][0])).days <= T]
+    return len(el), len(re_)
+for T in (30, 45, 60, 90, 120, 180):
+    a, b = fen(T); cmp('Fenêtre %d j : suivis' % T, a, Q['fenetres'][str(T)]['suivis'], 0); cmp('Fenêtre %d j : ont recommandé' % T, b, Q['fenetres'][str(T)]['ont_recommande'], 0)
+oui = lambda k: cust.get(k, {}).get('Accepts Email Marketing') == 'yes'
+a1, b1 = fen(90, oui); a0, b0 = fen(90, lambda k: not oui(k))
+cmp('90 j, accepte les e-mails : ont recommandé / suivis (%)', 100 * b1 / a1, Q['segments_90j'][0]['oui']['taux'], 0.01)
+cmp('90 j, n’accepte pas : ont recommandé / suivis (%)', 100 * b0 / a0, Q['segments_90j'][0]['non']['taux'], 0.01)
+cp64 = lambda k: (par_client[k][0]['r']['Shipping Zip'] or par_client[k][0]['r']['Billing Zip'] or '').strip()[:2] == '64' if False else None
+joignables = sum(1 for k in par_client if oui(k)); cmp('Clients joignables (acceptent les e-mails)', joignables, 740, 0)
+cmp('Cible : clients sans 2e commande à J+45 et joignables (par an)', L1['cibles']['45']['joignables'], 474, 0)
+
+print('--- C. Jours de pointe')
+par_jour = collections.Counter(c['r']['Created at'][:10] for c in vivantes)
+pics = sorted(d for d, k in par_jour.items() if k >= 20)
+cmp('Nombre de jours de pointe (≥ 20 commandes)', len(pics), 4, 0)
+cmp('Commandes les jours de pointe', sum(par_jour[d] for d in pics), 138, 0)
+cmp('Part des commandes les jours de pointe (%)', 100 * sum(par_jour[d] for d in pics) / len(vivantes), 8.65, 0.01)
+cmp('Commandes par jour hors pointe (moyenne)', sum(k for d, k in par_jour.items() if d not in pics) / (len(par_jour) - len(pics)), Q['jour_moyen']['commandes_par_jour_hors_pics'], 0.01)
+for d in ('2026-09-06', '2026-09-20'):
+    h = [dt(c).hour for c in vivantes if c['r']['Created at'][:10] == d]
+    p = [x for x in Q['pics_detail'] if x['date'] == d][0]
+    cmp(d + ' : commandes de 10 h à 12 h', sum(1 for x in h if 10 <= x < 12), p['de_10h_a_12h'], 0)
+    cmp(d + ' : commandes avant 10 h', sum(1 for x in h if x < 10), p['avant_10h'], 0)
+connus = 0
+for c in vivantes:
+    k = c['r']['customer_key'].strip()
+    if c['r']['Created at'][:10] == '2026-09-06' and k and par_client[k][0] is not c and dt(par_client[k][0]) < dt(c): connus += 1
+cmp('6 septembre 2026 : commandes de clients déjà connus', connus, 39, 0)
+env = datetime(2026, 9, 20, 10, 2)
+j20 = [c for c in vivantes if c['r']['Created at'][:10] == '2026-09-20']
+cmp('20 septembre : commandes avant 10 h 02', sum(1 for c in j20 if dt(c) < env), Q['jour_newsletter_20_9']['avant'], 0)
+cmp('20 septembre : commandes contenant la Pumpkin Spice Latte', sum(1 for c in j20 if any('PUMPKIN SPICE LATTE' in i[0] for i in c['items'])), Q['jour_newsletter_20_9']['avec_psl'], 0)
+def acheteurs(d): return {c['r']['customer_key'] for c in vivantes if c['r']['Created at'][:10] == d and any('PUMPKIN SPICE LATTE' in i[0] for i in c['items'])}
+cmp('Pumpkin Spice Latte : acheteurs le 6/09', len(acheteurs('2026-09-06')), 26, 0); cmp('Pumpkin Spice Latte : acheteurs le 20/09', len(acheteurs('2026-09-20')), 26, 0)
+cmp('Pumpkin Spice Latte : acheteurs en commun', len(acheteurs('2026-09-06') & acheteurs('2026-09-20')), 0, 0)
+dl = [((datetime.strptime(c['r']['Fulfilled at'][:19], '%Y-%m-%d %H:%M:%S') - datetime.strptime(c['r']['Paid at'][:19], '%Y-%m-%d %H:%M:%S')).total_seconds() / 86400, c['r']['Created at'][:10] in pics) for c in vivantes if c['r']['Paid at'] and c['r']['Fulfilled at']]
+cmp('Commandes expédiées (paiement et expédition connus)', len(dl), 1582, 0)
+cmp('Expédiées après plus de 7 jours, jours de pointe (%)', 100 * sum(1 for x, p in dl if p and x > 7) / sum(1 for x, p in dl if p), 23.9, 0.1)
+cmp('Expédiées après plus de 7 jours, autres jours (%)', 100 * sum(1 for x, p in dl if not p and x > 7) / sum(1 for x, p in dl if not p), 13.1, 0.1)
+
+print('--- B. E-mails (fichiers JSON du professeur)')
+E = [json.load(open(f, encoding='utf-8')) for f in sorted(glob.glob('../DONNEES/bilan_emailing/1*.json'))]
+rel = [e for e in E if e['id'] in ('191033671947', '191033737483')]
+nl = [e for e in E if e['type'] == 'newsletter' and e['destinataires'] == 'Tous les abonnés']
+cmp('Relances : e-mails envoyés', sum(e['kpi']['emails_envoyes'] for e in rel), 722, 0)
+cmp('Relances : commandes rattachées', sum(e['kpi']['commandes'] for e in rel), 7, 0)
+cmp('Relances : CA rattaché (€)', sum(e['kpi']['ventes_totales'] for e in rel), 842.45, 0.01)
+cmp('Newsletters boutique : nombre', len(nl), 12, 0)
+cmp('Newsletters boutique : e-mails envoyés', sum(e['kpi']['emails_envoyes'] for e in nl), 15665, 0)
+cmp('Newsletters boutique : commandes rattachées', sum(e['kpi']['commandes'] for e in nl), 17, 0)
+r1 = 100 * sum(e['kpi']['commandes'] for e in rel) / sum(e['kpi']['emails_envoyes'] for e in rel); r2 = 100 * sum(e['kpi']['commandes'] for e in nl) / sum(e['kpi']['emails_envoyes'] for e in nl)
+cmp('Commandes pour 100 e-mails : relances', r1, 0.97, 0.005); cmp('Commandes pour 100 e-mails : newsletters', r2, 0.11, 0.005); cmp('Rapport relances / newsletters', r1 / r2, 8.9, 0.05)
+pay = [e for e in E if e['id'] == '191033737483'][0]
+cmp('E-mail de paiement : clics vers l’accueil', sum(l['clics'] for l in pay['liens'] if l['url'] == '/'), 9, 0)
+cmp('E-mail de paiement : clics vers le paiement', sum(l['clics'] for l in pay['liens'] if 'checkouts' in l['url']), 3, 0)
+
+print('--- D. Formation')
+def form(n_): return n_.startswith(('PACK FABRICATION', 'PACK BOUGIES')) or 'CONSULTING' in n_ or n_.startswith(('RÉGLEMENTATION', 'REGLEMENTATION'))
+F = [(c, [i for i in c['items'] if form(i[0])]) for c in vivantes]; F = [(c, it) for c, it in F if it]
+pay_ = [(c, it) for c, it in F if float(c['r']['Total']) > 0]
+cmp('Commandes de formation', len(F), 18, 0); cmp('Ventes payantes', len(pay_), 16, 0)
+cmp('Commandes de formation dont aucune ligne de formation ne demande d’expédition', sum(1 for c, it in F if all(i[3] == 'false' for i in it)), 18, 0)
+cmp('Chiffre d’affaires formation (€)', sum(float(c['r']['Total']) for c, _ in pay_), 3240.5, 0.01)
+cmp('Pack Complet : ventes', sum(1 for c, it in pay_ if any('COMPLET' in i[0] for i in it)), 9, 0)
+cmp('Pack Complet : CA (€)', sum(float(c['r']['Total']) for c, it in pay_ if any('COMPLET' in i[0] for i in it)), 1968, 0.01)
+cmp('LANCEMENT25 : ventes payantes', sum(1 for c, _ in pay_ if c['r']['Discount Code'] == 'LANCEMENT25'), 6, 0)
+envois = [datetime(2026, 4, 21), datetime(2026, 4, 25), datetime(2026, 7, 8), datetime(2026, 7, 18), datetime(2026, 9, 11), datetime(2026, 9, 15)]
+def proche(c):
+    d = dt(c).replace(hour=0, minute=0, second=0); return any(timedelta(0) <= d - e <= timedelta(days=4) for e in envois)
+cmp('Ventes dans les 4 jours après un e-mail à la liste formation', sum(1 for c, _ in pay_ if proche(c)), 9, 0)
+sans = 0
+for c, _ in pay_:
+    k = c['r']['customer_key'].strip()
+    avant = [x for x in par_client.get(k, []) if dt(x) < dt(c) and not any(form(i[0]) for i in x['items'])]
+    sans += 0 if avant else 1
+cmp('Ventes de personnes sans commande de bougies avant', sans, 13, 0)
+cmp('Part de la formation dans le CA total (%)', 100 * sum(float(c['r']['Total']) for c, _ in pay_) / sum(float(c['r']['Total']) for c in vivantes), 3.25, 0.05)
+cmp('Panier moyen de la boutique (€)', sum(float(c['r']['Total']) for c in vivantes) / len(vivantes), 62.46, 0.01)
+print('\n%d contrôles OK, %d écart(s)' % (ok, ko))

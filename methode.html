@@ -6,12 +6,12 @@
 <title>Méthode, code et vérifications · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Accueil</a><a href="contexte.html">Contexte et FAQ</a><a href="donnees.html">Données et choix</a><a href="q-relance.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="methode.html" aria-current="page">Méthode</a></div></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="methode.html" aria-current="page">Méthode</a></div></div></nav>
 
 <header class="hero"><div class="wrap"><p class="kicker">Transparence</p><h1>Méthode, code et vérifications</h1><p class="lead">Comment lire les chiffres, ce qui a été vérifié, les tests utilisés en mots simples et tout le code.</p></div></header>
 <main class="wrap" id="contenu">
@@ -130,6 +130,78 @@ Envoi du 8 juillet : montant (page : 840 €)                               840.
 
  109 contrôles OK sur 109
 </code></pre></div></details>
+<details class="pli" name="verif-approf"><summary>Vérifications : approfondissement des questions (15 novembre)</summary><div class="corps"><p>Un programme séparé (<code>verif_approfondi.py</code>) recalcule depuis les fichiers bruts les chiffres des pages Contexte, Données et choix et des quatre questions, sans réutiliser le code d’analyse, et les compare aux valeurs affichées.</p><pre class="code"><code>--- Données de base
+Commandes non annulées                                                                1595.0000    1595.0000  OK
+Commandes annulées                                                                       7.0000       7.0000  OK
+Clients ayant commandé                                                                 913.0000     913.0000  OK
+Clients ayant une fiche dans customers.csv                                             912.0000     912.0000  OK
+Chiffre d’affaires facturé (€)                                                       99629.2900   99629.2900  OK
+Première commande non annulée : 27 juin 2025                                             1.0000       1.0000  OK
+Clients à 1 seule commande (%)                                                          69.3319      69.3300  OK
+Clients qui ont recommandé                                                             280.0000     280.0000  OK
+Délai médian 1re - 2e commande, parmi ceux qui ont recommandé (jours ; 66 en heure      66.5000      66.0000  OK
+--- A. Relance (taux en fenêtre fixe, clients suivis assez longtemps)
+Fenêtre 30 j : suivis                                                                  836.0000     836.0000  OK
+Fenêtre 30 j : ont recommandé                                                           70.0000      70.0000  OK
+Fenêtre 45 j : suivis                                                                  782.0000     782.0000  OK
+Fenêtre 45 j : ont recommandé                                                           83.0000      83.0000  OK
+Fenêtre 60 j : suivis                                                                  751.0000     751.0000  OK
+Fenêtre 60 j : ont recommandé                                                          114.0000     114.0000  OK
+Fenêtre 90 j : suivis                                                                  736.0000     736.0000  OK
+Fenêtre 90 j : ont recommandé                                                          150.0000     150.0000  OK
+Fenêtre 120 j : suivis                                                                 718.0000     718.0000  OK
+Fenêtre 120 j : ont recommandé                                                         172.0000     172.0000  OK
+Fenêtre 180 j : suivis                                                                 649.0000     649.0000  OK
+Fenêtre 180 j : ont recommandé                                                         189.0000     189.0000  OK
+90 j, accepte les e-mails : ont recommandé / suivis (%)                                 23.0000      23.0000  OK
+90 j, n’accepte pas : ont recommandé / suivis (%)                                        8.8235       8.8235  OK
+Clients joignables (acceptent les e-mails)                                             740.0000     740.0000  OK
+Cible : clients sans 2e commande à J+45 et joignables (par an)                         474.0000     474.0000  OK
+--- C. Jours de pointe
+Nombre de jours de pointe (≥ 20 commandes)                                               4.0000       4.0000  OK
+Commandes les jours de pointe                                                          138.0000     138.0000  OK
+Part des commandes les jours de pointe (%)                                               8.6520       8.6500  OK
+Commandes par jour hors pointe (moyenne)                                                 3.9378       3.9378  OK
+2026-09-06 : commandes de 10 h à 12 h                                                   31.0000      31.0000  OK
+2026-09-06 : commandes avant 10 h                                                        0.0000       0.0000  OK
+2026-09-20 : commandes de 10 h à 12 h                                                   18.0000      18.0000  OK
+2026-09-20 : commandes avant 10 h                                                        2.0000       2.0000  OK
+6 septembre 2026 : commandes de clients déjà connus                                     39.0000      39.0000  OK
+20 septembre : commandes avant 10 h 02                                                   3.0000       3.0000  OK
+20 septembre : commandes contenant la Pumpkin Spice Latte                               27.0000      27.0000  OK
+Pumpkin Spice Latte : acheteurs le 6/09                                                 26.0000      26.0000  OK
+Pumpkin Spice Latte : acheteurs le 20/09                                                26.0000      26.0000  OK
+Pumpkin Spice Latte : acheteurs en commun                                                0.0000       0.0000  OK
+Commandes expédiées (paiement et expédition connus)                                   1582.0000    1582.0000  OK
+Expédiées après plus de 7 jours, jours de pointe (%)                                    23.9130      23.9000  OK
+Expédiées après plus de 7 jours, autres jours (%)                                       13.0886      13.1000  OK
+--- B. E-mails (fichiers JSON du professeur)
+Relances : e-mails envoyés                                                             722.0000     722.0000  OK
+Relances : commandes rattachées                                                          7.0000       7.0000  OK
+Relances : CA rattaché (€)                                                             842.4500     842.4500  OK
+Newsletters boutique : nombre                                                           12.0000      12.0000  OK
+Newsletters boutique : e-mails envoyés                                               15665.0000   15665.0000  OK
+Newsletters boutique : commandes rattachées                                             17.0000      17.0000  OK
+Commandes pour 100 e-mails : relances                                                    0.9695       0.9700  OK
+Commandes pour 100 e-mails : newsletters                                                 0.1085       0.1100  OK
+Rapport relances / newsletters                                                           8.9339       8.9000  OK
+E-mail de paiement : clics vers l’accueil                                                9.0000       9.0000  OK
+E-mail de paiement : clics vers le paiement                                              3.0000       3.0000  OK
+--- D. Formation
+Commandes de formation                                                                  18.0000      18.0000  OK
+Ventes payantes                                                                         16.0000      16.0000  OK
+Commandes de formation dont aucune ligne de formation ne demande d’expédition           18.0000      18.0000  OK
+Chiffre d’affaires formation (€)                                                      3240.5000    3240.5000  OK
+Pack Complet : ventes                                                                    9.0000       9.0000  OK
+Pack Complet : CA (€)                                                                 1968.0000    1968.0000  OK
+LANCEMENT25 : ventes payantes                                                            6.0000       6.0000  OK
+Ventes dans les 4 jours après un e-mail à la liste formation                             9.0000       9.0000  OK
+Ventes de personnes sans commande de bougies avant                                      13.0000      13.0000  OK
+Part de la formation dans le CA total (%)                                                3.2526       3.2500  OK
+Panier moyen de la boutique (€)                                                         62.4635      62.4600  OK
+
+64 contrôles OK, 0 écart(s)
+</code></pre></div></details>
 <details class="pli" name="verif-base"><summary>Vérifications : chiffres de base</summary><div class="corps"><pre class="code"><code>Contrôle                                            Recalculé    Affiché  Verdict
 Commandes non annulées                                   1438       1438  OK
 Commandes annulées (exclues)                                7          7  OK
@@ -171,8 +243,8 @@ OCT. Produits actifs (page retouche photo : 133)          133        133  OK
  36 contrôles OK sur 36
 </code></pre></div></details>
 <h2>Les tests utilisés, en mots simples</h2><div class="tablewrap"><table><tr><th class="">Test</th><th class="">À quoi il sert</th><th class="">Utilisé pour</th><th class="">Comment le lire</th></tr><tr><td class="">Courbe de Kaplan-Meier</td><td class="">Part des clients qui recommandent, jour après jour, en tenant compte des clients récents</td><td class="">Relance</td><td class="">Pas de p-value : on lit la courbe</td></tr><tr><td class="">Wilcoxon apparié</td><td class="">Compare chaque client à lui-même (1re et 2e commande)</td><td class="">Relance</td><td class="">p &lt; 0,05 : écart réel (pas son importance)</td></tr><tr><td class="">Arbre de décision, AUC</td><td class="">Un critère prédit-il le retour ?</td><td class="">Relance</td><td class="">0,5 = hasard ; 1 = parfait</td></tr><tr><td class="">Intervalle de Poisson exact</td><td class="">Plage plausible d’un taux fondé sur peu de commandes</td><td class="">Relances</td><td class="">Plages qui ne se recoupent pas : écart démontré</td></tr><tr><td class="">Test exact de Fisher</td><td class="">Compare deux pourcentages sur de petits effectifs</td><td class="">Relances, avis, expéditions</td><td class="">p &lt; 0,05 ; suppose des cas indépendants : plutôt optimiste</td></tr><tr><td class="">Test binomial</td><td class="">Les ventes tombent-elles près d’un e-mail plus qu’au hasard ?</td><td class="">Formation</td><td class="">p &lt; 0,05 ; coïncidence ne veut pas dire cause</td></tr><tr><td class="">Mann-Whitney</td><td class="">Compare deux groupes de montants</td><td class="">Formation</td><td class="">p élevé : pas d’écart démontré (≠ pas d’écart)</td></tr><tr><td class="">Permutation et correction de Holm</td><td class="">Teste beaucoup de caractéristiques sans prendre un hasard pour un résultat</td><td class="">Newsletters</td><td class="">Un p brut de 0,027 devient 0,29 après correction</td></tr><tr><td class="">Taille d’échantillon</td><td class="">Combien de personnes pour mesurer un effet</td><td class="">Tous les gains</td><td class="">Explique pourquoi aucun test A/B n’est réaliste</td></tr></table></div>
-<details class="pli" name="met-code"><summary>Le code</summary><div class="corps"><p>Tous les scripts qui produisent les chiffres et les graphiques. Les fichiers de données ne sont pas fournis (confidentiels) : le code se lit, il ne se relance pas sans eux. Les chemins personnels ont été retirés à l’affichage. Chaque page affiche aussi les scripts qui la concernent.</p><div class="tablewrap"><table><tr><th>Script</th><th>Ce qu’il fait</th><th></th></tr><tr><td><code>audit_independant.py</code></td><td>Audit : recalcule depuis les fichiers bruts, par un autre chemin de calcul, les chiffres clés des pages du site.</td><td><a href="audit_independant.txt" download>télécharger</a></td></tr><tr><td><code>common.py</code></td><td>Lit les commandes, classe les produits en familles, regroupe les commandes par client. Base commune des analyses.</td><td><a href="common.txt" download>télécharger</a></td></tr><tr><td><code>g1_premiere_vs_suivantes.py</code></td><td>Ce qui change entre la 1re commande et les suivantes (montant, articles, produits, familles).</td><td><a href="g1_premiere_vs_suivantes.txt" download>télécharger</a></td></tr><tr><td><code>g2_profils.py</code></td><td>Arbre de décision du réachat (AUC) et regroupement automatique des clients.</td><td><a href="g2_profils.txt" download>télécharger</a></td></tr><tr><td><code>j1_emailing.py</code></td><td>Résultats des newsletters et des automatisations e-mail : intervalles, tests de permutation, rythme d'envoi, comparaison relances et newsletters.</td><td><a href="j1_emailing.txt" download>télécharger</a></td></tr><tr><td><code>l1_relance.py</code></td><td>Relance après la 1re commande : courbe de retour (Kaplan-Meier), moments d'envoi, scénarios de gain.</td><td><a href="l1_relance.txt" download>télécharger</a></td></tr><tr><td><code>l3_formation.py</code></td><td>Formation : ventes autour des e-mails, recoupement inscrits et clients, valeur d'un inscrit.</td><td><a href="l3_formation.txt" download>télécharger</a></td></tr><tr><td><code>q1_automatisations.py</code></td><td>Jours de lancement et délais d'expédition, entonnoir des relances panier et paiement, gain de la relance, commandes par mois.</td><td><a href="q1_automatisations.txt" download>télécharger</a></td></tr><tr><td><code>q2_avis_catalogue.py</code></td><td>Demande d'avis Judge.me, catalogue de la livraison du 22/10, codes promo, audience Meta.</td><td><a href="q2_avis_catalogue.txt" download>télécharger</a></td></tr><tr><td><code>q3_photos.py</code></td><td>Retouche photo : nombre de photos par produit et par sortie, calendrier des sorties, temps de retouche selon trois hypothèses.</td><td><a href="q3_photos.txt" download>télécharger</a></td></tr><tr><td><code>retouche_ombres.py</code></td><td>Éclaircit les ombres de toutes les photos d'un dossier (gratuit, une commande). À lancer sur ses propres photos.</td><td><a href="retouche_ombres.txt" download>télécharger</a></td></tr><tr><td><code>verif_chiffres_cles.py</code></td><td>Recalcule les chiffres clés depuis les fichiers sources et les compare à ceux affichés.</td><td><a href="verif_chiffres_cles.txt" download>télécharger</a></td></tr></table></div></div></details>
+<details class="pli" name="met-code"><summary>Le code</summary><div class="corps"><p>Tous les scripts qui produisent les chiffres et les graphiques. Les fichiers de données ne sont pas fournis (confidentiels) : le code se lit, il ne se relance pas sans eux. Les chemins personnels ont été retirés à l’affichage. Chaque page affiche aussi les scripts qui la concernent.</p><div class="tablewrap"><table><tr><th>Script</th><th>Ce qu’il fait</th><th></th></tr><tr><td><code>audit_independant.py</code></td><td>Audit : recalcule depuis les fichiers bruts, par un autre chemin de calcul, les chiffres clés des pages du site.</td><td><a href="audit_independant.txt" download>télécharger</a></td></tr><tr><td><code>common.py</code></td><td>Lit les commandes, classe les produits en familles, regroupe les commandes par client. Base commune des analyses.</td><td><a href="common.txt" download>télécharger</a></td></tr><tr><td><code>g1_premiere_vs_suivantes.py</code></td><td>Ce qui change entre la 1re commande et les suivantes (montant, articles, produits, familles).</td><td><a href="g1_premiere_vs_suivantes.txt" download>télécharger</a></td></tr><tr><td><code>g2_profils.py</code></td><td>Arbre de décision du réachat (AUC) et regroupement automatique des clients.</td><td><a href="g2_profils.txt" download>télécharger</a></td></tr><tr><td><code>j1_emailing.py</code></td><td>Résultats des newsletters et des automatisations e-mail : intervalles, tests de permutation, rythme d'envoi, comparaison relances et newsletters.</td><td><a href="j1_emailing.txt" download>télécharger</a></td></tr><tr><td><code>l1_relance.py</code></td><td>Relance après la 1re commande : courbe de retour (Kaplan-Meier), moments d'envoi, scénarios de gain.</td><td><a href="l1_relance.txt" download>télécharger</a></td></tr><tr><td><code>l3_formation.py</code></td><td>Formation : ventes autour des e-mails, recoupement inscrits et clients, valeur d'un inscrit.</td><td><a href="l3_formation.txt" download>télécharger</a></td></tr><tr><td><code>q1_automatisations.py</code></td><td>Jours de lancement et délais d'expédition, entonnoir des relances panier et paiement, gain de la relance, commandes par mois.</td><td><a href="q1_automatisations.txt" download>télécharger</a></td></tr><tr><td><code>q2_avis_catalogue.py</code></td><td>Demande d'avis Judge.me, catalogue de la livraison du 22/10, codes promo, audience Meta.</td><td><a href="q2_avis_catalogue.txt" download>télécharger</a></td></tr><tr><td><code>q4_approfondi.py</code></td><td></td><td><a href="q4_approfondi.txt" download>télécharger</a></td></tr><tr><td><code>verif_approfondi.py</code></td><td></td><td><a href="verif_approfondi.txt" download>télécharger</a></td></tr><tr><td><code>verif_chiffres_cles.py</code></td><td>Recalcule les chiffres clés depuis les fichiers sources et les compare à ceux affichés.</td><td><a href="verif_chiffres_cles.txt" download>télécharger</a></td></tr></table></div></div></details>
 </main>
-<footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version du 14 novembre 2026. Rendu : 18 novembre 2026.</p></div></footer>
+<footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version du 15 novembre 2026. Rendu : 18 novembre 2026.</p></div></footer>
 </body>
 </html>
