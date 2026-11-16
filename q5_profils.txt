@@ -277,6 +277,19 @@ out['abonnement'] = {'marges': MARGES, 'prix_liste': PL_,
                      'seuil': {'%d|%s' % (p, mk): float(_seuil(m, p)) for p in (18, 20, 22) for mk, m in MARGES.items()},
                      'frais_mensuel_20': float(_fee(20, False)), 'frais_avance_20': float(_fee(20, True))}
 
+
+# =================================================================== K. DÉLAIS D'EXPÉDITION EN JOURS OUVRÉS (le site annonce « maximum 10 jours ouvrés »)
+def _jo(a, b):
+    d = 0; cur = a.date()
+    while cur < b.date():
+        cur += timedelta(days=1)
+        if cur.weekday() < 5: d += 1
+    return d
+_exp = [(_dtp(r['Paid at']), _dtp(r['Fulfilled at'])) for r in raw_o if not r['Cancelled at'] and r['Paid at'] and r['Fulfilled at']]
+_jos = [_jo(a, b) for a, b in _exp]
+_nonexp = [r for r in raw_o if not r['Cancelled at'] and r['Paid at'] and not r['Fulfilled at'] and (REF - _dtp(r['Paid at'])).days > 30]
+out['expeditions'] = {'expediees': len(_jos), 'mediane_jours_ouvres': float(np.median(_jos)), 'plus_10_jo': sum(1 for x in _jos if x > 10), 'plus_7_jo': sum(1 for x in _jos if x > 7),
+                      'non_expediees_plus_30j': len(_nonexp), 'non_expediees_plus_30j_retrait_local': sum(1 for r in _nonexp if 'lotissement' in r['Shipping Method'].lower())}
 json.dump(out, open('q5_profils.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1, default=str)
 print(json.dumps({k: out[k] for k in ('hazard', 'retour_rapide', 'curieux', 'chasseur', 'cibles', 'inscrits', 'base90', 'cible_abo', 'fideles_an', 'valeur_fidele', 'frais', 'prix_bougie', 'formation_periodes', 'codes')}, ensure_ascii=False, indent=1, default=str)[:9000])
 for s in out['criteres_90j']: print(s['groupe'], round(s['oui']['taux'], 1), round(s['non']['taux'], 1), s['oui']['suivis'], round(s['p'], 4), round(s['p_holm'], 4))

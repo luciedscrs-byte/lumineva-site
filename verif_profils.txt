@@ -202,4 +202,19 @@ rows = list(csv.DictReader(open('../DONNEES/analytics_ventes_totales_par_referen
 cmp('Commandes sur 30 jours (rapport Shopify)', sum(int(r['Commandes']) for r in rows), Q['sources_ventes_30j']['total_commandes'], 0)
 cmp('… dont réseaux sociaux (Instagram, Facebook, YouTube)', sum(int(r['Commandes']) for r in rows if r['Nom du référent de la commande'] in ('instagram', 'facebook', 'youtube')), Q['sources_ventes_30j']['categories']['Réseaux sociaux']['commandes'], 0)
 cmp('Commandes de la boutique sur la même période (orders.csv)', sum(1 for c in viv if '2026-09-22' <= c['r']['Created at'][:10] <= '2026-10-22'), Q['sources_ventes_30j']['commandes_boutique_30j'], 0)
+vivantes_ = viv
+
+print('--- H. Délais d’expédition en jours ouvrés')
+def jo(a, b):
+    d = 0; cur = a.date()
+    while cur < b.date():
+        cur += timedelta(days=1)
+        if cur.weekday() < 5: d += 1
+    return d
+pf = lambda x: datetime.strptime(x[:19], '%Y-%m-%d %H:%M:%S')
+ex = [jo(pf(c['r']['Paid at']), pf(c['r']['Fulfilled at'])) for c in vivantes_ if c['r']['Paid at'] and c['r']['Fulfilled at']]
+cmp('Commandes expédiées', len(ex), Q['expeditions']['expediees'], 0); cmp('Délai médian (jours ouvrés)', statistics.median(ex), Q['expeditions']['mediane_jours_ouvres'], 0.01)
+cmp('Expédiées après plus de 10 jours ouvrés', sum(1 for x in ex if x > 10), Q['expeditions']['plus_10_jo'], 0)
+ne = [c for c in vivantes_ if c['r']['Paid at'] and not c['r']['Fulfilled at'] and (REF - pf(c['r']['Paid at'])).days > 30]
+cmp('Payées, non expédiées depuis plus de 30 jours', len(ne), Q['expeditions']['non_expediees_plus_30j'], 0); cmp('… dont retrait en local', sum(1 for c in ne if 'lotissement' in c['r']['Shipping Method'].lower()), Q['expeditions']['non_expediees_plus_30j_retrait_local'], 0)
 print('\n%d contrôles OK, %d écart(s)' % (ok, ko))
