@@ -11,7 +11,7 @@
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html">Automatisations</a><a href="recommandations.html">Recommandations</a><a href="reco-alternative.html">Proposition alternative</a><a href="methode.html" aria-current="page">Méthode</a></div></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-existant.html">Automatisations</a><a href="recommandations.html">Recommandations</a><a href="methode.html" aria-current="page">Méthode</a></div></div></nav>
 
 <header class="hero"><div class="wrap"><p class="kicker">Transparence</p><h1>Méthode, code et vérifications</h1><p class="lead">Comment lire les chiffres, ce qui a été vérifié, les tests utilisés en mots simples et tout le code.</p></div></header>
 <main class="wrap" id="contenu">
@@ -368,6 +368,8 @@ Fiches qui acceptent les SMS ou WhatsApp                                        
 Abonnés inscrits via la formation (étiquette Formation ou formulaire 692823)                 313.0000     313.0000  OK
 … sans commande                                                                              268.0000     268.0000  OK
 Abonnés sans commande hors formation                                                         693.0000     693.0000  OK
+Abonnés sans commande hors formation et sans aucune étiquette                                650.0000     650.0000  OK
+Abonnés sans commande hors formation avec une ville renseignée                               122.0000     122.0000  OK
 Remise moyenne du code de bienvenue (€)                                                        6.1399       6.1399  OK
 Part des clients à 3 commandes ou plus (%)                                                    13.5816      13.5816  OK
 Part du chiffre d’affaires des clients à 3 commandes ou plus (%)                              42.9170      42.9170  OK
@@ -429,6 +431,9 @@ Vues Instagram de juillet 2026                                                  
 Commandes avec le code de bienvenue                                                          482.0000     482.0000  OK
 … passées par un client qui avait déjà commandé                                               32.0000      32.0000  OK
 … remises correspondantes (€)                                                                202.5300     202.5300  OK
+Commandes de rang 3 et plus                                                                  377.0000     377.0000  OK
+… avec un code                                                                                55.0000      55.0000  OK
+… remises correspondantes (€)                                                                657.3200     657.3200  OK
 Commandes avec un code                                                                       569.0000     569.0000  OK
 Remises totales (€)                                                                         4536.1800    4536.1800  OK
 Codes de la boutique                                                                          60.0000      60.0000  OK
@@ -441,7 +446,7 @@ Commandes sur 30 jours (rapport Shopify)                                        
 … dont réseaux sociaux (Instagram, Facebook, YouTube)                                         40.0000      40.0000  OK
 Commandes de la boutique sur la même période (orders.csv)                                    149.0000     149.0000  OK
 
-199 contrôles OK, 0 écart(s)
+204 contrôles OK, 0 écart(s)
 </code></pre></div></details>
 <details class="pli" name="verif-base"><summary>Vérifications : chiffres de base</summary><div class="corps"><pre class="code"><code>Contrôle                                            Recalculé    Affiché  Verdict
 Commandes non annulées                                   1438       1438  OK

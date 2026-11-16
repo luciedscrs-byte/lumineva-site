@@ -132,7 +132,9 @@ out['inscrits'] = {'fiches': len(rows_cm), 'sans_commande': sum(1 for r in rows_
                    'abonnes_formation': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes' and _form(r)),
                    'sans_commande_joignables_formation': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and _form(r)),
                    'sans_commande_joignables_hors_formation': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and not _form(r)),
-                   'abonnes_hors_formation': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes' and not _form(r))}
+                   'abonnes_hors_formation': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes' and not _form(r)),
+                   'sans_commande_hors_formation_sans_tag': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and not _form(r) and not _tags(r)),
+                   'sans_commande_hors_formation_avec_adresse': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and not _form(r) and r['Default Address City'])}
 out['premiere_commande'] = {'total_moyen': float(np.mean([v[0]['total'] for v in clients.values()])), 'total_median': float(np.median([v[0]['total'] for v in clients.values()])),
                             'remise_moyenne_bienvenue': float(np.mean([o['remise'] for o in cmds if o['code'] == 'BIENVENUE10']))}
 
@@ -203,6 +205,9 @@ out['codes'] = {'commandes': len(cmds), 'avec_code': sum(1 for o in cmds if o['c
                 'bienvenue_deja_clients': len(tard), 'bienvenue_deja_clients_remise': sum(o['remise'] for o in tard),
                 'bienvenue_deja_clients_rang_median': float(np.median([o['rang'] for o in tard])) if tard else None,
                 'premieres_commandes': len(clients), 'premieres_avec_bienvenue': sum(1 for v in clients.values() if v[0]['code'] == 'BIENVENUE10')}
+reg_code = [o for o in cmds if o.get('rang', 0) >= 3 and o['code']]
+out['codes']['reguliers_commandes_code'] = len(reg_code); out['codes']['reguliers_remise'] = sum(o['remise'] for o in reg_code)
+out['codes']['reguliers_commandes'] = sum(1 for o in cmds if o.get('rang', 0) >= 3)
 dates_b = sorted(o['date'] for o in bi); out['codes']['bienvenue_premier_usage'] = dates_b[0]; out['codes']['bienvenue_dernier_usage'] = dates_b[-1]
 
 # =================================================================== H. COMPLÉMENTS : cibles rapide/tardif, délais avant la relance, paniers suivants, sources des ventes
