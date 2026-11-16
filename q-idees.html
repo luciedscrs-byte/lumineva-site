@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autres idées d’automatisations · Lumineva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="style.css?v=19">
+
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html" aria-current="page">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="reco-alternative.html">Proposition alternative</a><a href="methode.html">Méthode</a></div></div></nav>
+<nav class="subnav" aria-label="Automatisations"><div class="wrap"><span class="lab">Automatisations</span><a href="q-relance.html">1 · Relance selon le profil du client</a><a href="q-abandon.html">2 · Relances panier et paiement</a><a href="q-stock.html">3 · Lancement et retour en stock</a><a href="q-idees.html" aria-current="page">4 · Autres idées</a></div></nav>
+<header class="hero"><div class="wrap"><p class="kicker">Automatisations · 4</p><h1>Autres idées d’automatisations</h1><p class="lead">Toutes les données passées en revue : quelles automatisations sont réalisables, chiffrables, justifiables et claires, et lesquelles on écarte, avec la raison.</p></div></header>
+<main class="wrap" id="contenu">
+<div class="enclair"><h3>En clair</h3><p><b>La question.</b> Quelles automatisations peut-on proposer avec seulement les données qu’on a ?</p><p class="rep"><b>Notre réponse.</b> 14 idées examinées. <b>4 sont retenues</b> (relance par profil, relances panier et paiement, code de bienvenue réservé, relance de la liste formation), <b>3 sont à tester</b> (parcours de 3 mois, alerte de retour en stock, demande d’avis une fois la réponse du prof connue) et <b>7 sont écartées</b> parce qu’un chiffre les contredit ou parce que leur effet ne peut pas se prouver.</p><p style="margin-bottom:0"><b>Les chiffres qui la soutiennent :</b></p><ol><li>Une idée n’est retenue que si les <b>quatre</b> critères sont remplis. Seules 5 idées sur 14 les remplissent tous : 4 sont retenues, 1 est un pari à tester.</li><li>Les idées écartées le sont par un chiffre : par exemple l’e-mail de lancement (0,06 commande pour 100 e-mails) ou l’alerte de stock bas (62 % du catalogue déjà concerné).</li><li>Toutes les données ont été utilisées ou examinées : un seul fichier ne sert à rien ici (âge et genre des abonnés des réseaux).</li></ol><p class="petit" style="margin-top:10px"><b>Niveau de preuve :</b> <span class="pill done">Démontré</span> pour les chiffres de chaque ligne ; <span class="pill todo">Hypothèse</span> pour tout effet d’une automatisation</p></div>
+<h2>1 · Nos quatre critères</h2><div class="tablewrap"><table><tr><th class="">Critère</th><th class="">La question qu’on se pose</th><th class="">Comment on le vérifie</th></tr><tr><td class=""><b>Réalisable</b></td><td class="">Shopify (ou Shopify Flow) peut-il le faire, sans application payante ni développement ?</td><td class="">Aide de Shopify, ou ce que la boutique fait déjà (codes réservés, 7 automatisations)</td></tr><tr><td class=""><b>Chiffrable</b></td><td class="">Peut-on compter à qui l’e-mail s’adresse, par an ?</td><td class="">Un nombre de clients ou d’e-mails tiré des fichiers</td></tr><tr><td class=""><b>Justifiable</b></td><td class="">Un chiffre des fichiers montre-t-il le besoin, et ne contredit-il pas l’idée ?</td><td class="">Un taux, un délai, un coût tiré des fichiers</td></tr><tr><td class=""><b>Claire</b></td><td class="">Peut-on l’expliquer en une phrase à la gérante ?</td><td class="">Relecture</td></tr></table></div>
+<h2>2 · Les 14 idées passées en revue</h2><p class="meta">« oui » en vert = critère rempli ; « non » en rouge = critère non rempli. Les chiffres viennent des fichiers ; les effets d’une automatisation restent des hypothèses sauf mention.</p><div class="tablewrap"><table><tr><th>Idée</th><th>Outil</th><th>Cible chiffrée</th><th>Ce que montrent les chiffres</th><th>Réalisable</th><th>Chiffrable</th><th>Justifiable</th><th>Claire</th><th>Verdict</th></tr><tr><td><b>Relancer selon le profil du client</b></td><td>Segments Shopify + Flow + e-mail</td><td>782 e-mails par an</td><td>Courbes de retour : 8,4 % par mois jusqu’à J+45 puis 4,7 % (nouveau) ; 25 % à J+60 (régulier)</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td><span class="pill done">Retenue</span> <a href="q-relance.html">page 1</a></td></tr><tr><td><b>Garder les relances de panier et de paiement, ajouter un 2e rappel</b></td><td>Shopify Messaging</td><td>306 e-mails non ouverts par an</td><td>0,97 commande pour 100 e-mails contre 0,11 pour les newsletters (× 9, p &lt; 0,001)</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td><span class="pill done">Retenue</span> <a href="q-abandon.html">page 2</a></td></tr><tr><td><b>Réserver le code de bienvenue aux clients sans commande</b></td><td>Réglage du code (clients éligibles)</td><td>32 commandes en 16 mois</td><td>32 commandes de clients déjà clients ont utilisé le code, pour 203 € de remises ; 4 des 60 codes de la boutique sont déjà réservés à des clients précis</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td><span class="pill done">Retenue</span> <a href="#code">détail ci-dessous</a></td></tr><tr><td><b>Relancer la liste « formation » plus souvent</b></td><td>Shopify Messaging</td><td>293 inscrits</td><td>9 ventes pour 1 631 e-mails (0,55 pour 100) ; 3 des 7 ventes de septembre-octobre arrivent 12 à 25 jours après le dernier e-mail</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td><span class="pill done">Retenue</span> <a href="q-formation.html">page Formation</a></td></tr><tr><td><b>Parcours 3 mois pour les clients à une commande</b></td><td>Formulaire (Shopify Forms) puis pilote</td><td>480 clients à 1 commande joignables</td><td>Seuil de rentabilité : 1,8 à 2,1 articles par trimestre ; un client à 1 commande en achète 1,0</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td class="ok">oui</td><td><span class="pill doing">À tester</span> <a href="reco-alternative.html#parcours">Proposition alternative</a></td></tr><tr><td><b>Message de bienvenue aux inscrits sans commande</b></td><td>Flow « abonné aux e-mails »</td><td>961 inscrits sans commande</td><td>Aucune date d’inscription dans les fichiers : impossible de savoir combien achètent seuls, donc de mesurer un effet</td><td class="ok">oui</td><td class="non">non</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill todo">Écartée</span> (pour l’instant)</td></tr><tr><td><b>E-mail de lancement la veille</b></td><td>Shopify Messaging</td><td>5 e-mails de lancement ou de retour</td><td>4 commandes pour 7 216 envois (0,06 pour 100), 0 à 2 par e-mail</td><td class="ok">oui</td><td class="ok">oui</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill todo">Écartée</span> <a href="q-stock.html">page 3</a></td></tr><tr><td><b>Alerte « retour en stock » pour les clients</b></td><td>Shopify Forms + Flow, ou application</td><td>16 produits épuisés sur 121</td><td>Ils ont fait 11 % des ventes de 90 jours ; la demande non servie n’est dans aucun fichier</td><td class="ok">oui</td><td class="non">non</td><td class="ok">oui</td><td class="ok">oui</td><td><span class="pill doing">À tester</span> (mesurer d’abord) <a href="q-stock.html">page 3</a></td></tr><tr><td><b>E-mail de délai d’expédition les jours de pointe</b></td><td>Flow</td><td>33 commandes de pointe expédiées après plus de 7 jours</td><td>Le retard est démontré (24 % contre 13 %) mais pas son effet : 31 avis après plus de 7 jours notent 4,84 contre 4,95 sur 5</td><td class="ok">oui</td><td class="ok">oui</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill todo">Écartée</span></td></tr><tr><td><b>Remise de 10 % sur le 3e article</b></td><td>Remise « achetez X, obtenez Y »</td><td>Coût de 1,87 € par commande qui en profite</td><td>Offerte à tous : environ 1 245 € par an ; le contenu des paniers abandonnés est inconnu, donc le gain ne se prouve pas</td><td class="ok">oui</td><td class="ok">oui</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill todo">Écartée</span> (reprise possible)</td></tr><tr><td><b>Demande d’avis et rappels</b></td><td>Judge.me ou Flow</td><td>2 911 demandes, 273 avis (9,4 %), 0 rappel</td><td>Les avis notent déjà 4,94 sur 5 ; Judge.me ou Flow ? Question à poser au prof</td><td class="ok">oui</td><td class="non">non</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill doing">À tester</span> (en attente de la réponse du prof)</td></tr><tr><td><b>SMS ou WhatsApp</b></td><td>Application payante</td><td>0 client sur 2 066 accepte</td><td>La gérante juge le SMS trop cher ; aucun consentement dans les fichiers</td><td class="non">non</td><td class="non">non</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill todo">Écartée</span></td></tr><tr><td><b>Alerte interne de stock bas</b></td><td>Flow</td><td>75 produits sur 121 à 1 à 5 unités</td><td>Un seuil à 5 unités se déclencherait tout de suite sur 62 % du catalogue : trop de bruit pour servir</td><td class="ok">oui</td><td class="ok">oui</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill todo">Écartée</span></td></tr><tr><td><b>Relance « un an après » ou des dormants</b></td><td>Flow</td><td>326 cas à 270 jours</td><td>Chance de retour dans le mois : 1,2 % à 270 jours, 3,4 % à 180 jours</td><td class="ok">oui</td><td class="ok">oui</td><td class="non">non</td><td class="ok">oui</td><td><span class="pill todo">Écartée</span></td></tr></table></div>
+<h2>3 · Où chaque fichier a servi</h2><div class="tablewrap"><table><tr><th class="">Fichier</th><th class="">Ce qu’on y a lu</th><th class="">Idées qui en sortent</th></tr><tr><td class=""><code>orders.csv</code></td><td class="">Quand les clients reviennent, ce qu’ils achètent, codes utilisés, délais d’expédition, jours de pointe</td><td class="">Relance par profil · code de bienvenue · abonnement · e-mail de délai</td></tr><tr><td class=""><code>customers.csv</code></td><td class="">1 701 des 2 066 fiches acceptent les e-mails ; 961 n’ont jamais commandé ; 0 accepte les SMS ou WhatsApp</td><td class="">Qui on peut relancer · SMS écarté · bienvenue écartée</td></tr><tr><td class=""><code>products.csv</code></td><td class="">Stock (16 épuisés, 75 à 1 à 5 unités sur 121) ; coût par article vide (0 sur 1 533 lignes)</td><td class="">Retour en stock · stock bas écarté · marge inconnue</td></tr><tr><td class=""><code>discounts.csv</code></td><td class="">60 codes ; 4 réservés à des clients précis ; le code de bienvenue n’a pas de date de fin</td><td class="">Code de bienvenue réservé · remise sur le 3e article</td></tr><tr><td class=""><code>payment_transactions.csv</code></td><td class="">Frais de paiement : 0,32 € + 1,8 % du montant (1 438 paiements)</td><td class="">Payer d’avance un abonnement</td></tr><tr><td class=""><code>avis.csv</code>, <code>avis_rapport.csv</code></td><td class="">313 avis, note 4,94 ; 2 911 demandes, 0 rappel</td><td class="">Demande d’avis (en attente) · e-mail de délai écarté</td></tr><tr><td class=""><code>instagram_publications.csv</code>, <code>facebook_publications.csv</code></td><td class="">Les annonces de lancement tombent avant les jours de pointe</td><td class="">E-mail de lancement écarté</td></tr><tr><td class=""><code>analytics_*.csv</code> (4 fichiers)</td><td class="">Origine des ventes sur 30 jours : 27 % réseaux sociaux, 20 % moteurs de recherche, 38 % sans référent ; aucune ligne « e-mail »</td><td class="">Avantage « moins dépendre des réseaux » · e-mail de lancement</td></tr><tr><td class=""><code>audiences.csv</code></td><td class="">Âge et genre des abonnés des réseaux, pas des clients</td><td class="">Aucune idée d’automatisation n’en sort : non utilisé</td></tr><tr><td class="">Bilan e-mailing (26 e-mails)</td><td class="">Pour chaque e-mail : envoyés, ouverts, cliqués, visites, commandes</td><td class="">Relances panier et paiement · formation · lancement</td></tr></table></div>
+<h2 id="code">4 · Détail d’une idée retenue : réserver le code de bienvenue aux clients sans commande</h2>
+<div class="chiffres"><div class="c"><span class="v">447 sur 913</span><span class="l">1res commandes avec le code de bienvenue (−10 %)</span></div><div class="c"><span class="v">32</span><span class="l">commandes avec ce code passées par des clients qui avaient déjà commandé</span></div><div class="c"><span class="v">203 €</span><span class="l">de remises sur ces 32 commandes (environ 152 € par an)</span></div><div class="c"><span class="v">4 sur 60</span><span class="l">codes de la boutique déjà réservés à des clients précis</span></div></div>
+<div class="dash"><ul class="fl"><li><span class="tag f">Fait</span>Le code est réglé « une utilisation par client », ce qui est bien. Mais n’importe quel client qui ne l’a jamais utilisé peut s’en servir, y compris après plusieurs commandes : 32 commandes sur 482 (7 %), au rang médian 2 (2e commande).</li><li><span class="tag f">Fait</span>Le code n’a pas de date de fin : premier usage le 21/07/2025, dernier le 20/10/2026.</li><li><span class="tag f">Fait</span>La boutique sait déjà réserver un code à des clients précis (4 codes de ce type dans <code>discounts.csv</code>) : ce réglage existe dans l’outil.</li><li><span class="tag i">Interprétation possible</span>Le gain est petit (environ 152 € par an) mais il est <b>certain et sans effort</b> : un réglage, aucun e-mail. On ne sait pas si ces clients auraient commandé sans le code.</li><li><span class="tag l">Limite</span>Un client qui s’inscrit à la newsletter avant de commander reste éligible : la règle « zéro commande » ne l’exclut pas.</li></ul></div>
+<div class="cols2"><div><h3>Limites et ce qui manque</h3><ul><li>Les 32 commandes sont comptées dans les 16 mois de données ; le rythme futur peut changer.</li><li>La marge sur ces commandes est inconnue : les 203 € sont une remise facturée, pas une perte de marge exacte.</li></ul></div></div>
+<details class="pli" name="q-idees-code"><summary>Le code</summary><div class="corps"><div class="codes"><details class="pli" name="code-q5_profils.py"><summary><code>q5_profils.py</code> · Profils de clients (chance de retour selon le silence, critères testés, retour rapide ou tardif), cibles par an, base de l’abonnement ciblé, formation par période, codes de réduction.</summary><div class="corps"><p class="meta">270 lignes · <a href="q5_profils.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+"""Analyses du 15/11/2026 (soir) : profils de clients reconnus par leur comportement, délais de relance,
+abonnement ciblé, formation en septembre-octobre, codes de réduction.
+Aucune donnée personnelle : comptes, taux et montants agrégés.
+  A. Profils : quand un client revient-il après un silence de T jours ? (par nombre de commandes déjà passées)
+  B. Comportements qui distinguent les clients (7 critères testés, correction de Holm)
+  C. Curieux ou fidèle à un produit ? Chasseur de promo ?
+  D. Cibles par an pour chaque relance
+  E. Abonnement ciblé : ce que les clients achètent déjà sans lui, seuil de rentabilité, frais de paiement
+  F. Formation : ventes par période, par vague d'e-mails, saison
+  G. Codes de réduction : coût, code de bienvenue réutilisé par d'anciens clients"""
+import csv, json, collections, math, statistics
+from datetime import datetime, timedelta
+import numpy as np
+from scipy import stats
+from common import charger, REF, famille
+
+cmds, clients = charger()
+cm = {r['customer_key'].strip(): r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
+oui = lambda k: cm.get(k, {}).get('Accepts Email Marketing') == 'yes'
+out = {}
+PICS = sorted(d for d, k in collections.Counter(o['date'] for o in cmds).items() if k &gt;= 20)
+AN = REF - timedelta(days=365)
+
+
+def wilson(k, n_, z=1.96):
+    if n_ == 0: return [None, None]
+    p = k / n_; d = 1 + z * z / n_
+    c = (p + z * z / (2 * n_)) / d; h = z * math.sqrt(p * (1 - p) / n_ + z * z / (4 * n_ * n_)) / d
+    return [100 * (c - h), 100 * (c + h)]
+
+
+def fisher(a, na, b, nb):
+    return float(stats.fisher_exact([[a, na - a], [b, nb - b]])[1])
+
+# =================================================================== A. SILENCE ET RETOUR
+def hazard(statut, T, H=30):
+    """Observations = (client, commande) où le client a déjà passé `statut` commandes. Silence de T jours depuis cette commande ;
+    succès = nouvelle commande dans les H jours suivants. On garde les observations suivies au moins T+H jours."""
+    ok = tot = 0
+    for v in clients.values():
+        for i in range(len(v)):
+            if not statut(i + 1): continue
+            last = v[i]['dt']; nxt = v[i + 1]['dt'] if i + 1 &lt; len(v) else None
+            if (REF - last).days &lt; T + H: continue
+            if nxt is not None and (nxt - last).days &lt;= T: continue
+            tot += 1; ok += 1 if (nxt is not None and (nxt - last).days &lt;= T + H) else 0
+    return {'T': T, 'retours': ok, 'observations': tot, 'taux': 100 * ok / tot if tot else None, 'ic': wilson(ok, tot)}
+
+TS = (0, 30, 45, 60, 90, 120, 180, 270)
+out['hazard'] = {'1': [hazard(lambda r: r == 1, T) for T in TS], '2': [hazard(lambda r: r == 2, T) for T in TS], '3+': [hazard(lambda r: r &gt;= 3, T) for T in TS]}
+
+# =================================================================== B. COMPORTEMENTS QUI DISTINGUENT LES CLIENTS (retour dans les 90 jours après la 1re commande)
+tot1 = sorted(v[0]['total'] for v in clients.values()); med_panier = tot1[len(tot1) // 2]
+def fen(T, f):
+    el = [k for k, v in clients.items() if (REF - v[0]['dt']).days &gt;= T and f(k)]
+    r = [k for k in el if len(clients[k]) &gt; 1 and (clients[k][1]['dt'] - clients[k][0]['dt']).days &lt;= T]
+    return {'suivis': len(el), 'ont_recommande': len(r), 'taux': 100 * len(r) / len(el) if el else None}
+crit = [
+    ('Accepte les e-mails marketing', oui),
+    ('1re commande de 3 articles ou plus', lambda k: clients[k][0]['qte'] &gt;= 3),
+    ('1re commande d’au moins ' + str(round(med_panier)) + ' € (la médiane)', lambda k: clients[k][0]['total'] &gt;= med_panier),
+    ('Livré dans les Pyrénées-Atlantiques', lambda k: clients[k][0]['cp'][:2] == '64'),
+    ('1re commande avec le code de bienvenue', lambda k: clients[k][0]['code'] == 'BIENVENUE10'),
+    ('1re commande avec une bougie gourmande', lambda k: 'Bougies gourmandes' in clients[k][0]['familles']),
+    ('1re commande un jour de lancement (pointe)', lambda k: clients[k][0]['date'] in PICS),
+]
+seg = []
+for nom, f in crit:
+    a, b = fen(90, f), fen(90, lambda k, f=f: not f(k))
+    seg.append({'groupe': nom, 'oui': a, 'non': b, 'p': fisher(a['ont_recommande'], a['suivis'], b['ont_recommande'], b['suivis'])})
+ordre = sorted(range(len(seg)), key=lambda i: seg[i]['p']); prev = 0
+for r_, i in enumerate(ordre):
+    prev = max(prev, min(1.0, seg[i]['p'] * (len(seg) - r_))); seg[i]['p_holm'] = prev
+out['criteres_90j'] = seg
+out['mediane_panier'] = med_panier
+
+# 2e commande rapide (&lt;= 45 j après la 1re) ou tardive : part qui passe une 3e commande dans les 90 jours
+def f23(T, filtre):
+    el = [k for k, v in clients.items() if len(v) &gt;= 2 and (REF - v[1]['dt']).days &gt;= T and filtre(clients[k])]
+    r = [k for k in el if len(clients[k]) &gt; 2 and (clients[k][2]['dt'] - clients[k][1]['dt']).days &lt;= T]
+    return {'suivis': len(el), 'ont_commande': len(r), 'taux': 100 * len(r) / len(el) if el else None}
+rap = f23(90, lambda v: (v[1]['dt'] - v[0]['dt']).days &lt;= 45); tar = f23(90, lambda v: (v[1]['dt'] - v[0]['dt']).days &gt; 45)
+d_rap = [(v[2]['dt'] - v[1]['dt']).days for v in clients.values() if len(v) &gt;= 3 and (v[1]['dt'] - v[0]['dt']).days &lt;= 45]
+d_tar = [(v[2]['dt'] - v[1]['dt']).days for v in clients.values() if len(v) &gt;= 3 and (v[1]['dt'] - v[0]['dt']).days &gt; 45]
+out['retour_rapide'] = {'rapide': rap, 'tardif': tar, 'p': fisher(rap['ont_commande'], rap['suivis'], tar['ont_commande'], tar['suivis']),
+                        'mediane_2_3_rapide': float(np.median(d_rap)), 'mediane_2_3_tardif': float(np.median(d_tar)), 'n_rapide': len(d_rap), 'n_tardif': len(d_tar),
+                        'part_rapides_parmi_2e': 100 * sum(1 for v in clients.values() if len(v) &gt;= 2 and (v[1]['dt'] - v[0]['dt']).days &lt;= 45) / sum(1 for v in clients.values() if len(v) &gt;= 2)}
+
+# =================================================================== C. CURIEUX OU FIDÈLE À UN PRODUIT ? CHASSEUR DE PROMO ?
+deux = [v for v in clients.values() if len(v) &gt;= 2]
+same_prod = lambda v: bool(set(v[1]['produits']) &amp; set(v[0]['produits']))
+same_fam = lambda v: bool(set(v[1]['familles']) &amp; set(v[0]['familles']))
+out['curieux'] = {'n': len(deux), 'meme_produit': sum(same_prod(v) for v in deux), 'meme_famille': sum(same_fam(v) for v in deux),
+                  'tous_nouveaux': sum(not same_prod(v) for v in deux), 'nouvelle_famille': sum(not same_fam(v) for v in deux)}
+code1 = [v for v in deux if v[0]['code']]; nocode1 = [v for v in deux if not v[0]['code']]
+out['chasseur'] = {'deux_commandes_code_1re': len(code1), 'dont_code_2e': sum(1 for v in code1 if v[1]['code']),
+                   'deux_commandes_sans_code_1re': len(nocode1), 'dont_code_2e_sans': sum(1 for v in nocode1 if v[1]['code']),
+                   'premieres_avec_code': sum(1 for v in clients.values() if v[0]['code']), 'clients': len(clients),
+                   'toujours_code': sum(1 for v in clients.values() if all(o['code'] for o in v)),
+                   'toujours_code_1_commande': sum(1 for v in clients.values() if all(o['code'] for o in v) and len(v) == 1),
+                   'toujours_code_2plus': sum(1 for v in clients.values() if all(o['code'] for o in v) and len(v) &gt;= 2),
+                   'rang2plus_total': sum(1 for o in cmds if o.get('rang', 0) &gt;= 2), 'rang2plus_avec_code': sum(1 for o in cmds if o.get('rang', 0) &gt;= 2 and o['code'])}
+
+# =================================================================== D. CIBLES PAR AN
+def en_flux(dt_, delai): return delai + 1 &lt;= (REF - dt_).days &lt;= delai + 365     # 12 mois de clients qui atteignent le moment de relance (même définition que l1_relance.py)
+def cible_post(rang_cible, delai):
+    """clients dont la commande de rang `rang_cible` tombe dans la fenêtre d'un an qui a atteint le moment de relance, sans commande suivante dans les `delai` jours."""
+    e = [k for k, v in clients.items() if len(v) &gt;= rang_cible and en_flux(v[rang_cible - 1]['dt'], delai)]
+    s = [k for k in e if not (len(clients[k]) &gt; rang_cible and (clients[k][rang_cible]['dt'] - clients[k][rang_cible - 1]['dt']).days &lt;= delai)]
+    return {'clients': len(e), 'sans_retour': len(s), 'joignables': sum(1 for k in s if oui(k))}
+dec = {}
+for delai in (60, 120):
+    ev = []
+    for k, v in clients.items():
+        for i in range(2, len(v)):             # commandes de rang &gt;= 3
+            if en_flux(v[i]['dt'], delai):
+                suiv = v[i + 1]['dt'] if i + 1 &lt; len(v) else None
+                if not (suiv is not None and (suiv - v[i]['dt']).days &lt;= delai): ev.append(k)
+    dec[str(delai)] = {'evenements': len(ev), 'clients': len(set(ev)), 'joignables': len({k for k in ev if oui(k)})}
+out['cibles'] = {'nouveau_45': cible_post(1, 45), 'revenu_45': cible_post(2, 45), 'regulier': dec,
+                 'dormants_reguliers': {'clients_3plus': sum(1 for v in clients.values() if len(v) &gt;= 3),
+                                        'silence_plus_180': sum(1 for v in clients.values() if len(v) &gt;= 3 and (REF - v[-1]['dt']).days &gt; 180)}}
+out['joignables_part'] = {'clients': len(clients), 'joignables': sum(1 for k in clients if oui(k))}
+rows_cm = list(csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8')))      # une ligne = une fiche (2 066) ; cm ci-dessus est indexé par clé (quelques fiches sans clé)
+out['inscrits'] = {'fiches': len(rows_cm), 'sans_commande': sum(1 for r in rows_cm if r['Total Orders'] == '0'),
+                   'sans_commande_joignables': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes'),
+                   'joignables': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes'),
+                   'sms': sum(1 for r in rows_cm if r['Accepts SMS Marketing'] == 'yes'), 'whatsapp': sum(1 for r in rows_cm if r['Accepts WhatsApp Marketing'] == 'yes')}
+
+# =================================================================== E. ABONNEMENT CIBLÉ
+def base90(filtre_rang, jours=90):
+    """Après une commande de rang filtré, combien d'articles et d'euros le client achète-t-il dans les `jours` jours suivants ? (clients suivis au moins `jours` jours)"""
+    art, eur_, cmdn, n_ = [], [], [], 0
+    for v in clients.values():
+        for i in range(len(v)):
+            if not filtre_rang(i + 1): continue
+            if (REF - v[i]['dt']).days &lt; jours: continue
+            sui = [o for o in v[i + 1:] if (o['dt'] - v[i]['dt']).days &lt;= jours]
+            art.append(sum(o['qte'] for o in sui)); eur_.append(sum(o['sous_total'] for o in sui)); cmdn.append(len(sui))
+    return {'observations': len(art), 'articles_moy': float(np.mean(art)), 'euros_moy': float(np.mean(eur_)), 'commandes_moy': float(np.mean(cmdn))}
+out['base90'] = {'1': base90(lambda r: r == 1), '2': base90(lambda r: r == 2), '3+': base90(lambda r: r &gt;= 3)}
+# clients 1 ou 2 commandes : effectif et joignables (cible de l'offre)
+nc = {k: len(v) for k, v in clients.items()}
+out['cible_abo'] = {'une_ou_deux': sum(1 for x in nc.values() if x &lt;= 2), 'une_ou_deux_joignables': sum(1 for k, x in nc.items() if x &lt;= 2 and oui(k)),
+                    'actifs_12m_une_ou_deux': sum(1 for k, x in nc.items() if x &lt;= 2 and clients[k][-1]['dt'] &gt;= AN), 'actifs_12m_une_ou_deux_joignables': sum(1 for k, x in nc.items() if x &lt;= 2 and clients[k][-1]['dt'] &gt;= AN and oui(k))}
+# articles par an chez les fidèles actifs
+f3 = [k for k, v in clients.items() if len(v) &gt;= 3 and any(o['dt'] &gt;= AN for o in v)]
+out['fideles_an'] = {'n': len(f3), 'articles_12m_mediane': float(np.median([sum(o['qte'] for o in clients[k] if o['dt'] &gt;= AN) for k in f3])),
+                     'articles_12m_moyenne': float(np.mean([sum(o['qte'] for o in clients[k] if o['dt'] &gt;= AN) for k in f3])),
+                     'articles_trimestre_moyenne': float(np.mean([sum(o['qte'] for o in clients[k] if o['dt'] &gt;= AN) for k in f3])) / 4}
+tot_clients = len(clients); ca_tot = sum(o['total'] for o in cmds)
+out['valeur_fidele'] = {'part_clients_3plus': 100 * sum(1 for x in nc.values() if x &gt;= 3) / tot_clients,
+                        'part_ca_3plus': 100 * sum(o['total'] for k, v in clients.items() if len(v) &gt;= 3 for o in v) / ca_tot}
+# frais de paiement : frais = a + b x montant
+tr = [r for r in csv.DictReader(open('../DONNEES/payment_transactions.csv', encoding='utf-8')) if r['Type'] == 'charge' and r['Amount']]
+A = np.array([float(r['Amount']) for r in tr]); Fz = np.array([float(r['Fee'] or 0) for r in tr])
+(c0, c1), *_x = np.linalg.lstsq(np.vstack([np.ones_like(A), A]).T, Fz, rcond=None)
+out['frais'] = {'fixe': float(c0), 'variable': float(c1), 'paiements': len(tr)}
+prix_g = [l['prix'] for o in cmds for l in o['lignes'] if l['nom'].upper().startswith('BOUGIE GOURMANDE')]
+out['prix_bougie'] = {'mediane_gourmande': float(np.median(prix_g)), 'moyen_article': float(np.mean([l['prix'] for o in cmds for l in o['lignes']]))}
+
+# =================================================================== F. FORMATION
+pay = []
+for o in cmds:
+    for l in o['lignes']:
+        if famille(l['nom']) == 'Formation' and o['total'] &gt; 0:
+            pay.append({'date': o['date'], 'dt': o['dt'], 'paye': o['total'], 'code': o['code'], 'prix': l['prix'], 'nom': l['nom']})
+def periode(d):
+    if d &lt; '2026-05-01': return '1 · Avril (1er e-mail, consulting)'
+    if d &lt; '2026-07-21': return '2 · Juillet (lancement, code −25 %)'
+    if d &lt; '2026-09-01': return '3 · Août'
+    return '4 · Septembre et octobre (jusqu’au 22/10)'
+per = collections.OrderedDict()
+for p in sorted(pay, key=lambda x: x['dt']):
+    q_ = per.setdefault(periode(p['date']), {'ventes': 0, 'ca': 0.0, 'avec_code': 0})
+    q_['ventes'] += 1; q_['ca'] += p['paye']; q_['avec_code'] += 1 if p['code'] else 0
+out['formation_periodes'] = per
+out['formation_total'] = {'ventes': len(pay), 'ca': sum(p['paye'] for p in pay)}
+out['formation_sept_oct'] = [{'date': p['date'], 'paye': p['paye'], 'code': p['code'], 'produit': ('Réglementation et sécurité' if 'GLEMENTATION' in p['nom'].upper() or 'CURIT' in p['nom'].upper() else 'Pack Complet' if 'COMPLET' in p['nom'].upper() else 'Autre pack')} for p in sorted(pay, key=lambda x: x['dt']) if p['date'] &gt;= '2026-09-01']
+mois_c = collections.Counter(o['date'][:7] for o in cmds if 'Formation' not in o['familles'])
+out['commandes_boutique_mois'] = dict(sorted(mois_c.items()))
+out['formation_mois'] = dict(sorted(collections.Counter(p['date'][:7] for p in pay).items()))
+# audience Instagram par mois (vues des publications)
+vues = collections.defaultdict(int); nposts = collections.Counter()
+for r in csv.DictReader(open('../DONNEES/instagram_publications.csv', encoding='utf-8')):
+    d = datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M'); vues[d.strftime('%Y-%m')] += int(r['Vues'] or 0); nposts[d.strftime('%Y-%m')] += 1
+out['instagram_vues_mois'] = {m: {'vues': vues[m], 'posts': nposts[m]} for m in sorted(vues) if m &gt;= '2025-06'}
+
+# =================================================================== G. CODES DE RÉDUCTION
+bi = [o for o in cmds if o['code'] == 'BIENVENUE10']
+tard = [o for o in bi if o.get('rang', 0) &gt;= 2]
+out['codes'] = {'commandes': len(cmds), 'avec_code': sum(1 for o in cmds if o['code']), 'remise_totale': sum(o['remise'] for o in cmds), 'ca': ca_tot,
+                'bienvenue_commandes': len(bi), 'bienvenue_remise': sum(o['remise'] for o in bi), 'bienvenue_clients': len({o['cle'] for o in bi}),
+                'bienvenue_deja_clients': len(tard), 'bienvenue_deja_clients_remise': sum(o['remise'] for o in tard),
+                'bienvenue_deja_clients_rang_median': float(np.median([o['rang'] for o in tard])) if tard else None,
+                'premieres_commandes': len(clients), 'premieres_avec_bienvenue': sum(1 for v in clients.values() if v[0]['code'] == 'BIENVENUE10')}
+dates_b = sorted(o['date'] for o in bi); out['codes']['bienvenue_premier_usage'] = dates_b[0]; out['codes']['bienvenue_dernier_usage'] = dates_b[-1]
+
+# =================================================================== H. COMPLÉMENTS : cibles rapide/tardif, délais avant la relance, paniers suivants, sources des ventes
+rapide_f = lambda v: (v[1]['dt'] - v[0]['dt']).days &lt;= 45
+def sans_3e(ks, delai): return [k for k in ks if not (len(clients[k]) &gt; 2 and (clients[k][2]['dt'] - clients[k][1]['dt']).days &lt;= delai)]
+rr30 = [k for k, v in clients.items() if len(v) &gt;= 2 and en_flux(v[1]['dt'], 30) and rapide_f(v)]
+s30 = sans_3e(rr30, 30); out['cibles']['revenu_rapide_30'] = {'clients': len(rr30), 'sans_retour': len(s30), 'joignables': sum(1 for k in s30 if oui(k))}
+rt55 = [k for k, v in clients.items() if len(v) &gt;= 2 and en_flux(v[1]['dt'], 55) and not rapide_f(v)]
+s55 = sans_3e(rt55, 55); out['cibles']['revenu_tardif_55'] = {'clients': len(rt55), 'sans_retour': len(s55), 'joignables': sum(1 for k in s55 if oui(k))}
+# part des retours déjà passés à la date de la relance (parmi ceux qui reviennent un jour)
+d12 = [(v[1]['dt'] - v[0]['dt']).days for v in clients.values() if len(v) &gt;= 2]
+out['deja_revenus'] = {'nouveau_45': {'n': len(d12), 'avant': sum(1 for d in d12 if d &lt; 45), 'mediane': float(np.median(d12))},
+                       'rapide_30': {'n': len(d_rap), 'avant': sum(1 for d in d_rap if d &lt; 30), 'mediane': float(np.median(d_rap))},
+                       'tardif_55': {'n': len(d_tar), 'avant': sum(1 for d in d_tar if d &lt; 55), 'mediane': float(np.median(d_tar))}}
+out['paniers_suivants'] = {'2e': float(np.mean([v[1]['total'] for v in clients.values() if len(v) &gt;= 2])), '3e': float(np.mean([v[2]['total'] for v in clients.values() if len(v) &gt;= 3])),
+                           '4e_et_plus': float(np.mean([o['total'] for v in clients.values() for o in v[3:]])), 'n_2e': sum(1 for v in clients.values() if len(v) &gt;= 2), 'n_3e': sum(1 for v in clients.values() if len(v) &gt;= 3),
+                           'n_4e': sum(len(v[3:]) for v in clients.values())}
+rows = list(csv.DictReader(open('../DONNEES/analytics_ventes_totales_par_referent_2026-09-22_2026-10-22.csv', encoding='utf-8')))
+cat = collections.defaultdict(lambda: {'commandes': 0, 'ventes': 0.0}); noms = []
+for r in rows:
+    src, nom = r['Source du référent de la commande'], r['Nom du référent de la commande']
+    if nom in ('instagram', 'facebook', 'youtube') or src == 'social': c = 'Réseaux sociaux'
+    elif src == 'search': c = 'Moteurs de recherche'
+    elif not src and not nom: c = 'Direct (aucun référent)'
+    else: c = 'Autres'
+    cat[c]['commandes'] += int(r['Commandes']); cat[c]['ventes'] += float(r['Ventes totales'])
+    noms.append((src, nom, int(r['Commandes'])))
+out['sources_ventes_30j'] = {'categories': dict(cat), 'total_commandes': sum(int(r['Commandes']) for r in rows), 'lignes': noms,
+                             'commandes_boutique_30j': sum(1 for o in cmds if '2026-09-22' &lt;= o['date'] &lt;= '2026-10-22')}
+
+# =================================================================== I. CODES RÉSERVÉS, AVIS ET DÉLAIS D'EXPÉDITION
+disc = list(csv.DictReader(open('../DONNEES/discounts.csv', encoding='utf-8')))
+out['codes']['codes_total'] = len(disc)
+out['codes']['codes_reserves_clients'] = sum(1 for r in disc if r['Customer Selection'] == 'prerequisite')
+out['codes']['bienvenue_une_fois_par_client'] = [r['Applies Once Per Customer'] for r in disc if r['Name'] == 'BIENVENUE10'][0]
+out['codes']['bienvenue_fin'] = [r['End'] for r in disc if r['Name'] == 'BIENVENUE10'][0]
+raw_o = [r for r in csv.DictReader(open('../DONNEES/orders.csv', encoding='utf-8')) if r['Total']]
+def _dtp(x): return datetime.strptime(x[:19], '%Y-%m-%d %H:%M:%S') if x else None
+delai = {r['order_key']: (_dtp(r['Fulfilled at']) - _dtp(r['Paid at'])).days for r in raw_o if r['Paid at'] and r['Fulfilled at']}
+avis = list(csv.DictReader(open('../DONNEES/avis.csv', encoding='utf-8')))
+byc = collections.defaultdict(list)
+for o in cmds: byc[o['cle']].append(o)
+lies = []
+for a in avis:
+    d = datetime.strptime(a['review_date'][:19], '%Y-%m-%d %H:%M:%S')
+    cs = [o for o in byc.get(a['customer_key'], []) if o['dt'] &lt;= d and o['ordre_key'] in delai]
+    if cs:
+        o_ = max(cs, key=lambda o: o['dt']); lies.append((int(a['rating']), delai[o_['ordre_key']]))
+lent = [r for r, dl in lies if dl &gt; 7]; vite = [r for r, dl in lies if dl &lt;= 7]
+out['avis_delai'] = {'avis': len(avis), 'relies': len(lies), 'cinq_etoiles': sum(1 for a in avis if a['rating'] == '5'), 'note_moyenne': float(np.mean([int(a['rating']) for a in avis])),
+                     'apres_plus_7j': len(lent), 'note_plus_7j': float(np.mean(lent)), 'apres_7j_ou_moins': len(vite), 'note_7j_ou_moins': float(np.mean(vite)),
+                     'notes_3_ou_moins': sum(1 for a in avis if int(a['rating']) &lt;= 3)}
+
+# =================================================================== J. MODÈLE DE L'ABONNEMENT CIBLÉ (3 bougies en 3 mois, payé d'avance)
+# Pour un client qui achèterait b articles en 90 jours sans l'offre : (3 - b) bougies sont des ventes en plus (marge à p euros),
+# min(b, 3) sont des bougies qu'il aurait achetées de toute façon (on perd la remise PL - p) ; on retire les frais de paiement.
+MARGES = {'bas': 0.357, 'haut': 0.5}      # 0,50 x part des bougies dans le chiffre d'affaires (71,4 %) ; 0,50 sur tout (voir site/scripts/decisions_charts.py)
+PL_ = out['prix_bougie']['mediane_gourmande']
+def _fee(p, prepaye=True): return (c0 + c1 * 3 * p) if prepaye else 3 * (c0 + c1 * p)
+def _gain(m, p, b, prepaye=True):
+    c = PL_ * (1 - m); return max(0, 3 - b) * (p - c) - min(b, 3) * (PL_ - p) - _fee(p, prepaye)
+def _seuil(m, p, prepaye=True):
+    c = PL_ * (1 - m); return (3 * (p - c) - _fee(p, prepaye)) / (PL_ - c)
+bk = {'1': out['base90']['1']['articles_moy'], '2': out['base90']['2']['articles_moy'], '3+': out['base90']['3+']['articles_moy']}
+out['abonnement'] = {'marges': MARGES, 'prix_liste': PL_,
+                     'gain': {'%d|%s|%s' % (p, k, mk): float(_gain(m, p, b)) for p in (18, 20, 22) for k, b in bk.items() for mk, m in MARGES.items()},
+                     'seuil': {'%d|%s' % (p, mk): float(_seuil(m, p)) for p in (18, 20, 22) for mk, m in MARGES.items()},
+                     'frais_mensuel_20': float(_fee(20, False)), 'frais_avance_20': float(_fee(20, True))}
+
+json.dump(out, open('q5_profils.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1, default=str)
+print(json.dumps({k: out[k] for k in ('hazard', 'retour_rapide', 'curieux', 'chasseur', 'cibles', 'inscrits', 'base90', 'cible_abo', 'fideles_an', 'valeur_fidele', 'frais', 'prix_bougie', 'formation_periodes', 'codes')}, ensure_ascii=False, indent=1, default=str)[:9000])
+for s in out['criteres_90j']: print(s['groupe'], round(s['oui']['taux'], 1), round(s['non']['taux'], 1), s['oui']['suivis'], round(s['p'], 4), round(s['p_holm'], 4))
+</code></pre></div></details><details class="pli" name="code-q4_approfondi.py"><summary><code>q4_approfondi.py</code> · </summary><div class="corps"><p class="meta">260 lignes · <a href="q4_approfondi.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+"""Approfondissement (15/11/2026) des trois questions d'automatisation et de la formation.
+Aucune donnée personnelle : comptes, taux et montants agrégés. Tout vient de orders.csv, customers.csv et du bilan e-mailing (fichiers JSON du prof).
+  A. Relance après la 1re commande : taux de retour en fenêtre fixe, retours un jour de pointe, qui revient (par groupe)
+  B. Relances panier et paiement : entonnoir de chaque e-mail, comparaison aux newsletters, résultats des newsletters par thème
+  C. Lancement et retour en stock : les jours de pointe et les e-mails envoyés avant, heures de commande, expéditions
+  D. Formation : produit par produit, prix et remises, vague par vague, part du chiffre d'affaires"""
+import csv, json, glob, os, collections, math, statistics
+from datetime import datetime, timedelta
+from scipy import stats
+from common import charger, REF, famille
+
+cmds, clients = charger()
+cm = {r['customer_key'].strip(): r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
+BIL = '../DONNEES/bilan_emailing/'
+EM = [json.load(open(f, encoding='utf-8')) for f in sorted(glob.glob(BIL + '1*.json'))]
+out = {}
+
+
+def fisher(a, na, b, nb):
+    """a/na contre b/nb (succès / effectif) : test exact de Fisher"""
+    return float(stats.fisher_exact([[a, na - a], [b, nb - b]])[1])
+
+
+# =================================================================== A. RELANCE APRÈS LA 1re COMMANDE
+def fenetre(T, filtre=lambda k: True):
+    el = [k for k, v in clients.items() if (REF - v[0]['dt']).days &gt;= T and filtre(k)]
+    ret = [k for k in el if len(clients[k]) &gt; 1 and (clients[k][1]['dt'] - clients[k][0]['dt']).days &lt;= T]
+    return {'suivis': len(el), 'ont_recommande': len(ret), 'taux': 100 * len(ret) / len(el) if el else None}
+
+out['fenetres'] = {str(T): fenetre(T) for T in (30, 45, 60, 90, 120, 180)}
+tot1 = sorted(v[0]['total'] for v in clients.values()); med_panier = tot1[len(tot1) // 2]
+seg = {
+    'Accepte les e-mails marketing': lambda k: cm.get(k, {}).get('Accepts Email Marketing') == 'yes',
+    '1re commande avec le code de bienvenue': lambda k: clients[k][0]['code'] == 'BIENVENUE10',
+    '1re commande d’au moins la médiane (' + str(round(med_panier)) + ' €)': lambda k: clients[k][0]['total'] &gt;= med_panier,
+    '1re commande avec une bougie gourmande': lambda k: 'Bougies gourmandes' in clients[k][0]['familles'],
+    'Livraison dans les Pyrénées-Atlantiques': lambda k: clients[k][0]['cp'][:2] == '64',
+}
+segs = []
+for nom, f in seg.items():
+    oui, non = fenetre(90, f), fenetre(90, lambda k, f=f: not f(k))
+    segs.append({'groupe': nom, 'oui': oui, 'non': non, 'p': fisher(oui['ont_recommande'], oui['suivis'], non['ont_recommande'], non['suivis'])})
+out['segments_90j'] = segs
+PICS = sorted(d for d, k in collections.Counter(o['date'] for o in cmds).items() if k &gt;= 20)
+out['pics'] = PICS
+tous = [o for v in clients.values() for o in v]
+r2 = [o for o in tous if o['rang'] == 2]; r2plus = [o for o in tous if o['rang'] &gt;= 2]
+out['retours_jour_pointe'] = {'commandes_totales': len(cmds), 'part_pics_toutes': 100 * sum(1 for o in cmds if o['date'] in PICS) / len(cmds),
+                              'deuxiemes': len(r2), 'deuxiemes_pics': sum(1 for o in r2 if o['date'] in PICS),
+                              'rang2plus': len(r2plus), 'rang2plus_pics': sum(1 for o in r2plus if o['date'] in PICS),
+                              'premieres': sum(1 for o in tous if o['rang'] == 1), 'premieres_pics': sum(1 for o in tous if o['rang'] == 1 and o['date'] in PICS)}
+# délai entre la 1re et la 2e commande : répartition (parmi ceux qui ont recommandé)
+dl = [(v[1]['dt'] - v[0]['dt']).days for v in clients.values() if len(v) &gt; 1]
+bornes = [(0, 30), (30, 45), (45, 60), (60, 90), (90, 180), (180, 999)]
+out['delais_2e'] = {'n': len(dl), 'tranches': [{'a': a, 'b': b, 'n': sum(1 for d in dl if a &lt;= d &lt; b)} for a, b in bornes]}
+
+# =================================================================== B. RELANCES PANIER ET PAIEMENT, NEWSLETTERS
+def fiche(e):
+    k, c = e['kpi'], e.get('contenu') or {}
+    return {'id': e['id'], 'objet': e['objet'], 'type': e['type'], 'liste': e['destinataires'], 'date': e['date'], 'theme': c.get('theme'),
+            'envoyes': k['emails_envoyes'], 'ouverture': k['taux_ouverture'], 'clic': k['taux_clic'], 'visites': k['visites'], 'commandes': k['commandes'],
+            'ventes': k['ventes_totales'], 'panier_moyen': k['panier_moyen'], 'entonnoir': k['entonnoir'], 'liens': e['liens'], 'cta': [x['texte'] for x in c.get('cta', [])],
+            'offre': c.get('offre'), 'image': e['image']}
+F = [fiche(e) for e in EM]
+out['emails'] = F
+flux = {f['id']: f for f in F if f['type'] == 'automatisation'}
+news = [f for f in F if f['type'] == 'newsletter']
+boutique = [f for f in news if f['liste'] == 'Tous les abonnés']
+# comparaison à nombre égal d'e-mails : newsletters de la boutique (liste « Tous les abonnés »)
+def agr(L):
+    env = sum(f['envoyes'] for f in L)
+    return {'n': len(L), 'envoyes': env, 'commandes': sum(f['commandes'] for f in L), 'ventes': sum(f['ventes'] for f in L), 'visites': sum(f['visites'] for f in L),
+            'cmd_100': 100 * sum(f['commandes'] for f in L) / env if env else None, 'ventes_1000': 1000 * sum(f['ventes'] for f in L) / env if env else None,
+            'visites_100': 100 * sum(f['visites'] for f in L) / env if env else None}
+out['themes'] = {t: agr([f for f in boutique if f['theme'] == t]) for t in sorted({f['theme'] for f in boutique})}
+out['boutique'] = agr(boutique)
+out['relances'] = agr([flux['191033671947'], flux['191033737483']])
+out['formation_listes'] = agr([f for f in news if f['liste'] == 'Client intéressé par la formation'])
+out['ouverture_moy_boutique'] = sum(f['ouverture'] * f['envoyes'] for f in boutique) / sum(f['envoyes'] for f in boutique)
+out['clic_moy_boutique'] = sum(f['clic'] * f['envoyes'] for f in boutique) / sum(f['envoyes'] for f in boutique)
+
+# =================================================================== C. LANCEMENT ET RETOUR EN STOCK
+dnews = sorted(datetime.strptime(e['date'][:10], '%Y-%m-%d') for e in json.load(open(BIL + 'inventaire.json', encoding='utf-8'))['newsletters'])
+dnews_all = [(datetime.strptime(e['date'][:16], '%Y-%m-%d %H:%M'), e['objet_liste']) for e in json.load(open(BIL + 'inventaire.json', encoding='utf-8'))['newsletters']]
+pk = []
+for d in PICS:
+    dd = datetime.strptime(d, '%Y-%m-%d')
+    avant = [x for x in dnews if x &lt;= dd]
+    jours = (dd - avant[-1]).days if avant else None
+    os_ = [o for o in cmds if o['date'] == d]
+    h = collections.Counter(o['dt'].hour for o in os_)
+    pk.append({'date': d, 'commandes': len(os_), 'derniere_newsletter_jours': jours, 'newsletter_le_jour': any(x.date() == dd.date() for x, _ in dnews_all),
+               'heures': {str(k): h[k] for k in sorted(h)}, 'avant_10h': sum(1 for o in os_ if o['dt'].hour &lt; 10), 'de_10h_a_12h': sum(1 for o in os_ if 10 &lt;= o['dt'].hour &lt; 12),
+               'apres_12h': sum(1 for o in os_ if o['dt'].hour &gt;= 12), 'clients_connus': sum(1 for o in os_ if o.get('rang', 0) &gt;= 2)})
+out['pics_detail'] = pk
+# le 20 septembre 2026 : commandes avant et après l'envoi de la newsletter de 10 h 02
+env = datetime(2026, 9, 20, 10, 2)
+o20 = [o for o in cmds if o['date'] == '2026-09-20']
+out['jour_newsletter_20_9'] = {'avant': sum(1 for o in o20 if o['dt'] &lt; env), 'apres': sum(1 for o in o20 if o['dt'] &gt;= env),
+                               'apres_heure_suivante': sum(1 for o in o20 if env &lt;= o['dt'] &lt; env + timedelta(hours=2)),
+                               'avec_psl': sum(1 for o in o20 if any('PUMPKIN SPICE LATTE' in l['nom'].upper() for l in o['lignes']))}
+# semaine moyenne : combien de commandes par jour hors pics (pour comparer)
+jours_actifs = collections.Counter(o['date'] for o in cmds)
+out['jour_moyen'] = {'commandes_par_jour_hors_pics': sum(k for d, k in jours_actifs.items() if d not in PICS) / (len(jours_actifs) - len(PICS)), 'jours_avec_commande': len(jours_actifs)}
+
+
+# =================================================================== C bis. RÉSEAUX SOCIAUX AUTOUR DES JOURS DE POINTE (publications Instagram et Facebook)
+def posts(f, reseau):
+    out_ = []
+    for r in csv.DictReader(open(f, encoding='utf-8')):
+        d = datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M')
+        out_.append({'reseau': reseau, 'dt': d, 'vues': int(r['Vues'] or 0), 'texte': (r['Description'] or '').replace('\n', ' ').strip()})
+    return out_
+PO = posts('../DONNEES/instagram_publications.csv', 'Instagram') + posts('../DONNEES/facebook_publications.csv', 'Facebook')
+MOTS = ('en ligne', 'sortira', 'collection', 'dévoile', 'dévoil', 'de retour', 'disponible')
+res = []
+for d in PICS:
+    dd = datetime.strptime(d, '%Y-%m-%d')
+    fen_ = [x for x in PO if dd - timedelta(days=3) &lt;= datetime(x['dt'].year, x['dt'].month, x['dt'].day) &lt;= dd]
+    ig = [x for x in fen_ if x['reseau'] == 'Instagram']
+    ann = sorted([x for x in fen_ if any(m in x['texte'].lower() for m in MOTS)], key=lambda x: x['dt'])
+    res.append({'date': d, 'ig_posts': len(ig), 'ig_vues': sum(x['vues'] for x in ig), 'ig_max': max([x['vues'] for x in ig] or [0]),
+                'annonces': [{'reseau': x['reseau'], 'quand': x['dt'].strftime('%d/%m %H:%M'), 'jour_j': datetime(x['dt'].year, x['dt'].month, x['dt'].day) == dd, 'vues': x['vues'], 'texte': x['texte'][:70]} for x in ann]})
+# repère : vues Instagram cumulées sur n'importe quelle fenêtre de 4 jours (médiane), pour situer les fenêtres de pointe
+ig_all = [x for x in PO if x['reseau'] == 'Instagram']
+jours_v = collections.defaultdict(int)
+for x in ig_all: jours_v[datetime(x['dt'].year, x['dt'].month, x['dt'].day)] += x['vues']
+d0, d1 = min(jours_v), max(jours_v); vals = []; cur = d0
+while cur + timedelta(days=3) &lt;= d1:
+    vals.append(sum(jours_v.get(cur + timedelta(days=i), 0) for i in range(4))); cur += timedelta(days=1)
+out['reseaux_pics'] = {'fenetres': res, 'mediane_4j_vues': statistics.median(vals) if False else sorted(vals)[len(vals) // 2], 'n_fenetres': len(vals), 'periode': [d0.strftime('%Y-%m-%d'), d1.strftime('%Y-%m-%d')]}
+
+# =================================================================== D. FORMATION
+def est_formation(nom): return famille(nom) == 'Formation'
+cl = [o for o in cmds if 'Formation' in o['familles']]
+lignes = []
+for o in cl:
+    for l in o['lignes']:
+        if est_formation(l['nom']): lignes.append({'date': o['date'], 'produit': l['nom'], 'prix': l['prix'], 'total': o['total'], 'code': o['code'], 'cle': o['cle'], 'dt': o['dt']})
+payantes = [x for x in lignes if x['total'] &gt; 0]
+out['formation_n'] = {'commandes': len(cl), 'payantes': len(payantes), 'ca_paye': sum(x['total'] for x in payantes), 'acheteurs_payants': len({x['cle'] for x in payantes}),
+                      'a_zero': sum(1 for x in lignes if x['total'] == 0)}
+def nom_court(p):
+    p = p.upper()
+    if 'CONSULTING' in p: return 'Consulting (session privée)'
+    if 'RÉGLEMENTATION' in p or 'REGLEMENTATION' in p: return 'Réglementation et sécurité'
+    for k, lab in (('COMPLET', 'Pack Complet'), ('CHANTILLY', 'Pack Chantilly'), ('COUL', 'Pack Coulées'), ('MOUL', 'Pack Moulées')):
+        if k in p: return lab
+    return p
+par_prod = collections.defaultdict(lambda: {'ventes': 0, 'ca': 0.0, 'prix_liste': [], 'avec_code': 0})
+for x in payantes:
+    q_ = par_prod[nom_court(x['produit'])]; q_['ventes'] += 1; q_['ca'] += x['total']; q_['prix_liste'].append(x['prix']); q_['avec_code'] += 1 if x['code'] else 0
+out['formation_produits'] = {k: {'ventes': v['ventes'], 'ca': v['ca'], 'prix_liste_min': min(v['prix_liste']), 'prix_liste_max': max(v['prix_liste']), 'avec_code': v['avec_code']} for k, v in sorted(par_prod.items(), key=lambda kv: -kv[1]['ca'])}
+# prix de liste du Pack Complet dans le temps
+out['pack_complet_prix'] = sorted({(x['date'][:7], x['prix']) for x in payantes if nom_court(x['produit']) == 'Pack Complet'})
+out['formation_codes'] = dict(collections.Counter(x['code'] or 'aucun' for x in payantes))
+# vagues : e-mails à la liste formation de 2026 (objet et dates du relevé du prof)
+liste_form = [f for f in news if f['liste'] == 'Client intéressé par la formation']
+dates_form = {'192541884683': '2026-04-21', '192559186187': '2026-04-25', '192859767051': '2026-07-08', '192892961035': '2026-07-18', '193087373579': '2026-09-11', '193101037835': '2026-09-15'}
+vagues = []
+for f in liste_form:
+    if f['id'] not in dates_form: continue
+    d = datetime.strptime(dates_form[f['id']], '%Y-%m-%d')
+    v4 = [x for x in payantes if d &lt;= datetime(x['dt'].year, x['dt'].month, x['dt'].day) &lt;= d + timedelta(days=4)]
+    vagues.append({'date': dates_form[f['id']], 'objet': f['objet'], 'envoyes': f['envoyes'], 'ouverture': f['ouverture'], 'clic': f['clic'], 'visites': f['visites'],
+                   'ventes_4j': len(v4), 'ca_4j': sum(x['total'] for x in v4)})
+out['formation_vagues'] = vagues
+dates_env = sorted(datetime.strptime(v['date'], '%Y-%m-%d') for v in vagues)
+tab = []
+for x in sorted(payantes, key=lambda x: x['dt']):
+    dd = datetime(x['dt'].year, x['dt'].month, x['dt'].day)
+    prev = [e for e in dates_env if e &lt;= dd]
+    tab.append({'date': x['date'], 'produit': nom_court(x['produit']), 'paye': x['total'], 'code': x['code'], 'jours_depuis_envoi': (dd - prev[-1]).days if prev else None})
+out['formation_ventes'] = tab
+debut = datetime(2026, 4, 21)
+ca_apres = sum(o['total'] for o in cmds if o['dt'] &gt;= debut); ca_form_apres = sum(x['total'] for x in payantes if x['dt'] &gt;= debut)
+out['formation_part_ca'] = {'ca_total': sum(o['total'] for o in cmds), 'ca_depuis_21_avril': ca_apres, 'ca_formation_depuis_21_avril': ca_form_apres,
+                            'part_depuis_21_avril': 100 * ca_form_apres / ca_apres, 'panier_moyen_tous': sum(o['total'] for o in cmds) / len(cmds)}
+out['formation_mois'] = dict(sorted(collections.Counter(x['date'][:7] for x in payantes).items()))
+# les ventes de formation viennent-elles de clients de bougies ? (clients ayant commandé des bougies avant)
+av = 0
+for x in payantes:
+    prec = [o for o in clients.get(x['cle'], []) if o['dt'] &lt; x['dt'] and 'Formation' not in o['familles']]
+    av += 1 if prec else 0
+out['formation_acheteurs_deja_clients'] = {'ventes': len(payantes), 'avec_commande_bougies_avant': av}
+# données du graphique « commandes par jour » et dates des e-mails
+out['commandes_par_jour'] = dict(sorted(jours_actifs.items()))
+_inv = {x['id']: x for x in json.load(open(BIL + 'inventaire.json', encoding='utf-8'))['newsletters']}
+out['newsletters_dates'] = sorted([{'date': _inv[f['id']]['date'][:10], 'objet': f['objet'], 'liste': f['liste'], 'theme': f['theme']} for f in news], key=lambda x: x['date'])
+
+# =================================================================== E. SEGMENTS PAR NOMBRE DE COMMANDES, 3e ARTICLE, ABONNEMENT
+import numpy as np
+oui_ = lambda k: cm.get(k, {}).get('Accepts Email Marketing') == 'yes'
+ca_tot_ = sum(o['total'] for o in cmds)
+def seg_(f):
+    ks = [k for k, v in clients.items() if f(len(v))]
+    return {'clients': len(ks), 'part_clients': 100 * len(ks) / len(clients), 'part_ca': 100 * sum(o['total'] for k in ks for o in clients[k]) / ca_tot_, 'joignables': sum(1 for k in ks if oui_(k))}
+out['segments_commandes'] = {'1': seg_(lambda n_: n_ == 1), '2': seg_(lambda n_: n_ == 2), '3+': seg_(lambda n_: n_ &gt;= 3)}
+# 2e -&gt; 3e commande : taux en fenêtre fixe parmi les clients suivis assez longtemps depuis leur 2e commande
+def fen23(T):
+    el = [k for k, v in clients.items() if len(v) &gt;= 2 and (REF - v[1]['dt']).days &gt;= T]
+    re_ = [k for k in el if len(clients[k]) &gt; 2 and (clients[k][2]['dt'] - clients[k][1]['dt']).days &lt;= T]
+    return {'suivis': len(el), 'ont_commande': len(re_), 'taux': 100 * len(re_) / len(el)}
+out['fenetres_2e_3e'] = {str(T): fen23(T) for T in (45, 90)}
+d23 = [(v[2]['dt'] - v[1]['dt']).days for v in clients.values() if len(v) &gt;= 3]
+out['delai_2e_3e'] = {'n': len(d23), 'mediane': float(np.median(d23))}
+an = REF - timedelta(days=365)
+cib23 = [k for k, v in clients.items() if len(v) &gt;= 2 and an &lt;= v[1]['dt'] &lt;= REF - timedelta(days=45)]
+sans3 = [k for k in cib23 if not (len(clients[k]) &gt; 2 and (clients[k][2]['dt'] - clients[k][1]['dt']).days &lt;= 45)]
+out['cible_3e_commande'] = {'deuxiemes_12m': len(cib23), 'sans_3e_a_J45': len(sans3), 'joignables': sum(1 for k in sans3 if oui_(k)),
+                            'panier_3e': float(np.mean([v[2]['total'] for v in clients.values() if len(v) &gt;= 3])), 'panier_2e': float(np.mean([v[1]['total'] for v in clients.values() if len(v) &gt;= 2]))}
+# fidèles (3 commandes ou plus) : activité des 12 derniers mois et régularité
+f3 = [k for k, v in clients.items() if len(v) &gt;= 3]
+act = [k for k in f3 if any(o['dt'] &gt;= an for o in clients[k])]
+c12 = [sum(1 for o in clients[k] if o['dt'] &gt;= an) for k in act]
+sp12 = [sum(o['total'] for o in clients[k] if o['dt'] &gt;= an) for k in act]
+ar12 = [sum(o['qte'] for o in clients[k] if o['dt'] &gt;= an) for k in act]
+iv = [(v[i + 1]['dt'] - v[i]['dt']).days for v in clients.values() if len(v) &gt;= 3 for i in range(len(v) - 1)]
+mois_dist = {k: len({(o['dt'].year, o['dt'].month) for o in v if o['dt'] &gt;= an}) for k, v in clients.items()}
+out['fideles'] = {'n': len(f3), 'actifs_12m': len(act), 'actifs_12m_joignables': sum(1 for k in act if oui_(k)),
+                  'commandes_12m_mediane': float(np.median(c12)), 'depense_12m_mediane': float(np.median(sp12)), 'depense_12m_moyenne': float(np.mean(sp12)), 'articles_12m_mediane': float(np.median(ar12)),
+                  'six_commandes_ou_plus': sum(1 for c in c12 if c &gt;= 6), 'intervalle_median': float(np.median(iv)), 'intervalle_q25_q75': [float(x) for x in np.percentile(iv, [25, 75])],
+                  'mois_6_plus': sum(1 for m in mois_dist.values() if m &gt;= 6), 'mois_4_plus': sum(1 for m in mois_dist.values() if m &gt;= 4)}
+seen_new = tot_p = 0
+for v in clients.values():
+    if len(v) &gt;= 3:
+        vus = set()
+        for i, o in enumerate(v):
+            if i &gt;= 1:
+                for pr in o['produits']: tot_p += 1; seen_new += pr not in vus
+            vus |= set(o['produits'])
+out['fideles']['part_produits_nouveaux'] = 100 * seen_new / tot_p
+# paniers : répartition par nombre d'articles, 12 derniers mois, prix moyen d'un article
+o12 = [o for o in cmds if o['dt'] &gt;= an and o['lignes']]
+rep_ = {}
+for k in (1, 2, 3, 4, 5):
+    L = [o for o in cmds if o['lignes'] and (o['qte'] == k if k &lt; 5 else o['qte'] &gt;= 5)]
+    rep_[str(k)] = {'commandes': len(L), 'part': 100 * len(L) / len([o for o in cmds if o['lignes']]), 'total_moyen': float(np.mean([o['total'] for o in L]))}
+out['paniers'] = {'repartition': rep_, 'qte_moyenne': float(np.mean([o['qte'] for o in cmds if o['lignes']])), 'qte_mediane': float(np.median([o['qte'] for o in cmds if o['lignes']])),
+                  'commandes_12m': len(o12), 'deux_articles_12m': sum(1 for o in o12 if o['qte'] == 2), 'trois_plus_12m': sum(1 for o in o12 if o['qte'] &gt;= 3),
+                  'prix_moyen_article': float(np.mean([l['prix'] for o in cmds for l in o['lignes']])),
+                  'prix_median_bougie_gourmande': float(np.median([l['prix'] for o in cmds for l in o['lignes'] if l['nom'].upper().startswith('BOUGIE GOURMANDE')]))}
+# frais de paiement : frais = a + b x montant (paiements par carte ou PayPal, fichier des transactions)
+tr_ = [r for r in csv.DictReader(open('../DONNEES/payment_transactions.csv', encoding='utf-8')) if r['Type'] == 'charge' and r['Amount']]
+a_ = np.array([float(r['Amount']) for r in tr_]); f_ = np.array([float(r['Fee'] or 0) for r in tr_])
+(c0_, c1_), *_x = np.linalg.lstsq(np.vstack([np.ones_like(a_), a_]).T, f_, rcond=None)
+out['frais_paiement'] = {'paiements': len(tr_), 'fixe': float(c0_), 'variable': float(c1_), 'part_moyenne': float(100 * f_.sum() / a_.sum())}
+out['cout_inconnus'] = {'cost_per_item_renseigne': sum(1 for r in csv.DictReader(open('../DONNEES/products.csv', encoding='utf-8')) if r['Cost per item'].strip()), 'lignes_produits': sum(1 for _ in csv.DictReader(open('../DONNEES/products.csv', encoding='utf-8')))}
+
+# sous-total moyen des commandes à 2 et à 3 articles (pour le calcul d'une remise) ; clients « toujours avec un code »
+for k_ in (2, 3):
+    out['paniers']['sous_total_moyen_%d' % k_] = float(np.mean([o['sous_total'] for o in cmds if o['lignes'] and o['qte'] == k_]))
+toujours = [k for k, v in clients.items() if all(o['code'] for o in v)]
+out['promo'] = {'clients_toujours_code': len(toujours), 'une_seule_commande': sum(1 for k in toujours if len(clients[k]) == 1), 'part_clients': 100 * len(toujours) / len(clients),
+                'part_ca': 100 * sum(o['total'] for k in toujours for o in clients[k]) / ca_tot_, 'commandes_avec_code': sum(1 for o in cmds if o['code']),
+                'commandes_code_bienvenue': sum(1 for o in cmds if o['code'] == 'BIENVENUE10')}
+json.dump(out, open('q4_approfondi.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1, default=str)
+print(json.dumps({k: out[k] for k in ('fenetres', 'retours_jour_pointe', 'delais_2e', 'relances', 'boutique', 'formation_n', 'formation_produits', 'pack_complet_prix', 'formation_codes', 'formation_part_ca', 'formation_acheteurs_deja_clients')}, ensure_ascii=False, indent=1, default=str))
+</code></pre></div></details></div></div></details>
+</main>
+<footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version du 15 novembre 2026. Rendu : 18 novembre 2026.</p></div></footer>
+</body>
+</html>

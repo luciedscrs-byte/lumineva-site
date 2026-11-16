@@ -1,0 +1,269 @@
+# encoding: utf-8
+"""Analyses du 15/11/2026 (soir) : profils de clients reconnus par leur comportement, délais de relance,
+abonnement ciblé, formation en septembre-octobre, codes de réduction.
+Aucune donnée personnelle : comptes, taux et montants agrégés.
+  A. Profils : quand un client revient-il après un silence de T jours ? (par nombre de commandes déjà passées)
+  B. Comportements qui distinguent les clients (7 critères testés, correction de Holm)
+  C. Curieux ou fidèle à un produit ? Chasseur de promo ?
+  D. Cibles par an pour chaque relance
+  E. Abonnement ciblé : ce que les clients achètent déjà sans lui, seuil de rentabilité, frais de paiement
+  F. Formation : ventes par période, par vague d'e-mails, saison
+  G. Codes de réduction : coût, code de bienvenue réutilisé par d'anciens clients"""
+import csv, json, collections, math, statistics
+from datetime import datetime, timedelta
+import numpy as np
+from scipy import stats
+from common import charger, REF, famille
+
+cmds, clients = charger()
+cm = {r['customer_key'].strip(): r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
+oui = lambda k: cm.get(k, {}).get('Accepts Email Marketing') == 'yes'
+out = {}
+PICS = sorted(d for d, k in collections.Counter(o['date'] for o in cmds).items() if k >= 20)
+AN = REF - timedelta(days=365)
+
+
+def wilson(k, n_, z=1.96):
+    if n_ == 0: return [None, None]
+    p = k / n_; d = 1 + z * z / n_
+    c = (p + z * z / (2 * n_)) / d; h = z * math.sqrt(p * (1 - p) / n_ + z * z / (4 * n_ * n_)) / d
+    return [100 * (c - h), 100 * (c + h)]
+
+
+def fisher(a, na, b, nb):
+    return float(stats.fisher_exact([[a, na - a], [b, nb - b]])[1])
+
+# =================================================================== A. SILENCE ET RETOUR
+def hazard(statut, T, H=30):
+    """Observations = (client, commande) où le client a déjà passé `statut` commandes. Silence de T jours depuis cette commande ;
+    succès = nouvelle commande dans les H jours suivants. On garde les observations suivies au moins T+H jours."""
+    ok = tot = 0
+    for v in clients.values():
+        for i in range(len(v)):
+            if not statut(i + 1): continue
+            last = v[i]['dt']; nxt = v[i + 1]['dt'] if i + 1 < len(v) else None
+            if (REF - last).days < T + H: continue
+            if nxt is not None and (nxt - last).days <= T: continue
+            tot += 1; ok += 1 if (nxt is not None and (nxt - last).days <= T + H) else 0
+    return {'T': T, 'retours': ok, 'observations': tot, 'taux': 100 * ok / tot if tot else None, 'ic': wilson(ok, tot)}
+
+TS = (0, 30, 45, 60, 90, 120, 180, 270)
+out['hazard'] = {'1': [hazard(lambda r: r == 1, T) for T in TS], '2': [hazard(lambda r: r == 2, T) for T in TS], '3+': [hazard(lambda r: r >= 3, T) for T in TS]}
+
+# =================================================================== B. COMPORTEMENTS QUI DISTINGUENT LES CLIENTS (retour dans les 90 jours après la 1re commande)
+tot1 = sorted(v[0]['total'] for v in clients.values()); med_panier = tot1[len(tot1) // 2]
+def fen(T, f):
+    el = [k for k, v in clients.items() if (REF - v[0]['dt']).days >= T and f(k)]
+    r = [k for k in el if len(clients[k]) > 1 and (clients[k][1]['dt'] - clients[k][0]['dt']).days <= T]
+    return {'suivis': len(el), 'ont_recommande': len(r), 'taux': 100 * len(r) / len(el) if el else None}
+crit = [
+    ('Accepte les e-mails marketing', oui),
+    ('1re commande de 3 articles ou plus', lambda k: clients[k][0]['qte'] >= 3),
+    ('1re commande d’au moins ' + str(round(med_panier)) + ' € (la médiane)', lambda k: clients[k][0]['total'] >= med_panier),
+    ('Livré dans les Pyrénées-Atlantiques', lambda k: clients[k][0]['cp'][:2] == '64'),
+    ('1re commande avec le code de bienvenue', lambda k: clients[k][0]['code'] == 'BIENVENUE10'),
+    ('1re commande avec une bougie gourmande', lambda k: 'Bougies gourmandes' in clients[k][0]['familles']),
+    ('1re commande un jour de lancement (pointe)', lambda k: clients[k][0]['date'] in PICS),
+]
+seg = []
+for nom, f in crit:
+    a, b = fen(90, f), fen(90, lambda k, f=f: not f(k))
+    seg.append({'groupe': nom, 'oui': a, 'non': b, 'p': fisher(a['ont_recommande'], a['suivis'], b['ont_recommande'], b['suivis'])})
+ordre = sorted(range(len(seg)), key=lambda i: seg[i]['p']); prev = 0
+for r_, i in enumerate(ordre):
+    prev = max(prev, min(1.0, seg[i]['p'] * (len(seg) - r_))); seg[i]['p_holm'] = prev
+out['criteres_90j'] = seg
+out['mediane_panier'] = med_panier
+
+# 2e commande rapide (<= 45 j après la 1re) ou tardive : part qui passe une 3e commande dans les 90 jours
+def f23(T, filtre):
+    el = [k for k, v in clients.items() if len(v) >= 2 and (REF - v[1]['dt']).days >= T and filtre(clients[k])]
+    r = [k for k in el if len(clients[k]) > 2 and (clients[k][2]['dt'] - clients[k][1]['dt']).days <= T]
+    return {'suivis': len(el), 'ont_commande': len(r), 'taux': 100 * len(r) / len(el) if el else None}
+rap = f23(90, lambda v: (v[1]['dt'] - v[0]['dt']).days <= 45); tar = f23(90, lambda v: (v[1]['dt'] - v[0]['dt']).days > 45)
+d_rap = [(v[2]['dt'] - v[1]['dt']).days for v in clients.values() if len(v) >= 3 and (v[1]['dt'] - v[0]['dt']).days <= 45]
+d_tar = [(v[2]['dt'] - v[1]['dt']).days for v in clients.values() if len(v) >= 3 and (v[1]['dt'] - v[0]['dt']).days > 45]
+out['retour_rapide'] = {'rapide': rap, 'tardif': tar, 'p': fisher(rap['ont_commande'], rap['suivis'], tar['ont_commande'], tar['suivis']),
+                        'mediane_2_3_rapide': float(np.median(d_rap)), 'mediane_2_3_tardif': float(np.median(d_tar)), 'n_rapide': len(d_rap), 'n_tardif': len(d_tar),
+                        'part_rapides_parmi_2e': 100 * sum(1 for v in clients.values() if len(v) >= 2 and (v[1]['dt'] - v[0]['dt']).days <= 45) / sum(1 for v in clients.values() if len(v) >= 2)}
+
+# =================================================================== C. CURIEUX OU FIDÈLE À UN PRODUIT ? CHASSEUR DE PROMO ?
+deux = [v for v in clients.values() if len(v) >= 2]
+same_prod = lambda v: bool(set(v[1]['produits']) & set(v[0]['produits']))
+same_fam = lambda v: bool(set(v[1]['familles']) & set(v[0]['familles']))
+out['curieux'] = {'n': len(deux), 'meme_produit': sum(same_prod(v) for v in deux), 'meme_famille': sum(same_fam(v) for v in deux),
+                  'tous_nouveaux': sum(not same_prod(v) for v in deux), 'nouvelle_famille': sum(not same_fam(v) for v in deux)}
+code1 = [v for v in deux if v[0]['code']]; nocode1 = [v for v in deux if not v[0]['code']]
+out['chasseur'] = {'deux_commandes_code_1re': len(code1), 'dont_code_2e': sum(1 for v in code1 if v[1]['code']),
+                   'deux_commandes_sans_code_1re': len(nocode1), 'dont_code_2e_sans': sum(1 for v in nocode1 if v[1]['code']),
+                   'premieres_avec_code': sum(1 for v in clients.values() if v[0]['code']), 'clients': len(clients),
+                   'toujours_code': sum(1 for v in clients.values() if all(o['code'] for o in v)),
+                   'toujours_code_1_commande': sum(1 for v in clients.values() if all(o['code'] for o in v) and len(v) == 1),
+                   'toujours_code_2plus': sum(1 for v in clients.values() if all(o['code'] for o in v) and len(v) >= 2),
+                   'rang2plus_total': sum(1 for o in cmds if o.get('rang', 0) >= 2), 'rang2plus_avec_code': sum(1 for o in cmds if o.get('rang', 0) >= 2 and o['code'])}
+
+# =================================================================== D. CIBLES PAR AN
+def en_flux(dt_, delai): return delai + 1 <= (REF - dt_).days <= delai + 365     # 12 mois de clients qui atteignent le moment de relance (même définition que l1_relance.py)
+def cible_post(rang_cible, delai):
+    """clients dont la commande de rang `rang_cible` tombe dans la fenêtre d'un an qui a atteint le moment de relance, sans commande suivante dans les `delai` jours."""
+    e = [k for k, v in clients.items() if len(v) >= rang_cible and en_flux(v[rang_cible - 1]['dt'], delai)]
+    s = [k for k in e if not (len(clients[k]) > rang_cible and (clients[k][rang_cible]['dt'] - clients[k][rang_cible - 1]['dt']).days <= delai)]
+    return {'clients': len(e), 'sans_retour': len(s), 'joignables': sum(1 for k in s if oui(k))}
+dec = {}
+for delai in (60, 120):
+    ev = []
+    for k, v in clients.items():
+        for i in range(2, len(v)):             # commandes de rang >= 3
+            if en_flux(v[i]['dt'], delai):
+                suiv = v[i + 1]['dt'] if i + 1 < len(v) else None
+                if not (suiv is not None and (suiv - v[i]['dt']).days <= delai): ev.append(k)
+    dec[str(delai)] = {'evenements': len(ev), 'clients': len(set(ev)), 'joignables': len({k for k in ev if oui(k)})}
+out['cibles'] = {'nouveau_45': cible_post(1, 45), 'revenu_45': cible_post(2, 45), 'regulier': dec,
+                 'dormants_reguliers': {'clients_3plus': sum(1 for v in clients.values() if len(v) >= 3),
+                                        'silence_plus_180': sum(1 for v in clients.values() if len(v) >= 3 and (REF - v[-1]['dt']).days > 180)}}
+out['joignables_part'] = {'clients': len(clients), 'joignables': sum(1 for k in clients if oui(k))}
+rows_cm = list(csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8')))      # une ligne = une fiche (2 066) ; cm ci-dessus est indexé par clé (quelques fiches sans clé)
+out['inscrits'] = {'fiches': len(rows_cm), 'sans_commande': sum(1 for r in rows_cm if r['Total Orders'] == '0'),
+                   'sans_commande_joignables': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes'),
+                   'joignables': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes'),
+                   'sms': sum(1 for r in rows_cm if r['Accepts SMS Marketing'] == 'yes'), 'whatsapp': sum(1 for r in rows_cm if r['Accepts WhatsApp Marketing'] == 'yes')}
+
+# =================================================================== E. ABONNEMENT CIBLÉ
+def base90(filtre_rang, jours=90):
+    """Après une commande de rang filtré, combien d'articles et d'euros le client achète-t-il dans les `jours` jours suivants ? (clients suivis au moins `jours` jours)"""
+    art, eur_, cmdn, n_ = [], [], [], 0
+    for v in clients.values():
+        for i in range(len(v)):
+            if not filtre_rang(i + 1): continue
+            if (REF - v[i]['dt']).days < jours: continue
+            sui = [o for o in v[i + 1:] if (o['dt'] - v[i]['dt']).days <= jours]
+            art.append(sum(o['qte'] for o in sui)); eur_.append(sum(o['sous_total'] for o in sui)); cmdn.append(len(sui))
+    return {'observations': len(art), 'articles_moy': float(np.mean(art)), 'euros_moy': float(np.mean(eur_)), 'commandes_moy': float(np.mean(cmdn))}
+out['base90'] = {'1': base90(lambda r: r == 1), '2': base90(lambda r: r == 2), '3+': base90(lambda r: r >= 3)}
+# clients 1 ou 2 commandes : effectif et joignables (cible de l'offre)
+nc = {k: len(v) for k, v in clients.items()}
+out['cible_abo'] = {'une_ou_deux': sum(1 for x in nc.values() if x <= 2), 'une_ou_deux_joignables': sum(1 for k, x in nc.items() if x <= 2 and oui(k)),
+                    'actifs_12m_une_ou_deux': sum(1 for k, x in nc.items() if x <= 2 and clients[k][-1]['dt'] >= AN), 'actifs_12m_une_ou_deux_joignables': sum(1 for k, x in nc.items() if x <= 2 and clients[k][-1]['dt'] >= AN and oui(k))}
+# articles par an chez les fidèles actifs
+f3 = [k for k, v in clients.items() if len(v) >= 3 and any(o['dt'] >= AN for o in v)]
+out['fideles_an'] = {'n': len(f3), 'articles_12m_mediane': float(np.median([sum(o['qte'] for o in clients[k] if o['dt'] >= AN) for k in f3])),
+                     'articles_12m_moyenne': float(np.mean([sum(o['qte'] for o in clients[k] if o['dt'] >= AN) for k in f3])),
+                     'articles_trimestre_moyenne': float(np.mean([sum(o['qte'] for o in clients[k] if o['dt'] >= AN) for k in f3])) / 4}
+tot_clients = len(clients); ca_tot = sum(o['total'] for o in cmds)
+out['valeur_fidele'] = {'part_clients_3plus': 100 * sum(1 for x in nc.values() if x >= 3) / tot_clients,
+                        'part_ca_3plus': 100 * sum(o['total'] for k, v in clients.items() if len(v) >= 3 for o in v) / ca_tot}
+# frais de paiement : frais = a + b x montant
+tr = [r for r in csv.DictReader(open('../DONNEES/payment_transactions.csv', encoding='utf-8')) if r['Type'] == 'charge' and r['Amount']]
+A = np.array([float(r['Amount']) for r in tr]); Fz = np.array([float(r['Fee'] or 0) for r in tr])
+(c0, c1), *_x = np.linalg.lstsq(np.vstack([np.ones_like(A), A]).T, Fz, rcond=None)
+out['frais'] = {'fixe': float(c0), 'variable': float(c1), 'paiements': len(tr)}
+prix_g = [l['prix'] for o in cmds for l in o['lignes'] if l['nom'].upper().startswith('BOUGIE GOURMANDE')]
+out['prix_bougie'] = {'mediane_gourmande': float(np.median(prix_g)), 'moyen_article': float(np.mean([l['prix'] for o in cmds for l in o['lignes']]))}
+
+# =================================================================== F. FORMATION
+pay = []
+for o in cmds:
+    for l in o['lignes']:
+        if famille(l['nom']) == 'Formation' and o['total'] > 0:
+            pay.append({'date': o['date'], 'dt': o['dt'], 'paye': o['total'], 'code': o['code'], 'prix': l['prix'], 'nom': l['nom']})
+def periode(d):
+    if d < '2026-05-01': return '1 · Avril (1er e-mail, consulting)'
+    if d < '2026-07-21': return '2 · Juillet (lancement, code −25 %)'
+    if d < '2026-09-01': return '3 · Août'
+    return '4 · Septembre et octobre (jusqu’au 22/10)'
+per = collections.OrderedDict()
+for p in sorted(pay, key=lambda x: x['dt']):
+    q_ = per.setdefault(periode(p['date']), {'ventes': 0, 'ca': 0.0, 'avec_code': 0})
+    q_['ventes'] += 1; q_['ca'] += p['paye']; q_['avec_code'] += 1 if p['code'] else 0
+out['formation_periodes'] = per
+out['formation_total'] = {'ventes': len(pay), 'ca': sum(p['paye'] for p in pay)}
+out['formation_sept_oct'] = [{'date': p['date'], 'paye': p['paye'], 'code': p['code'], 'produit': ('Réglementation et sécurité' if 'GLEMENTATION' in p['nom'].upper() or 'CURIT' in p['nom'].upper() else 'Pack Complet' if 'COMPLET' in p['nom'].upper() else 'Autre pack')} for p in sorted(pay, key=lambda x: x['dt']) if p['date'] >= '2026-09-01']
+mois_c = collections.Counter(o['date'][:7] for o in cmds if 'Formation' not in o['familles'])
+out['commandes_boutique_mois'] = dict(sorted(mois_c.items()))
+out['formation_mois'] = dict(sorted(collections.Counter(p['date'][:7] for p in pay).items()))
+# audience Instagram par mois (vues des publications)
+vues = collections.defaultdict(int); nposts = collections.Counter()
+for r in csv.DictReader(open('../DONNEES/instagram_publications.csv', encoding='utf-8')):
+    d = datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M'); vues[d.strftime('%Y-%m')] += int(r['Vues'] or 0); nposts[d.strftime('%Y-%m')] += 1
+out['instagram_vues_mois'] = {m: {'vues': vues[m], 'posts': nposts[m]} for m in sorted(vues) if m >= '2025-06'}
+
+# =================================================================== G. CODES DE RÉDUCTION
+bi = [o for o in cmds if o['code'] == 'BIENVENUE10']
+tard = [o for o in bi if o.get('rang', 0) >= 2]
+out['codes'] = {'commandes': len(cmds), 'avec_code': sum(1 for o in cmds if o['code']), 'remise_totale': sum(o['remise'] for o in cmds), 'ca': ca_tot,
+                'bienvenue_commandes': len(bi), 'bienvenue_remise': sum(o['remise'] for o in bi), 'bienvenue_clients': len({o['cle'] for o in bi}),
+                'bienvenue_deja_clients': len(tard), 'bienvenue_deja_clients_remise': sum(o['remise'] for o in tard),
+                'bienvenue_deja_clients_rang_median': float(np.median([o['rang'] for o in tard])) if tard else None,
+                'premieres_commandes': len(clients), 'premieres_avec_bienvenue': sum(1 for v in clients.values() if v[0]['code'] == 'BIENVENUE10')}
+dates_b = sorted(o['date'] for o in bi); out['codes']['bienvenue_premier_usage'] = dates_b[0]; out['codes']['bienvenue_dernier_usage'] = dates_b[-1]
+
+# =================================================================== H. COMPLÉMENTS : cibles rapide/tardif, délais avant la relance, paniers suivants, sources des ventes
+rapide_f = lambda v: (v[1]['dt'] - v[0]['dt']).days <= 45
+def sans_3e(ks, delai): return [k for k in ks if not (len(clients[k]) > 2 and (clients[k][2]['dt'] - clients[k][1]['dt']).days <= delai)]
+rr30 = [k for k, v in clients.items() if len(v) >= 2 and en_flux(v[1]['dt'], 30) and rapide_f(v)]
+s30 = sans_3e(rr30, 30); out['cibles']['revenu_rapide_30'] = {'clients': len(rr30), 'sans_retour': len(s30), 'joignables': sum(1 for k in s30 if oui(k))}
+rt55 = [k for k, v in clients.items() if len(v) >= 2 and en_flux(v[1]['dt'], 55) and not rapide_f(v)]
+s55 = sans_3e(rt55, 55); out['cibles']['revenu_tardif_55'] = {'clients': len(rt55), 'sans_retour': len(s55), 'joignables': sum(1 for k in s55 if oui(k))}
+# part des retours déjà passés à la date de la relance (parmi ceux qui reviennent un jour)
+d12 = [(v[1]['dt'] - v[0]['dt']).days for v in clients.values() if len(v) >= 2]
+out['deja_revenus'] = {'nouveau_45': {'n': len(d12), 'avant': sum(1 for d in d12 if d < 45), 'mediane': float(np.median(d12))},
+                       'rapide_30': {'n': len(d_rap), 'avant': sum(1 for d in d_rap if d < 30), 'mediane': float(np.median(d_rap))},
+                       'tardif_55': {'n': len(d_tar), 'avant': sum(1 for d in d_tar if d < 55), 'mediane': float(np.median(d_tar))}}
+out['paniers_suivants'] = {'2e': float(np.mean([v[1]['total'] for v in clients.values() if len(v) >= 2])), '3e': float(np.mean([v[2]['total'] for v in clients.values() if len(v) >= 3])),
+                           '4e_et_plus': float(np.mean([o['total'] for v in clients.values() for o in v[3:]])), 'n_2e': sum(1 for v in clients.values() if len(v) >= 2), 'n_3e': sum(1 for v in clients.values() if len(v) >= 3),
+                           'n_4e': sum(len(v[3:]) for v in clients.values())}
+rows = list(csv.DictReader(open('../DONNEES/analytics_ventes_totales_par_referent_2026-09-22_2026-10-22.csv', encoding='utf-8')))
+cat = collections.defaultdict(lambda: {'commandes': 0, 'ventes': 0.0}); noms = []
+for r in rows:
+    src, nom = r['Source du référent de la commande'], r['Nom du référent de la commande']
+    if nom in ('instagram', 'facebook', 'youtube') or src == 'social': c = 'Réseaux sociaux'
+    elif src == 'search': c = 'Moteurs de recherche'
+    elif not src and not nom: c = 'Direct (aucun référent)'
+    else: c = 'Autres'
+    cat[c]['commandes'] += int(r['Commandes']); cat[c]['ventes'] += float(r['Ventes totales'])
+    noms.append((src, nom, int(r['Commandes'])))
+out['sources_ventes_30j'] = {'categories': dict(cat), 'total_commandes': sum(int(r['Commandes']) for r in rows), 'lignes': noms,
+                             'commandes_boutique_30j': sum(1 for o in cmds if '2026-09-22' <= o['date'] <= '2026-10-22')}
+
+# =================================================================== I. CODES RÉSERVÉS, AVIS ET DÉLAIS D'EXPÉDITION
+disc = list(csv.DictReader(open('../DONNEES/discounts.csv', encoding='utf-8')))
+out['codes']['codes_total'] = len(disc)
+out['codes']['codes_reserves_clients'] = sum(1 for r in disc if r['Customer Selection'] == 'prerequisite')
+out['codes']['bienvenue_une_fois_par_client'] = [r['Applies Once Per Customer'] for r in disc if r['Name'] == 'BIENVENUE10'][0]
+out['codes']['bienvenue_fin'] = [r['End'] for r in disc if r['Name'] == 'BIENVENUE10'][0]
+raw_o = [r for r in csv.DictReader(open('../DONNEES/orders.csv', encoding='utf-8')) if r['Total']]
+def _dtp(x): return datetime.strptime(x[:19], '%Y-%m-%d %H:%M:%S') if x else None
+delai = {r['order_key']: (_dtp(r['Fulfilled at']) - _dtp(r['Paid at'])).days for r in raw_o if r['Paid at'] and r['Fulfilled at']}
+avis = list(csv.DictReader(open('../DONNEES/avis.csv', encoding='utf-8')))
+byc = collections.defaultdict(list)
+for o in cmds: byc[o['cle']].append(o)
+lies = []
+for a in avis:
+    d = datetime.strptime(a['review_date'][:19], '%Y-%m-%d %H:%M:%S')
+    cs = [o for o in byc.get(a['customer_key'], []) if o['dt'] <= d and o['ordre_key'] in delai]
+    if cs:
+        o_ = max(cs, key=lambda o: o['dt']); lies.append((int(a['rating']), delai[o_['ordre_key']]))
+lent = [r for r, dl in lies if dl > 7]; vite = [r for r, dl in lies if dl <= 7]
+out['avis_delai'] = {'avis': len(avis), 'relies': len(lies), 'cinq_etoiles': sum(1 for a in avis if a['rating'] == '5'), 'note_moyenne': float(np.mean([int(a['rating']) for a in avis])),
+                     'apres_plus_7j': len(lent), 'note_plus_7j': float(np.mean(lent)), 'apres_7j_ou_moins': len(vite), 'note_7j_ou_moins': float(np.mean(vite)),
+                     'notes_3_ou_moins': sum(1 for a in avis if int(a['rating']) <= 3)}
+
+# =================================================================== J. MODÈLE DE L'ABONNEMENT CIBLÉ (3 bougies en 3 mois, payé d'avance)
+# Pour un client qui achèterait b articles en 90 jours sans l'offre : (3 - b) bougies sont des ventes en plus (marge à p euros),
+# min(b, 3) sont des bougies qu'il aurait achetées de toute façon (on perd la remise PL - p) ; on retire les frais de paiement.
+MARGES = {'bas': 0.357, 'haut': 0.5}      # 0,50 x part des bougies dans le chiffre d'affaires (71,4 %) ; 0,50 sur tout (voir site/scripts/decisions_charts.py)
+PL_ = out['prix_bougie']['mediane_gourmande']
+def _fee(p, prepaye=True): return (c0 + c1 * 3 * p) if prepaye else 3 * (c0 + c1 * p)
+def _gain(m, p, b, prepaye=True):
+    c = PL_ * (1 - m); return max(0, 3 - b) * (p - c) - min(b, 3) * (PL_ - p) - _fee(p, prepaye)
+def _seuil(m, p, prepaye=True):
+    c = PL_ * (1 - m); return (3 * (p - c) - _fee(p, prepaye)) / (PL_ - c)
+bk = {'1': out['base90']['1']['articles_moy'], '2': out['base90']['2']['articles_moy'], '3+': out['base90']['3+']['articles_moy']}
+out['abonnement'] = {'marges': MARGES, 'prix_liste': PL_,
+                     'gain': {'%d|%s|%s' % (p, k, mk): float(_gain(m, p, b)) for p in (18, 20, 22) for k, b in bk.items() for mk, m in MARGES.items()},
+                     'seuil': {'%d|%s' % (p, mk): float(_seuil(m, p)) for p in (18, 20, 22) for mk, m in MARGES.items()},
+                     'frais_mensuel_20': float(_fee(20, False)), 'frais_avance_20': float(_fee(20, True))}
+
+json.dump(out, open('q5_profils.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1, default=str)
+print(json.dumps({k: out[k] for k in ('hazard', 'retour_rapide', 'curieux', 'chasseur', 'cibles', 'inscrits', 'base90', 'cible_abo', 'fideles_an', 'valeur_fidele', 'frais', 'prix_bougie', 'formation_periodes', 'codes')}, ensure_ascii=False, indent=1, default=str)[:9000])
+for s in out['criteres_90j']: print(s['groupe'], round(s['oui']['taux'], 1), round(s['non']['taux'], 1), s['oui']['suivis'], round(s['p'], 4), round(s['p_holm'], 4))

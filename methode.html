@@ -6,12 +6,12 @@
 <title>Méthode, code et vérifications · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=18">
+<link rel="stylesheet" href="style.css?v=19">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="methode.html" aria-current="page">Méthode</a></div></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="reco-alternative.html">Proposition alternative</a><a href="methode.html" aria-current="page">Méthode</a></div></div></nav>
 
 <header class="hero"><div class="wrap"><p class="kicker">Transparence</p><h1>Méthode, code et vérifications</h1><p class="lead">Comment lire les chiffres, ce qui a été vérifié, les tests utilisés en mots simples et tout le code.</p></div></header>
 <main class="wrap" id="contenu">
@@ -233,6 +233,212 @@ Sous-total moyen des commandes à 2 articles (€)                              
 
 93 contrôles OK, 0 écart(s)
 </code></pre></div></details>
+<details class="pli" name="verif-profils"><summary>Vérifications : profils, abonnement et codes (15 novembre, soir)</summary><div class="corps"><p>Un troisième programme (<code>verif_profils.py</code>) recalcule depuis les fichiers bruts les chiffres de la relance par profil, de l’abonnement ciblé, de la formation en septembre-octobre et des codes, sans réutiliser le code d’analyse.</p><pre class="code"><code>--- A. Chance de retour dans les 30 jours après T jours de silence
+Profil 1, silence 0 j : retours                                                               66.0000      66.0000  OK
+Profil 1, silence 0 j : observations                                                         832.0000     832.0000  OK
+Profil 1, silence 30 j : retours                                                              54.0000      54.0000  OK
+Profil 1, silence 30 j : observations                                                        691.0000     691.0000  OK
+Profil 1, silence 45 j : retours                                                              56.0000      56.0000  OK
+Profil 1, silence 45 j : observations                                                        667.0000     667.0000  OK
+Profil 1, silence 60 j : retours                                                              37.0000      37.0000  OK
+Profil 1, silence 60 j : observations                                                        623.0000     623.0000  OK
+Profil 1, silence 90 j : retours                                                              27.0000      27.0000  OK
+Profil 1, silence 90 j : observations                                                        573.0000     573.0000  OK
+Profil 1, silence 120 j : retours                                                             23.0000      23.0000  OK
+Profil 1, silence 120 j : observations                                                       536.0000     536.0000  OK
+Profil 1, silence 180 j : retours                                                             15.0000      15.0000  OK
+Profil 1, silence 180 j : observations                                                       438.0000     438.0000  OK
+Profil 1, silence 270 j : retours                                                              4.0000       4.0000  OK
+Profil 1, silence 270 j : observations                                                       326.0000     326.0000  OK
+Profil 2, silence 0 j : retours                                                               25.0000      25.0000  OK
+Profil 2, silence 0 j : observations                                                         245.0000     245.0000  OK
+Profil 2, silence 30 j : retours                                                              23.0000      23.0000  OK
+Profil 2, silence 30 j : observations                                                        190.0000     190.0000  OK
+Profil 2, silence 45 j : retours                                                              18.0000      18.0000  OK
+Profil 2, silence 45 j : observations                                                        173.0000     173.0000  OK
+Profil 2, silence 60 j : retours                                                              24.0000      24.0000  OK
+Profil 2, silence 60 j : observations                                                        163.0000     163.0000  OK
+Profil 2, silence 90 j : retours                                                               7.0000       7.0000  OK
+Profil 2, silence 90 j : observations                                                        133.0000     133.0000  OK
+Profil 2, silence 120 j : retours                                                             10.0000      10.0000  OK
+Profil 2, silence 120 j : observations                                                       117.0000     117.0000  OK
+Profil 2, silence 180 j : retours                                                              6.0000       6.0000  OK
+Profil 2, silence 180 j : observations                                                        77.0000      77.0000  OK
+Profil 2, silence 270 j : retours                                                              2.0000       2.0000  OK
+Profil 2, silence 270 j : observations                                                        31.0000      31.0000  OK
+Profil 3+, silence 0 j : retours                                                             107.0000     107.0000  OK
+Profil 3+, silence 0 j : observations                                                        326.0000     326.0000  OK
+Profil 3+, silence 30 j : retours                                                             46.0000      46.0000  OK
+Profil 3+, silence 30 j : observations                                                       176.0000     176.0000  OK
+Profil 3+, silence 45 j : retours                                                             33.0000      33.0000  OK
+Profil 3+, silence 45 j : observations                                                       144.0000     144.0000  OK
+Profil 3+, silence 60 j : retours                                                             32.0000      32.0000  OK
+Profil 3+, silence 60 j : observations                                                       126.0000     126.0000  OK
+Profil 3+, silence 90 j : retours                                                             16.0000      16.0000  OK
+Profil 3+, silence 90 j : observations                                                        86.0000      86.0000  OK
+Profil 3+, silence 120 j : retours                                                             9.0000       9.0000  OK
+Profil 3+, silence 120 j : observations                                                       60.0000      60.0000  OK
+Profil 3+, silence 180 j : retours                                                             1.0000       1.0000  OK
+Profil 3+, silence 180 j : observations                                                       29.0000      29.0000  OK
+Profil 3+, silence 270 j : retours                                                             2.0000       2.0000  OK
+Profil 3+, silence 270 j : observations                                                       11.0000      11.0000  OK
+--- B. Critères testés (retour dans les 90 jours après la 1re commande)
+Médiane de la 1re commande (€)                                                                49.7000      49.7000  OK
+Accepte les e-mails marketing (oui) : suivis                                                 600.0000     600.0000  OK
+Accepte les e-mails marketing (oui) : ont recommandé                                         138.0000     138.0000  OK
+Accepte les e-mails marketing (non) : suivis                                                 136.0000     136.0000  OK
+Accepte les e-mails marketing (non) : ont recommandé                                          12.0000      12.0000  OK
+Accepte les e-mails marketing : p (Fisher)                                                     0.0001       0.0001  OK
+1re commande de 3 articles ou plus (oui) : suivis                                            390.0000     390.0000  OK
+1re commande de 3 articles ou plus (oui) : ont recommandé                                     94.0000      94.0000  OK
+1re commande de 3 articles ou plus (non) : suivis                                            346.0000     346.0000  OK
+1re commande de 3 articles ou plus (non) : ont recommandé                                     56.0000      56.0000  OK
+1re commande de 3 articles ou plus : p (Fisher)                                                0.0079       0.0079  OK
+1re commande d’au moins 50 € (la médiane (oui) : suivis                                      378.0000     378.0000  OK
+1re commande d’au moins 50 € (la médiane (oui) : ont recommandé                               93.0000      93.0000  OK
+1re commande d’au moins 50 € (la médiane (non) : suivis                                      358.0000     358.0000  OK
+1re commande d’au moins 50 € (la médiane (non) : ont recommandé                               57.0000      57.0000  OK
+1re commande d’au moins 50 € (la médiane : p (Fisher)                                          0.0044       0.0044  OK
+Livré dans les Pyrénées-Atlantiques (oui) : suivis                                           116.0000     116.0000  OK
+Livré dans les Pyrénées-Atlantiques (oui) : ont recommandé                                    35.0000      35.0000  OK
+Livré dans les Pyrénées-Atlantiques (non) : suivis                                           620.0000     620.0000  OK
+Livré dans les Pyrénées-Atlantiques (non) : ont recommandé                                   115.0000     115.0000  OK
+Livré dans les Pyrénées-Atlantiques : p (Fisher)                                               0.0057       0.0057  OK
+1re commande avec le code de bienvenue (oui) : suivis                                        359.0000     359.0000  OK
+1re commande avec le code de bienvenue (oui) : ont recommandé                                 66.0000      66.0000  OK
+1re commande avec le code de bienvenue (non) : suivis                                        377.0000     377.0000  OK
+1re commande avec le code de bienvenue (non) : ont recommandé                                 84.0000      84.0000  OK
+1re commande avec le code de bienvenue : p (Fisher)                                            0.2008       0.2008  OK
+1re commande avec une bougie gourmande (oui) : suivis                                        493.0000     493.0000  OK
+1re commande avec une bougie gourmande (oui) : ont recommandé                                105.0000     105.0000  OK
+1re commande avec une bougie gourmande (non) : suivis                                        243.0000     243.0000  OK
+1re commande avec une bougie gourmande (non) : ont recommandé                                 45.0000      45.0000  OK
+1re commande avec une bougie gourmande : p (Fisher)                                            0.4364       0.4364  OK
+1re commande un jour de lancement (point (oui) : suivis                                       27.0000      27.0000  OK
+1re commande un jour de lancement (point (oui) : ont recommandé                                5.0000       5.0000  OK
+1re commande un jour de lancement (point (non) : suivis                                      709.0000     709.0000  OK
+1re commande un jour de lancement (point (non) : ont recommandé                              145.0000     145.0000  OK
+1re commande un jour de lancement (point : p (Fisher)                                          1.0000       1.0000  OK
+Accepte les e-mails marketing : p corrigé (Holm)                                               0.0006       0.0006  OK
+1re commande de 3 articles ou plus : p corrigé (Holm)                                          0.0317       0.0317  OK
+1re commande d’au moins 50 € (la médiane : p corrigé (Holm)                                    0.0267       0.0267  OK
+Livré dans les Pyrénées-Atlantiques : p corrigé (Holm)                                         0.0286       0.0286  OK
+1re commande avec le code de bienvenue : p corrigé (Holm)                                      0.6024       0.6024  OK
+1re commande avec une bougie gourmande : p corrigé (Holm)                                      0.8728       0.8728  OK
+1re commande un jour de lancement (point : p corrigé (Holm)                                    1.0000       1.0000  OK
+--- B bis. Retour rapide ou tardif (2e commande avant ou après 45 jours)
+Revenu rapide : suivis                                                                        79.0000      79.0000  OK
+Revenu rapide : ont passé une 3e commande                                                     35.0000      35.0000  OK
+Revenu tardif : suivis                                                                       132.0000     132.0000  OK
+Revenu tardif : ont passé une 3e commande                                                     37.0000      37.0000  OK
+Délai médian 2e → 3e, rapides (jours)                                                         47.0000      47.0000  OK
+Délai médian 2e → 3e, tardifs (jours)                                                         81.0000      81.0000  OK
+Clients à 2 commandes ou plus                                                                280.0000     280.0000  OK
+Délai médian 1re → 2e (jours)                                                                 66.0000      66.0000  OK
+Revenus avant J+45 (parmi ceux qui reviennent)                                                94.0000      94.0000  OK
+Part de revenus rapides parmi les clients à 2 commandes (%)                                   35.0000      35.0000  OK
+Revenus rapides avant J+30 (2e → 3e)                                                          15.0000      15.0000  OK
+Revenus tardifs avant J+55 (2e → 3e)                                                          26.0000      26.0000  OK
+--- C. Curieux et chasseur de promo
+2e commande avec un produit déjà acheté                                                       69.0000      69.0000  OK
+Clients à 2 commandes dont la 1re avec code                                                  149.0000     149.0000  OK
+… dont la 2e avec code                                                                        13.0000      13.0000  OK
+Clients à 2 commandes dont la 1re sans code                                                  131.0000     131.0000  OK
+… dont la 2e avec code                                                                        23.0000      23.0000  OK
+1res commandes avec un code                                                                  475.0000     475.0000  OK
+Clients avec un code à chaque commande et plusieurs commandes                                  8.0000       8.0000  OK
+--- D. Cibles par an
+Nouveaux sans retour à J+45, joignables                                                      474.0000     474.0000  OK
+… tous                                                                                       601.0000     601.0000  OK
+… même chiffre que la page « relance » du 15/11 (l1_relance.json)                            474.0000     474.0000  OK
+Revenus rapides sans 3e commande à J+30, joignables                                           50.0000      50.0000  OK
+Revenus tardifs sans 3e commande à J+55, joignables                                          107.0000     107.0000  OK
+Réguliers sans commande à J+60 : événements                                                  130.0000     130.0000  OK
+… joignables                                                                                  89.0000      89.0000  OK
+Réguliers sans commande à J+120 : événements                                                  70.0000      70.0000  OK
+… joignables                                                                                  62.0000      62.0000  OK
+Clients à 3 commandes ou plus                                                                124.0000     124.0000  OK
+… sans commande depuis plus de 180 jours                                                      25.0000      25.0000  OK
+Clients joignables (ayant commandé)                                                          740.0000     740.0000  OK
+Fiches clients (lignes du fichier)                                                          2066.0000    2066.0000  OK
+Fiches sans commande                                                                        1141.0000    1141.0000  OK
+Fiches sans commande qui acceptent les e-mails                                               961.0000     961.0000  OK
+Fiches qui acceptent les e-mails                                                            1701.0000    1701.0000  OK
+Fiches qui acceptent les SMS ou WhatsApp                                                       0.0000       0.0000  OK
+Part des clients à 3 commandes ou plus (%)                                                    13.5816      13.5816  OK
+Part du chiffre d’affaires des clients à 3 commandes ou plus (%)                              42.9170      42.9170  OK
+Panier moyen de la 2e commande (€)                                                            67.7294      67.7294  OK
+Panier moyen de la 3e commande (€)                                                            67.7440      67.7440  OK
+Panier moyen des commandes de rang 4 et plus (€)                                              70.7117      70.7117  OK
+--- E. Abonnement ciblé
+Articles achetés en 90 jours après une commande de rang 1 : observations                     736.0000     736.0000  OK
+… moyenne                                                                                      1.0122       1.0122  OK
+Articles achetés en 90 jours après une commande de rang 2 : observations                     211.0000     211.0000  OK
+… moyenne                                                                                      2.1374       2.1374  OK
+Articles achetés en 90 jours après une commande de rang 3+ : observations                    260.0000     260.0000  OK
+… moyenne                                                                                      5.2269       5.2269  OK
+Prix médian d’une bougie gourmande (€)                                                        22.9000      22.9000  OK
+Frais de paiement : part fixe (€)                                                              0.3237       0.3237  OK
+Frais de paiement : part variable (%)                                                          1.8046       1.8046  OK
+Gain d’un abonné à 18 €, rang 1, marge bas (€ par trimestre)                                   0.2525       0.2525  OK
+Gain d’un abonné à 18 €, rang 1, marge haut (€ par trimestre)                                  6.7618       6.7618  OK
+Gain d’un abonné à 18 €, rang 2, marge bas (€ par trimestre)                                  -8.9465      -8.9465  OK
+Gain d’un abonné à 18 €, rang 2, marge haut (€ par trimestre)                                 -6.1219      -6.1219  OK
+Gain d’un abonné à 18 €, rang 3+, marge bas (€ par trimestre)                                -15.9982     -15.9982  OK
+Gain d’un abonné à 18 €, rang 3+, marge haut (€ par trimestre)                               -15.9982     -15.9982  OK
+Seuil de rentabilité à 18 €, marge bas (articles par trimestre)                                1.0431       1.0431  OK
+Seuil de rentabilité à 18 €, marge haut (articles par trimestre)                               1.6028       1.6028  OK
+Gain d’un abonné à 20 €, rang 1, marge bas (€ par trimestre)                                   6.1442       6.1442  OK
+Gain d’un abonné à 20 €, rang 1, marge haut (€ par trimestre)                                 12.6535      12.6535  OK
+Gain d’un abonné à 20 €, rang 2, marge bas (€ par trimestre)                                  -3.0548      -3.0548  OK
+Gain d’un abonné à 20 €, rang 2, marge haut (€ par trimestre)                                 -0.2301      -0.2301  OK
+Gain d’un abonné à 20 €, rang 3+, marge bas (€ par trimestre)                                -10.1064     -10.1064  OK
+Gain d’un abonné à 20 €, rang 3+, marge haut (€ par trimestre)                               -10.1064     -10.1064  OK
+Seuil de rentabilité à 20 €, marge bas (articles par trimestre)                                1.7638       1.7638  OK
+Seuil de rentabilité à 20 €, marge haut (articles par trimestre)                               2.1173       2.1173  OK
+Gain d’un abonné à 22 €, rang 1, marge bas (€ par trimestre)                                  12.0359      12.0359  OK
+Gain d’un abonné à 22 €, rang 1, marge haut (€ par trimestre)                                 18.5453      18.5453  OK
+Gain d’un abonné à 22 €, rang 2, marge bas (€ par trimestre)                                   2.8370       2.8370  OK
+Gain d’un abonné à 22 €, rang 2, marge haut (€ par trimestre)                                  5.6616       5.6616  OK
+Gain d’un abonné à 22 €, rang 3+, marge bas (€ par trimestre)                                 -4.2147      -4.2147  OK
+Gain d’un abonné à 22 €, rang 3+, marge haut (€ par trimestre)                                -4.2147      -4.2147  OK
+Seuil de rentabilité à 22 €, marge bas (articles par trimestre)                                2.4845       2.4845  OK
+Seuil de rentabilité à 22 €, marge haut (articles par trimestre)                               2.6319       2.6319  OK
+Frais d’un paiement mensuel (3 × 20 €)                                                         2.0538       2.0538  OK
+Frais d’un paiement d’avance (60 €)                                                            1.4064       1.4064  OK
+--- F. Formation
+Ventes de formation payantes                                                                  16.0000      16.0000  OK
+Chiffre d’affaires de la formation (€)                                                      3240.5000    3240.5000  OK
+Période 1 : ventes                                                                             1.0000       1.0000  OK
+Période 1 : payé (€)                                                                         390.0000     390.0000  OK
+Période 2 : ventes                                                                             7.0000       7.0000  OK
+Période 2 : payé (€)                                                                        1412.5000    1412.5000  OK
+Période 3 : ventes                                                                             1.0000       1.0000  OK
+Période 3 : payé (€)                                                                         110.0000     110.0000  OK
+Période 4 : ventes                                                                             7.0000       7.0000  OK
+Période 4 : payé (€)                                                                        1328.0000    1328.0000  OK
+Commandes de la boutique hors formation en septembre 2026                                    205.0000     205.0000  OK
+Commandes de la boutique hors formation en juillet 2026                                       42.0000      42.0000  OK
+Vues Instagram des publications de septembre 2026                                        1795479.0000 1795479.0000  OK
+Vues Instagram de juillet 2026                                                            448991.0000  448991.0000  OK
+--- G. Codes, avis, origines des ventes
+Commandes avec le code de bienvenue                                                          482.0000     482.0000  OK
+… passées par un client qui avait déjà commandé                                               32.0000      32.0000  OK
+… remises correspondantes (€)                                                                202.5300     202.5300  OK
+Commandes avec un code                                                                       569.0000     569.0000  OK
+Remises totales (€)                                                                         4536.1800    4536.1800  OK
+Codes de la boutique                                                                          60.0000      60.0000  OK
+Codes réservés à des clients précis                                                            4.0000       4.0000  OK
+1res commandes avec le code de bienvenue                                                     447.0000     447.0000  OK
+Avis publiés                                                                                 313.0000     313.0000  OK
+Avis à 5 étoiles                                                                             298.0000     298.0000  OK
+Note moyenne des avis                                                                          4.9361       4.9361  OK
+Commandes sur 30 jours (rapport Shopify)                                                     149.0000     149.0000  OK
+… dont réseaux sociaux (Instagram, Facebook, YouTube)                                         40.0000      40.0000  OK
+Commandes de la boutique sur la même période (orders.csv)                                    149.0000     149.0000  OK
+
+195 contrôles OK, 0 écart(s)
+</code></pre></div></details>
 <details class="pli" name="verif-base"><summary>Vérifications : chiffres de base</summary><div class="corps"><pre class="code"><code>Contrôle                                            Recalculé    Affiché  Verdict
 Commandes non annulées                                   1438       1438  OK
 Commandes annulées (exclues)                                7          7  OK
@@ -273,8 +479,8 @@ OCT. Produits actifs (page retouche photo : 133)          133        133  OK
 
  36 contrôles OK sur 36
 </code></pre></div></details>
-<h2>Les tests utilisés, en mots simples</h2><div class="tablewrap"><table><tr><th class="">Test</th><th class="">À quoi il sert</th><th class="">Utilisé pour</th><th class="">Comment le lire</th></tr><tr><td class="">Courbe de Kaplan-Meier</td><td class="">Part des clients qui recommandent, jour après jour, en tenant compte des clients récents</td><td class="">Relance</td><td class="">Pas de p-value : on lit la courbe</td></tr><tr><td class="">Wilcoxon apparié</td><td class="">Compare chaque client à lui-même (1re et 2e commande)</td><td class="">Relance</td><td class="">p &lt; 0,05 : écart réel (pas son importance)</td></tr><tr><td class="">Arbre de décision, AUC</td><td class="">Un critère prédit-il le retour ?</td><td class="">Relance</td><td class="">0,5 = hasard ; 1 = parfait</td></tr><tr><td class="">Intervalle de Poisson exact</td><td class="">Plage plausible d’un taux fondé sur peu de commandes</td><td class="">Relances</td><td class="">Plages qui ne se recoupent pas : écart démontré</td></tr><tr><td class="">Test exact de Fisher</td><td class="">Compare deux pourcentages sur de petits effectifs</td><td class="">Relances, expéditions, profils de clients</td><td class="">p &lt; 0,05 ; suppose des cas indépendants : plutôt optimiste</td></tr><tr><td class="">Test binomial</td><td class="">Les ventes tombent-elles près d’un e-mail plus qu’au hasard ?</td><td class="">Formation</td><td class="">p &lt; 0,05 ; coïncidence ne veut pas dire cause</td></tr><tr><td class="">Mann-Whitney</td><td class="">Compare deux groupes de montants</td><td class="">Formation</td><td class="">p élevé : pas d’écart démontré (≠ pas d’écart)</td></tr><tr><td class="">Permutation et correction de Holm</td><td class="">Teste beaucoup de caractéristiques sans prendre un hasard pour un résultat</td><td class="">Newsletters</td><td class="">Un p brut de 0,027 devient 0,29 après correction</td></tr><tr><td class="">Taille d’échantillon</td><td class="">Combien de personnes pour mesurer un effet</td><td class="">Tous les gains</td><td class="">Explique pourquoi aucun test A/B n’est réaliste</td></tr></table></div>
-<details class="pli" name="met-code"><summary>Le code</summary><div class="corps"><p>Tous les scripts qui produisent les chiffres et les graphiques. Les fichiers de données ne sont pas fournis (confidentiels) : le code se lit, il ne se relance pas sans eux. Les chemins personnels ont été retirés à l’affichage. Chaque page affiche aussi les scripts qui la concernent.</p><div class="tablewrap"><table><tr><th>Script</th><th>Ce qu’il fait</th><th></th></tr><tr><td><code>audit_independant.py</code></td><td>Audit : recalcule depuis les fichiers bruts, par un autre chemin de calcul, les chiffres clés des pages du site.</td><td><a href="audit_independant.txt" download>télécharger</a></td></tr><tr><td><code>common.py</code></td><td>Lit les commandes, classe les produits en familles, regroupe les commandes par client. Base commune des analyses.</td><td><a href="common.txt" download>télécharger</a></td></tr><tr><td><code>g1_premiere_vs_suivantes.py</code></td><td>Ce qui change entre la 1re commande et les suivantes (montant, articles, produits, familles).</td><td><a href="g1_premiere_vs_suivantes.txt" download>télécharger</a></td></tr><tr><td><code>g2_profils.py</code></td><td>Arbre de décision du réachat (AUC) et regroupement automatique des clients.</td><td><a href="g2_profils.txt" download>télécharger</a></td></tr><tr><td><code>j1_emailing.py</code></td><td>Résultats des newsletters et des automatisations e-mail : intervalles, tests de permutation, rythme d'envoi, comparaison relances et newsletters.</td><td><a href="j1_emailing.txt" download>télécharger</a></td></tr><tr><td><code>l1_relance.py</code></td><td>Relance après la 1re commande : courbe de retour (Kaplan-Meier), moments d'envoi, scénarios de gain.</td><td><a href="l1_relance.txt" download>télécharger</a></td></tr><tr><td><code>l3_formation.py</code></td><td>Formation : ventes autour des e-mails, recoupement inscrits et clients, valeur d'un inscrit.</td><td><a href="l3_formation.txt" download>télécharger</a></td></tr><tr><td><code>q1_automatisations.py</code></td><td>Jours de lancement et délais d'expédition, entonnoir des relances panier et paiement, gain de la relance, commandes par mois.</td><td><a href="q1_automatisations.txt" download>télécharger</a></td></tr><tr><td><code>q2_avis_catalogue.py</code></td><td>Demande d'avis Judge.me, catalogue de la livraison du 22/10, codes promo, audience Meta.</td><td><a href="q2_avis_catalogue.txt" download>télécharger</a></td></tr><tr><td><code>q4_approfondi.py</code></td><td></td><td><a href="q4_approfondi.txt" download>télécharger</a></td></tr><tr><td><code>verif_approfondi.py</code></td><td></td><td><a href="verif_approfondi.txt" download>télécharger</a></td></tr><tr><td><code>verif_chiffres_cles.py</code></td><td>Recalcule les chiffres clés depuis les fichiers sources et les compare à ceux affichés.</td><td><a href="verif_chiffres_cles.txt" download>télécharger</a></td></tr></table></div></div></details>
+<h2>Les tests utilisés, en mots simples</h2><div class="tablewrap"><table><tr><th class="">Test</th><th class="">À quoi il sert</th><th class="">Utilisé pour</th><th class="">Comment le lire</th></tr><tr><td class="">Chance de retour après un silence</td><td class="">Parmi les clients restés T jours sans commander, part qui commande dans les 30 jours suivants (seules les observations suivies T + 30 jours comptent)</td><td class="">Relance par profil</td><td class="">Une courbe qui baisse = le moment de relancer est passé</td></tr><tr><td class="">Courbe de Kaplan-Meier</td><td class="">Part des clients qui recommandent, jour après jour, en tenant compte des clients récents</td><td class="">Relance</td><td class="">Pas de p-value : on lit la courbe</td></tr><tr><td class="">Wilcoxon apparié</td><td class="">Compare chaque client à lui-même (1re et 2e commande)</td><td class="">Relance</td><td class="">p &lt; 0,05 : écart réel (pas son importance)</td></tr><tr><td class="">Arbre de décision, AUC</td><td class="">Un critère prédit-il le retour ?</td><td class="">Relance</td><td class="">0,5 = hasard ; 1 = parfait</td></tr><tr><td class="">Intervalle de Poisson exact</td><td class="">Plage plausible d’un taux fondé sur peu de commandes</td><td class="">Relances</td><td class="">Plages qui ne se recoupent pas : écart démontré</td></tr><tr><td class="">Test exact de Fisher</td><td class="">Compare deux pourcentages sur de petits effectifs</td><td class="">Relances, expéditions, profils de clients</td><td class="">p &lt; 0,05 ; suppose des cas indépendants : plutôt optimiste</td></tr><tr><td class="">Test binomial</td><td class="">Les ventes tombent-elles près d’un e-mail plus qu’au hasard ?</td><td class="">Formation</td><td class="">p &lt; 0,05 ; coïncidence ne veut pas dire cause</td></tr><tr><td class="">Mann-Whitney</td><td class="">Compare deux groupes de montants</td><td class="">Formation</td><td class="">p élevé : pas d’écart démontré (≠ pas d’écart)</td></tr><tr><td class="">Permutation et correction de Holm</td><td class="">Teste beaucoup de caractéristiques sans prendre un hasard pour un résultat</td><td class="">Newsletters</td><td class="">Un p brut de 0,027 devient 0,29 après correction</td></tr><tr><td class="">Taille d’échantillon</td><td class="">Combien de personnes pour mesurer un effet</td><td class="">Tous les gains</td><td class="">Explique pourquoi aucun test A/B n’est réaliste</td></tr></table></div>
+<details class="pli" name="met-code"><summary>Le code</summary><div class="corps"><p>Tous les scripts qui produisent les chiffres et les graphiques. Les fichiers de données ne sont pas fournis (confidentiels) : le code se lit, il ne se relance pas sans eux. Les chemins personnels ont été retirés à l’affichage. Chaque page affiche aussi les scripts qui la concernent.</p><div class="tablewrap"><table><tr><th>Script</th><th>Ce qu’il fait</th><th></th></tr><tr><td><code>audit_independant.py</code></td><td>Audit : recalcule depuis les fichiers bruts, par un autre chemin de calcul, les chiffres clés des pages du site.</td><td><a href="audit_independant.txt" download>télécharger</a></td></tr><tr><td><code>common.py</code></td><td>Lit les commandes, classe les produits en familles, regroupe les commandes par client. Base commune des analyses.</td><td><a href="common.txt" download>télécharger</a></td></tr><tr><td><code>g1_premiere_vs_suivantes.py</code></td><td>Ce qui change entre la 1re commande et les suivantes (montant, articles, produits, familles).</td><td><a href="g1_premiere_vs_suivantes.txt" download>télécharger</a></td></tr><tr><td><code>g2_profils.py</code></td><td>Arbre de décision du réachat (AUC) et regroupement automatique des clients.</td><td><a href="g2_profils.txt" download>télécharger</a></td></tr><tr><td><code>j1_emailing.py</code></td><td>Résultats des newsletters et des automatisations e-mail : intervalles, tests de permutation, rythme d'envoi, comparaison relances et newsletters.</td><td><a href="j1_emailing.txt" download>télécharger</a></td></tr><tr><td><code>l1_relance.py</code></td><td>Relance après la 1re commande : courbe de retour (Kaplan-Meier), moments d'envoi, scénarios de gain.</td><td><a href="l1_relance.txt" download>télécharger</a></td></tr><tr><td><code>l3_formation.py</code></td><td>Formation : ventes autour des e-mails, recoupement inscrits et clients, valeur d'un inscrit.</td><td><a href="l3_formation.txt" download>télécharger</a></td></tr><tr><td><code>q1_automatisations.py</code></td><td>Jours de lancement et délais d'expédition, entonnoir des relances panier et paiement, gain de la relance, commandes par mois.</td><td><a href="q1_automatisations.txt" download>télécharger</a></td></tr><tr><td><code>q2_avis_catalogue.py</code></td><td>Demande d'avis Judge.me, catalogue de la livraison du 22/10, codes promo, audience Meta.</td><td><a href="q2_avis_catalogue.txt" download>télécharger</a></td></tr><tr><td><code>q4_approfondi.py</code></td><td></td><td><a href="q4_approfondi.txt" download>télécharger</a></td></tr><tr><td><code>q5_profils.py</code></td><td>Profils de clients (chance de retour selon le silence, critères testés, retour rapide ou tardif), cibles par an, base de l’abonnement ciblé, formation par période, codes de réduction.</td><td><a href="q5_profils.txt" download>télécharger</a></td></tr><tr><td><code>verif_approfondi.py</code></td><td></td><td><a href="verif_approfondi.txt" download>télécharger</a></td></tr><tr><td><code>verif_chiffres_cles.py</code></td><td>Recalcule les chiffres clés depuis les fichiers sources et les compare à ceux affichés.</td><td><a href="verif_chiffres_cles.txt" download>télécharger</a></td></tr><tr><td><code>verif_profils.py</code></td><td>Recalcule depuis les fichiers bruts, sans le code d’analyse, les chiffres de la relance par profil, de l’abonnement et des codes.</td><td><a href="verif_profils.txt" download>télécharger</a></td></tr></table></div></div></details>
 </main>
 <footer><div class="wrap"><p>Données pseudonymisées de la boutique Lumineva, remises par convention dans le cadre du module Smart Data Marketing (IAE Clermont Auvergne). Seuls des agrégats sont affichés. Ne pas diffuser.</p><p>Version du 15 novembre 2026. Rendu : 18 novembre 2026.</p></div></footer>
 </body>

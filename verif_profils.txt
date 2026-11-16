@@ -1,0 +1,192 @@
+# encoding: utf-8
+"""Contrôle indépendant (15/11/2026, soir) des chiffres de la relance par profil, de l'abonnement ciblé, de la formation en septembre-octobre et des codes.
+Recalcule chaque chiffre directement depuis orders.csv, customers.csv, discounts.csv, avis.csv, payment_transactions.csv, instagram_publications.csv et les rapports analytics,
+SANS utiliser common.py ni q5_profils.py, puis le compare à la valeur affichée sur le site (q5_profils.json). Aucune donnée personnelle affichée."""
+import csv, json, statistics, collections, math
+from datetime import datetime, timedelta
+from scipy import stats
+
+REF = datetime(2026, 10, 23); AN = REF - timedelta(days=365)
+ok = ko = 0
+def cmp(nom, calc, affiche, tol=0.0005):
+    global ok, ko
+    bon = abs(calc - affiche) <= tol
+    ok += bon; ko += (not bon)
+    print('%-88s %12.4f %12.4f  %s' % (nom[:88], calc, affiche, 'OK' if bon else 'ÉCART'))
+
+lignes = list(csv.DictReader(open('../DONNEES/orders.csv', encoding='utf-8')))
+cmd = {}; cur = None
+for r in lignes:
+    if r['Total']: cmd[r['order_key']] = {'r': r, 'items': []}; cur = r['order_key']
+    if r['Lineitem name']: cmd[cur]['items'].append((r['Lineitem name'].upper(), int(r['Lineitem quantity']), float(r['Lineitem price'])))
+viv = [c for c in cmd.values() if not c['r']['Cancelled at']]
+def dt(c): return datetime.strptime(c['r']['Created at'][:19], '%Y-%m-%d %H:%M:%S')
+def qte(c): return sum(i[1] for i in c['items'] if i[0] != 'TIP')
+cust = {r['customer_key'].strip(): r for r in csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8'))}
+pc = collections.defaultdict(list)
+for c in viv:
+    k = c['r']['customer_key'].strip()
+    if k and c['items']: pc[k].append(c)
+for v in pc.values(): v.sort(key=dt)
+Q = json.load(open('q5_profils.json', encoding='utf-8'))
+oui = lambda k: cust.get(k, {}).get('Accepts Email Marketing') == 'yes'
+jours = (lambda a, b: (b - a).days)
+
+print('--- A. Chance de retour dans les 30 jours après T jours de silence')
+def haz(statut, T, H=30):
+    ok_ = tot = 0
+    for v in pc.values():
+        for i in range(len(v)):
+            if not statut(i + 1): continue
+            last = dt(v[i]); nxt = dt(v[i + 1]) if i + 1 < len(v) else None
+            if jours(last, REF) < T + H: continue
+            if nxt is not None and jours(last, nxt) <= T: continue
+            tot += 1; ok_ += 1 if (nxt is not None and jours(last, nxt) <= T + H) else 0
+    return ok_, tot
+for lab, st in (('1', lambda r: r == 1), ('2', lambda r: r == 2), ('3+', lambda r: r >= 3)):
+    for x in Q['hazard'][lab]:
+        a, b = haz(st, x['T'])
+        cmp('Profil %s, silence %d j : retours' % (lab, x['T']), a, x['retours'], 0); cmp('Profil %s, silence %d j : observations' % (lab, x['T']), b, x['observations'], 0)
+
+print('--- B. Critères testés (retour dans les 90 jours après la 1re commande)')
+tot1 = sorted(float(v[0]['r']['Total']) for v in pc.values()); med = tot1[len(tot1) // 2]
+cmp('Médiane de la 1re commande (€)', med, Q['mediane_panier'], 0.5)
+def cp(v): return ((v[0]['r']['Shipping Zip'] or v[0]['r']['Billing Zip'] or ''))
+import re
+def dep(v): return re.sub(r'\D', '', cp(v)).zfill(5)[:2]
+pics = sorted(d for d, k in collections.Counter(c['r']['Created at'][:10] for c in viv).items() if k >= 20)
+tests = [lambda k: oui(k), lambda k: qte(pc[k][0]) >= 3, lambda k: float(pc[k][0]['r']['Total']) >= med, lambda k: dep(pc[k]) == '64',
+         lambda k: pc[k][0]['r']['Discount Code'] == 'BIENVENUE10', lambda k: any(i[0].startswith('BOUGIE GOURMANDE') for i in pc[k][0]['items']), lambda k: pc[k][0]['r']['Created at'][:10] in pics]
+ps = []
+for t, s in zip(tests, Q['criteres_90j']):
+    for lib, f, cle in (('oui', t, 'oui'), ('non', lambda k, t=t: not t(k), 'non')):
+        el = [k for k in pc if jours(dt(pc[k][0]), REF) >= 90 and f(k)]
+        re_ = [k for k in el if len(pc[k]) > 1 and jours(dt(pc[k][0]), dt(pc[k][1])) <= 90]
+        cmp(s['groupe'][:40] + ' (%s) : suivis' % lib, len(el), s[cle]['suivis'], 0); cmp(s['groupe'][:40] + ' (%s) : ont recommandé' % lib, len(re_), s[cle]['ont_recommande'], 0)
+        if lib == 'oui': a, na = len(re_), len(el)
+        else: b, nb = len(re_), len(el)
+    p = stats.fisher_exact([[a, na - a], [b, nb - b]])[1]; ps.append(p)
+    cmp(s['groupe'][:40] + ' : p (Fisher)', p, s['p'], 1e-6)
+ordre = sorted(range(7), key=lambda i: ps[i]); prev = 0; holm = [0] * 7
+for r_, i in enumerate(ordre): prev = max(prev, min(1.0, ps[i] * (7 - r_))); holm[i] = prev
+for i, s in enumerate(Q['criteres_90j']): cmp(s['groupe'][:40] + ' : p corrigé (Holm)', holm[i], s['p_holm'], 1e-6)
+
+print('--- B bis. Retour rapide ou tardif (2e commande avant ou après 45 jours)')
+def f23(rapide):
+    el = [k for k, v in pc.items() if len(v) >= 2 and jours(dt(v[1]), REF) >= 90 and ((jours(dt(v[0]), dt(v[1])) <= 45) == rapide)]
+    re_ = [k for k in el if len(pc[k]) > 2 and jours(dt(pc[k][1]), dt(pc[k][2])) <= 90]
+    return len(el), len(re_)
+for lab, rap in (('rapide', True), ('tardif', False)):
+    a, b = f23(rap); cmp('Revenu %s : suivis' % lab, a, Q['retour_rapide'][lab]['suivis'], 0); cmp('Revenu %s : ont passé une 3e commande' % lab, b, Q['retour_rapide'][lab]['ont_commande'], 0)
+d_r = [jours(dt(v[1]), dt(v[2])) for v in pc.values() if len(v) >= 3 and jours(dt(v[0]), dt(v[1])) <= 45]; d_t = [jours(dt(v[1]), dt(v[2])) for v in pc.values() if len(v) >= 3 and jours(dt(v[0]), dt(v[1])) > 45]
+cmp('Délai médian 2e → 3e, rapides (jours)', statistics.median(d_r), Q['retour_rapide']['mediane_2_3_rapide'], 0.5); cmp('Délai médian 2e → 3e, tardifs (jours)', statistics.median(d_t), Q['retour_rapide']['mediane_2_3_tardif'], 0.5)
+d12 = [jours(dt(v[0]), dt(v[1])) for v in pc.values() if len(v) >= 2]
+cmp('Clients à 2 commandes ou plus', len(d12), Q['curieux']['n'], 0)
+cmp('Délai médian 1re → 2e (jours)', statistics.median(d12), Q['deja_revenus']['nouveau_45']['mediane'], 0.6)
+cmp('Revenus avant J+45 (parmi ceux qui reviennent)', sum(1 for d in d12 if d < 45), Q['deja_revenus']['nouveau_45']['avant'], 0)
+cmp('Part de revenus rapides parmi les clients à 2 commandes (%)', 100 * sum(1 for d in d12 if d <= 45) / len(d12), Q['retour_rapide']['part_rapides_parmi_2e'], 0.01)
+cmp('Revenus rapides avant J+30 (2e → 3e)', sum(1 for d in d_r if d < 30), Q['deja_revenus']['rapide_30']['avant'], 0); cmp('Revenus tardifs avant J+55 (2e → 3e)', sum(1 for d in d_t if d < 55), Q['deja_revenus']['tardif_55']['avant'], 0)
+
+print('--- C. Curieux et chasseur de promo')
+deux = [v for v in pc.values() if len(v) >= 2]
+prod = lambda c: {re.split(r' - | / ', i[0])[0].strip() for i in c['items'] if i[0] != 'TIP'}
+cmp('2e commande avec un produit déjà acheté', sum(1 for v in deux if prod(v[1]) & prod(v[0])), Q['curieux']['meme_produit'], 0)
+code1 = [v for v in deux if v[0]['r']['Discount Code']]; no1 = [v for v in deux if not v[0]['r']['Discount Code']]
+cmp('Clients à 2 commandes dont la 1re avec code', len(code1), Q['chasseur']['deux_commandes_code_1re'], 0); cmp('… dont la 2e avec code', sum(1 for v in code1 if v[1]['r']['Discount Code']), Q['chasseur']['dont_code_2e'], 0)
+cmp('Clients à 2 commandes dont la 1re sans code', len(no1), Q['chasseur']['deux_commandes_sans_code_1re'], 0); cmp('… dont la 2e avec code', sum(1 for v in no1 if v[1]['r']['Discount Code']), Q['chasseur']['dont_code_2e_sans'], 0)
+cmp('1res commandes avec un code', sum(1 for v in pc.values() if v[0]['r']['Discount Code']), Q['chasseur']['premieres_avec_code'], 0)
+cmp('Clients avec un code à chaque commande et plusieurs commandes', sum(1 for v in pc.values() if len(v) >= 2 and all(c['r']['Discount Code'] for c in v)), Q['chasseur']['toujours_code_2plus'], 0)
+
+print('--- D. Cibles par an')
+def en_flux(c, delai): return delai + 1 <= jours(dt(c), REF) <= delai + 365
+def cible(rang, delai):
+    e = [k for k, v in pc.items() if len(v) >= rang and en_flux(v[rang - 1], delai)]
+    s = [k for k in e if not (len(pc[k]) > rang and jours(dt(pc[k][rang - 1]), dt(pc[k][rang])) <= delai)]
+    return len(s), sum(1 for k in s if oui(k))
+a, b = cible(1, 45); cmp('Nouveaux sans retour à J+45, joignables', b, Q['cibles']['nouveau_45']['joignables'], 0); cmp('… tous', a, Q['cibles']['nouveau_45']['sans_retour'], 0)
+cmp('… même chiffre que la page « relance » du 15/11 (l1_relance.json)', b, json.load(open('../site/scripts/data/l1_relance.json', encoding='utf-8'))['cibles']['45']['joignables'], 0)
+rr = [k for k, v in pc.items() if len(v) >= 2 and en_flux(v[1], 30) and jours(dt(v[0]), dt(v[1])) <= 45]
+rr = [k for k in rr if not (len(pc[k]) > 2 and jours(dt(pc[k][1]), dt(pc[k][2])) <= 30)]; cmp('Revenus rapides sans 3e commande à J+30, joignables', sum(1 for k in rr if oui(k)), Q['cibles']['revenu_rapide_30']['joignables'], 0)
+rt = [k for k, v in pc.items() if len(v) >= 2 and en_flux(v[1], 55) and jours(dt(v[0]), dt(v[1])) > 45]
+rt = [k for k in rt if not (len(pc[k]) > 2 and jours(dt(pc[k][1]), dt(pc[k][2])) <= 55)]; cmp('Revenus tardifs sans 3e commande à J+55, joignables', sum(1 for k in rt if oui(k)), Q['cibles']['revenu_tardif_55']['joignables'], 0)
+for dl in (60, 120):
+    ev = []
+    for k, v in pc.items():
+        for i in range(2, len(v)):
+            if en_flux(v[i], dl) and not (i + 1 < len(v) and jours(dt(v[i]), dt(v[i + 1])) <= dl): ev.append(k)
+    cmp('Réguliers sans commande à J+%d : événements' % dl, len(ev), Q['cibles']['regulier'][str(dl)]['evenements'], 0); cmp('… joignables', len({k for k in ev if oui(k)}), Q['cibles']['regulier'][str(dl)]['joignables'], 0)
+cmp('Clients à 3 commandes ou plus', sum(1 for v in pc.values() if len(v) >= 3), Q['cibles']['dormants_reguliers']['clients_3plus'], 0)
+cmp('… sans commande depuis plus de 180 jours', sum(1 for v in pc.values() if len(v) >= 3 and jours(dt(v[-1]), REF) > 180), Q['cibles']['dormants_reguliers']['silence_plus_180'], 0)
+cmp('Clients joignables (ayant commandé)', sum(1 for k in pc if oui(k)), Q['joignables_part']['joignables'], 0)
+cust_l = list(csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8')))
+cmp('Fiches clients (lignes du fichier)', len(cust_l), Q['inscrits']['fiches'], 0)
+cmp('Fiches sans commande', sum(1 for r in cust_l if r['Total Orders'] == '0'), Q['inscrits']['sans_commande'], 0)
+cmp('Fiches sans commande qui acceptent les e-mails', sum(1 for r in cust_l if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes'), Q['inscrits']['sans_commande_joignables'], 0)
+cmp('Fiches qui acceptent les e-mails', sum(1 for r in cust_l if r['Accepts Email Marketing'] == 'yes'), Q['inscrits']['joignables'], 0)
+cmp('Fiches qui acceptent les SMS ou WhatsApp', sum(1 for r in cust_l if r['Accepts SMS Marketing'] == 'yes' or r['Accepts WhatsApp Marketing'] == 'yes'), Q['inscrits']['sms'] + Q['inscrits']['whatsapp'], 0)
+tot_ca = sum(float(c['r']['Total']) for c in viv)
+cmp('Part des clients à 3 commandes ou plus (%)', 100 * sum(1 for v in pc.values() if len(v) >= 3) / len(pc), Q['valeur_fidele']['part_clients_3plus'], 0.01)
+cmp('Part du chiffre d’affaires des clients à 3 commandes ou plus (%)', 100 * sum(float(c['r']['Total']) for v in pc.values() if len(v) >= 3 for c in v) / tot_ca, Q['valeur_fidele']['part_ca_3plus'], 0.01)
+cmp('Panier moyen de la 2e commande (€)', sum(float(v[1]['r']['Total']) for v in pc.values() if len(v) >= 2) / sum(1 for v in pc.values() if len(v) >= 2), Q['paniers_suivants']['2e'], 0.001)
+cmp('Panier moyen de la 3e commande (€)', sum(float(v[2]['r']['Total']) for v in pc.values() if len(v) >= 3) / sum(1 for v in pc.values() if len(v) >= 3), Q['paniers_suivants']['3e'], 0.001)
+cmp('Panier moyen des commandes de rang 4 et plus (€)', sum(float(c['r']['Total']) for v in pc.values() for c in v[3:]) / sum(len(v[3:]) for v in pc.values()), Q['paniers_suivants']['4e_et_plus'], 0.001)
+
+print('--- E. Abonnement ciblé')
+def base(statut):
+    art = []
+    for v in pc.values():
+        for i in range(len(v)):
+            if statut(i + 1) and jours(dt(v[i]), REF) >= 90: art.append(sum(qte(c) for c in v[i + 1:] if jours(dt(v[i]), dt(c)) <= 90))
+    return len(art), sum(art) / len(art)
+for lab, st in (('1', lambda r: r == 1), ('2', lambda r: r == 2), ('3+', lambda r: r >= 3)):
+    n_, m_ = base(st); cmp('Articles achetés en 90 jours après une commande de rang %s : observations' % lab, n_, Q['base90'][lab]['observations'], 0); cmp('… moyenne', m_, Q['base90'][lab]['articles_moy'], 0.0005)
+prix_g = sorted(i[2] for c in viv for i in c['items'] if i[0].startswith('BOUGIE GOURMANDE')); mp = (prix_g[len(prix_g) // 2] if len(prix_g) % 2 else (prix_g[len(prix_g) // 2 - 1] + prix_g[len(prix_g) // 2]) / 2)
+cmp('Prix médian d’une bougie gourmande (€)', mp, Q['prix_bougie']['mediane_gourmande'], 0.001)
+tr = [(float(r['Amount']), float(r['Fee'] or 0)) for r in csv.DictReader(open('../DONNEES/payment_transactions.csv', encoding='utf-8')) if r['Type'] == 'charge' and r['Amount']]
+n_ = len(tr); sx = sum(a for a, _ in tr); sy = sum(f for _, f in tr); sxx = sum(a * a for a, _ in tr); sxy = sum(a * f for a, f in tr)
+bb = (n_ * sxy - sx * sy) / (n_ * sxx - sx * sx); aa = (sy - bb * sx) / n_
+cmp('Frais de paiement : part fixe (€)', aa, Q['frais']['fixe'], 0.0005); cmp('Frais de paiement : part variable (%)', 100 * bb, 100 * Q['frais']['variable'], 0.005)
+PL = mp; MB = {'bas': 0.357, 'haut': 0.5}
+B = {'1': Q['base90']['1']['articles_moy'], '2': Q['base90']['2']['articles_moy'], '3+': Q['base90']['3+']['articles_moy']}
+def gain(m, p, b):
+    c = PL * (1 - m); return max(0, 3 - b) * (p - c) - min(b, 3) * (PL - p) - (aa + bb * 3 * p)
+for p in (18, 20, 22):
+    for k in ('1', '2', '3+'):
+        for mk in ('bas', 'haut'): cmp('Gain d’un abonné à %d €, rang %s, marge %s (€ par trimestre)' % (p, k, mk), gain(MB[mk], p, B[k]), Q['abonnement']['gain']['%d|%s|%s' % (p, k, mk)], 0.005)
+    for mk in ('bas', 'haut'):
+        c = PL * (1 - MB[mk]); cmp('Seuil de rentabilité à %d €, marge %s (articles par trimestre)' % (p, mk), (3 * (p - c) - (aa + bb * 3 * p)) / (PL - c), Q['abonnement']['seuil']['%d|%s' % (p, mk)], 0.005)
+cmp('Frais d’un paiement mensuel (3 × 20 €)', 3 * (aa + bb * 20), Q['abonnement']['frais_mensuel_20'], 0.005); cmp('Frais d’un paiement d’avance (60 €)', aa + bb * 60, Q['abonnement']['frais_avance_20'], 0.005)
+
+print('--- F. Formation')
+def formation(c): return [i for i in c['items'] if re.match(r'(PACK FABRICATION|PACK BOUGIES|RÉGLEMENTATION|REGLEMENTATION)', i[0]) or 'CONSULTING' in i[0]]
+pay = sorted((c['r']['Created at'][:10], float(c['r']['Total'])) for c in viv if formation(c) and float(c['r']['Total']) > 0)
+cmp('Ventes de formation payantes', len(pay), Q['formation_total']['ventes'], 0); cmp('Chiffre d’affaires de la formation (€)', sum(t for _, t in pay), Q['formation_total']['ca'], 0.01)
+def per(d): return '1' if d < '2026-05-01' else '2' if d < '2026-07-21' else '3' if d < '2026-09-01' else '4'
+for k in '1234':
+    ps_ = [t for d, t in pay if per(d) == k]; kk = [x for x in Q['formation_periodes'] if x.startswith(k)][0]
+    cmp('Période %s : ventes' % k, len(ps_), Q['formation_periodes'][kk]['ventes'], 0); cmp('Période %s : payé (€)' % k, sum(ps_), Q['formation_periodes'][kk]['ca'], 0.01)
+cmp('Commandes de la boutique hors formation en septembre 2026', sum(1 for c in viv if c['r']['Created at'][:7] == '2026-09' and not formation(c)), Q['commandes_boutique_mois']['2026-09'], 0)
+cmp('Commandes de la boutique hors formation en juillet 2026', sum(1 for c in viv if c['r']['Created at'][:7] == '2026-07' and not formation(c)), Q['commandes_boutique_mois']['2026-07'], 0)
+vues = collections.defaultdict(int)
+for r in csv.DictReader(open('../DONNEES/instagram_publications.csv', encoding='utf-8')): vues[datetime.strptime(r['Heure de publication'], '%m/%d/%Y %H:%M').strftime('%Y-%m')] += int(r['Vues'] or 0)
+cmp('Vues Instagram des publications de septembre 2026', vues['2026-09'], Q['instagram_vues_mois']['2026-09']['vues'], 0); cmp('Vues Instagram de juillet 2026', vues['2026-07'], Q['instagram_vues_mois']['2026-07']['vues'], 0)
+
+print('--- G. Codes, avis, origines des ventes')
+bi = [c for c in viv if c['r']['Discount Code'] == 'BIENVENUE10']
+rang = {}
+for v in pc.values():
+    for i, c in enumerate(v): rang[id(c)] = i + 1
+tard = [c for c in bi if rang.get(id(c), 0) >= 2]
+cmp('Commandes avec le code de bienvenue', len(bi), Q['codes']['bienvenue_commandes'], 0)
+cmp('… passées par un client qui avait déjà commandé', len(tard), Q['codes']['bienvenue_deja_clients'], 0); cmp('… remises correspondantes (€)', sum(float(c['r']['Discount Amount'] or 0) for c in tard), Q['codes']['bienvenue_deja_clients_remise'], 0.01)
+cmp('Commandes avec un code', sum(1 for c in viv if c['r']['Discount Code']), Q['codes']['avec_code'], 0); cmp('Remises totales (€)', sum(float(c['r']['Discount Amount'] or 0) for c in viv), Q['codes']['remise_totale'], 0.01)
+disc = list(csv.DictReader(open('../DONNEES/discounts.csv', encoding='utf-8')))
+cmp('Codes de la boutique', len(disc), Q['codes']['codes_total'], 0); cmp('Codes réservés à des clients précis', sum(1 for r in disc if r['Customer Selection'] == 'prerequisite'), Q['codes']['codes_reserves_clients'], 0)
+cmp('1res commandes avec le code de bienvenue', sum(1 for v in pc.values() if v[0]['r']['Discount Code'] == 'BIENVENUE10'), Q['codes']['premieres_avec_bienvenue'], 0)
+av = list(csv.DictReader(open('../DONNEES/avis.csv', encoding='utf-8')))
+cmp('Avis publiés', len(av), Q['avis_delai']['avis'], 0); cmp('Avis à 5 étoiles', sum(1 for a in av if a['rating'] == '5'), Q['avis_delai']['cinq_etoiles'], 0); cmp('Note moyenne des avis', sum(int(a['rating']) for a in av) / len(av), Q['avis_delai']['note_moyenne'], 0.0005)
+rows = list(csv.DictReader(open('../DONNEES/analytics_ventes_totales_par_referent_2026-09-22_2026-10-22.csv', encoding='utf-8')))
+cmp('Commandes sur 30 jours (rapport Shopify)', sum(int(r['Commandes']) for r in rows), Q['sources_ventes_30j']['total_commandes'], 0)
+cmp('… dont réseaux sociaux (Instagram, Facebook, YouTube)', sum(int(r['Commandes']) for r in rows if r['Nom du référent de la commande'] in ('instagram', 'facebook', 'youtube')), Q['sources_ventes_30j']['categories']['Réseaux sociaux']['commandes'], 0)
+cmp('Commandes de la boutique sur la même période (orders.csv)', sum(1 for c in viv if '2026-09-22' <= c['r']['Created at'][:10] <= '2026-10-22'), Q['sources_ventes_30j']['commandes_boutique_30j'], 0)
+print('\n%d contrôles OK, %d écart(s)' % (ok, ko))

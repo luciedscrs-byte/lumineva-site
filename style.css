@@ -317,3 +317,16 @@ main.wrap{overflow-x:hidden}
 .chiffres .c{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .chiffres .c .v{display:block;font-family:var(--display);font-size:26px;font-weight:700;color:var(--brand-dark);line-height:1.2}
 .chiffres .c .l{font-size:14px;color:var(--muted)}
+
+/* ---- 15/11 (soir) : cartes de profils, verdicts, cases de démarche ---- */
+.profils{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:16px 0}
+.profil{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--brand);border-radius:12px;padding:12px 16px 14px}
+.profil.rose{border-top-color:var(--flame)}.profil.gris{border-top-color:var(--muted)}
+.profil h3{margin:0 0 4px;font-size:18px;color:var(--brand-dark)}
+.profil .regle{font-size:14.5px;color:var(--muted);margin:0 0 8px}
+.profil dl{margin:0;font-size:15px}.profil dt{font-weight:700;color:var(--brand-dark);margin-top:8px;font-size:13.5px;text-transform:uppercase;letter-spacing:.03em}
+.profil dd{margin:2px 0 0}
+.profil .gros{font-family:var(--display);font-size:22px;font-weight:700;color:var(--brand-dark)}
+.verdict-ligne{font-weight:700;color:var(--brand-dark)}
+.tablewrap td.ok{color:var(--good);font-weight:700}.tablewrap td.non{color:var(--bad);font-weight:700}
+.demarche{counter-reset:etape}
