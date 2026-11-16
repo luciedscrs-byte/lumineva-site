@@ -330,3 +330,20 @@ main.wrap{overflow-x:hidden}
 .verdict-ligne{font-weight:700;color:var(--brand-dark)}
 .tablewrap td.ok{color:var(--good);font-weight:700}.tablewrap td.non{color:var(--bad);font-weight:700}
 .demarche{counter-reset:etape}
+
+/* ---- 16/11 : tableau de bord des automatisations en place ---- */
+.autos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:16px 0}
+.auto{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--brand);border-radius:12px;padding:14px 18px 16px}
+.auto.casse{border-top-color:var(--flame)}.auto.inactif{border-top-color:var(--muted);opacity:.9}
+.auto h3{margin:0 0 2px;font-size:18px;color:var(--brand-dark)}
+.auto .decl{font-size:14.5px;color:var(--muted);margin:0 0 8px}
+.auto .etat{margin:0 0 10px}
+.auto .sous{font-size:13px;color:var(--muted);margin:10px 0 2px}
+.auto .verdict{margin:12px 0 0;font-size:15px;border-top:1px solid var(--line);padding-top:8px}
+.entonnoir{list-style:none;margin:6px 0 0;padding:0}
+.entonnoir li{display:grid;grid-template-columns:128px 1fr 74px;align-items:center;gap:8px;font-size:14px;margin:4px 0}
+.entonnoir .track{background:var(--accent-soft);border-radius:99px;height:12px;display:block;overflow:hidden}
+.entonnoir .track i{display:block;height:100%;background:var(--accent);border-radius:99px;min-width:2px}
+.auto.casse .track i{background:var(--flame)}.auto.inactif .track i{background:var(--muted)}
+.entonnoir .v{text-align:right;font-weight:700}
+@media(max-width:480px){.entonnoir li{grid-template-columns:100px 1fr 62px}}
