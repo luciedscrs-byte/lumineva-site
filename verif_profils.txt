@@ -124,6 +124,13 @@ cmp('Fiches sans commande', sum(1 for r in cust_l if r['Total Orders'] == '0'), 
 cmp('Fiches sans commande qui acceptent les e-mails', sum(1 for r in cust_l if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes'), Q['inscrits']['sans_commande_joignables'], 0)
 cmp('Fiches qui acceptent les e-mails', sum(1 for r in cust_l if r['Accepts Email Marketing'] == 'yes'), Q['inscrits']['joignables'], 0)
 cmp('Fiches qui acceptent les SMS ou WhatsApp', sum(1 for r in cust_l if r['Accepts SMS Marketing'] == 'yes' or r['Accepts WhatsApp Marketing'] == 'yes'), Q['inscrits']['sms'] + Q['inscrits']['whatsapp'], 0)
+
+tg = lambda r: [t.strip() for t in (r['Tags'] or '').split(',') if t.strip()]
+frm = lambda r: 'Formation' in tg(r) or 'shopify-forms-692823' in tg(r)
+cmp('Abonnés inscrits via la formation (étiquette Formation ou formulaire 692823)', sum(1 for r in cust_l if r['Accepts Email Marketing'] == 'yes' and frm(r)), Q['inscrits']['abonnes_formation'], 0)
+cmp('… sans commande', sum(1 for r in cust_l if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and frm(r)), Q['inscrits']['sans_commande_joignables_formation'], 0)
+cmp('Abonnés sans commande hors formation', sum(1 for r in cust_l if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and not frm(r)), Q['inscrits']['sans_commande_joignables_hors_formation'], 0)
+cmp('Remise moyenne du code de bienvenue (€)', sum(float(c['r']['Discount Amount'] or 0) for c in viv if c['r']['Discount Code'] == 'BIENVENUE10') / sum(1 for c in viv if c['r']['Discount Code'] == 'BIENVENUE10'), Q['premiere_commande']['remise_moyenne_bienvenue'], 0.001)
 tot_ca = sum(float(c['r']['Total']) for c in viv)
 cmp('Part des clients à 3 commandes ou plus (%)', 100 * sum(1 for v in pc.values() if len(v) >= 3) / len(pc), Q['valeur_fidele']['part_clients_3plus'], 0.01)
 cmp('Part du chiffre d’affaires des clients à 3 commandes ou plus (%)', 100 * sum(float(c['r']['Total']) for v in pc.values() if len(v) >= 3 for c in v) / tot_ca, Q['valeur_fidele']['part_ca_3plus'], 0.01)

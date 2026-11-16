@@ -6,13 +6,13 @@
 <title>Faut-il prévenir les clients d’un lancement ou d’un retour en stock ? · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="style.css?v=21">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html" aria-current="page">Automatisations</a><a href="q-formation.html">Formation</a><a href="recommandations.html">Recommandations</a><a href="reco-alternative.html">Proposition alternative</a><a href="methode.html">Méthode</a></div></div></nav>
-<nav class="subnav" aria-label="Automatisations"><div class="wrap"><span class="lab">Automatisations</span><a href="q-existant.html">0 · Les 7 en place</a><a href="q-relance.html">1 · Relance selon le profil du client</a><a href="q-abandon.html">2 · Relances panier et paiement</a><a href="q-stock.html" aria-current="page">3 · Lancement et retour en stock</a><a href="q-idees.html">4 · Autres idées</a></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-relance.html" aria-current="page">Automatisations</a><a href="recommandations.html">Recommandations</a><a href="reco-alternative.html">Proposition alternative</a><a href="methode.html">Méthode</a></div></div></nav>
+<nav class="subnav" aria-label="Automatisations"><div class="wrap"><span class="lab">Automatisations</span><a href="q-existant.html">0 · Les 7 en place</a><a href="q-relance.html">1 · Relance selon le profil du client</a><a href="q-abandon.html">2 · Relances panier et paiement</a><a href="q-stock.html" aria-current="page">3 · Lancement et retour en stock</a><a href="q-idees.html">4 · Autres idées</a><a href="q-plan.html">5 · Plan d’automatisations</a></div></nav>
 <header class="hero"><div class="wrap"><p class="kicker">Automatisations · 3</p><h1>Faut-il prévenir les clients d’un lancement ou d’un retour en stock ?</h1><p class="lead">La boutique vend par à-coups : d’où viennent les pointes, ce que rapportent les e-mails de lancement, et ce que devient la demande après la rupture.</p></div></header>
 <main class="wrap" id="contenu">
 <div class="enclair"><h3>En clair</h3><p><b>La question.</b> Faut-il prévenir les clients d’un lancement ou d’un retour en stock, et par quel canal ?</p><p class="rep"><b>Notre réponse.</b> <b>Pas par un e-mail de lancement : les chiffres ne le montrent pas.</b> Les jours de pointe suivent les annonces sur Instagram et Facebook, et les 5 e-mails de lancement ou de retour rapportent de 0 à 2 commandes chacun. Ce qui reste à examiner est la demande d’un produit épuisé : on propose de la <b>mesurer</b> avec un formulaire « prévenez-moi », sans annoncer de gain.</p><p style="margin-bottom:0"><b>Trois chiffres qui la soutiennent :</b></p><ol><li>4 jours de pointe font 9 % des commandes (138 sur 1 595) : l’enjeu est réel. Mais sur les 30 derniers jours, 27 % des commandes (40 sur 149) viennent des réseaux sociaux et aucune ligne du rapport ne vient d’un e-mail.</li><li>Les 5 e-mails de lancement et de retour ont envoyé 7 216 messages pour 4 commandes rattachées, soit 0,06 pour 100 e-mails, contre 0,97 pour les relances de panier : 17 fois moins.</li><li>À son retour, la Pumpkin Spice Latte a trouvé 26 acheteurs, sans aucun en commun avec les 26 du lancement ; 16 produits sur 121 sont épuisés et avaient fait 11 % des ventes de 90 jours. La demande existe au-delà du premier jour, mais elle n’est pas mesurée.</li></ol><p class="petit" style="margin-top:10px"><b>Niveau de preuve :</b> <span class="pill done">Démontré</span> pour les pointes et la faiblesse des e-mails de lancement ; <span class="pill todo">Hypothèse</span> pour l’intérêt d’une alerte (demande non servie inconnue)</p></div>
@@ -299,7 +299,7 @@ out['promo'] = {'clients_toujours_code': len(toujours), 'une_seule_commande': su
                 'commandes_code_bienvenue': sum(1 for o in cmds if o['code'] == 'BIENVENUE10')}
 json.dump(out, open('q4_approfondi.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1, default=str)
 print(json.dumps({k: out[k] for k in ('fenetres', 'retours_jour_pointe', 'delais_2e', 'relances', 'boutique', 'formation_n', 'formation_produits', 'pack_complet_prix', 'formation_codes', 'formation_part_ca', 'formation_acheteurs_deja_clients')}, ensure_ascii=False, indent=1, default=str))
-</code></pre></div></details><details class="pli" name="code-q5_profils.py"><summary><code>q5_profils.py</code> · Profils de clients (chance de retour selon le silence, critères testés, retour rapide ou tardif), cibles par an, base de l’abonnement ciblé, formation par période, codes de réduction.</summary><div class="corps"><p class="meta">270 lignes · <a href="q5_profils.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
+</code></pre></div></details><details class="pli" name="code-q5_profils.py"><summary><code>q5_profils.py</code> · Profils de clients (chance de retour selon le silence, critères testés, retour rapide ou tardif), cibles par an, base de l’abonnement ciblé, formation par période, codes de réduction.</summary><div class="corps"><p class="meta">278 lignes · <a href="q5_profils.txt" download>télécharger le fichier</a></p><pre class="code"><code># encoding: utf-8
 """Analyses du 15/11/2026 (soir) : profils de clients reconnus par leur comportement, délais de relance,
 abonnement ciblé, formation en septembre-octobre, codes de réduction.
 Aucune donnée personnelle : comptes, taux et montants agrégés.
@@ -424,10 +424,18 @@ out['cibles'] = {'nouveau_45': cible_post(1, 45), 'revenu_45': cible_post(2, 45)
                                         'silence_plus_180': sum(1 for v in clients.values() if len(v) &gt;= 3 and (REF - v[-1]['dt']).days &gt; 180)}}
 out['joignables_part'] = {'clients': len(clients), 'joignables': sum(1 for k in clients if oui(k))}
 rows_cm = list(csv.DictReader(open('../DONNEES/customers.csv', encoding='utf-8')))      # une ligne = une fiche (2 066) ; cm ci-dessus est indexé par clé (quelques fiches sans clé)
+def _tags(r): return [t.strip() for t in (r['Tags'] or '').split(',') if t.strip()]
+_form = lambda r: 'Formation' in _tags(r) or any(t.startswith('shopify-forms-692823') for t in _tags(r))
 out['inscrits'] = {'fiches': len(rows_cm), 'sans_commande': sum(1 for r in rows_cm if r['Total Orders'] == '0'),
                    'sans_commande_joignables': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes'),
                    'joignables': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes'),
-                   'sms': sum(1 for r in rows_cm if r['Accepts SMS Marketing'] == 'yes'), 'whatsapp': sum(1 for r in rows_cm if r['Accepts WhatsApp Marketing'] == 'yes')}
+                   'sms': sum(1 for r in rows_cm if r['Accepts SMS Marketing'] == 'yes'), 'whatsapp': sum(1 for r in rows_cm if r['Accepts WhatsApp Marketing'] == 'yes'),
+                   'abonnes_formation': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes' and _form(r)),
+                   'sans_commande_joignables_formation': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and _form(r)),
+                   'sans_commande_joignables_hors_formation': sum(1 for r in rows_cm if r['Total Orders'] == '0' and r['Accepts Email Marketing'] == 'yes' and not _form(r)),
+                   'abonnes_hors_formation': sum(1 for r in rows_cm if r['Accepts Email Marketing'] == 'yes' and not _form(r))}
+out['premiere_commande'] = {'total_moyen': float(np.mean([v[0]['total'] for v in clients.values()])), 'total_median': float(np.median([v[0]['total'] for v in clients.values()])),
+                            'remise_moyenne_bienvenue': float(np.mean([o['remise'] for o in cmds if o['code'] == 'BIENVENUE10']))}
 
 # =================================================================== E. ABONNEMENT CIBLÉ
 def base90(filtre_rang, jours=90):

@@ -347,3 +347,5 @@ main.wrap{overflow-x:hidden}
 .auto.casse .track i{background:var(--flame)}.auto.inactif .track i{background:var(--muted)}
 .entonnoir .v{text-align:right;font-weight:700}
 @media(max-width:480px){.entonnoir li{grid-template-columns:100px 1fr 62px}}
+table.plan{font-size:14px}table.plan td,table.plan th{vertical-align:top;padding:8px 10px}
+table.plan td:first-child{white-space:nowrap}
