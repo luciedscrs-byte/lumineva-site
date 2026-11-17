@@ -349,3 +349,37 @@ main.wrap{overflow-x:hidden}
 @media(max-width:480px){.entonnoir li{grid-template-columns:100px 1fr 62px}}
 table.plan{font-size:14px}table.plan td,table.plan th{vertical-align:top;padding:8px 10px}
 table.plan td:first-child{white-space:nowrap}
+
+/* ---- 17/11 : pages de questions simplifiées (question > données > constats > réponse > recommandation) ---- */
+.fil{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px;padding:0;list-style:none}
+.fil a{display:block;padding:6px 14px;background:var(--surface);border:1px solid var(--line);border-radius:99px;font-size:14px;text-decoration:none;color:var(--brand-dark);font-weight:600}
+.fil a b{display:inline-block;background:var(--brand);color:var(--cream);border-radius:99px;width:20px;height:20px;line-height:20px;text-align:center;font-size:12px;margin-right:6px}
+.cons{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0}
+.cons .c{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--brand);border-radius:12px;padding:12px 16px 14px}
+.cons .c .gros{font-family:var(--display);font-size:28px;font-weight:700;color:var(--brand-dark);line-height:1.15;display:block}
+.cons .c .t{font-weight:700;margin:2px 0 6px;color:var(--ink)}.cons .c p{margin:4px 0;font-size:15px}
+.cons .c.rose{border-top-color:var(--flame)}
+.reponse{background:var(--brand);color:var(--cream);border-radius:14px;padding:16px 22px;margin:14px 0}
+.reponse .lab{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.05em;opacity:.85;margin-bottom:4px}
+.reponse p{margin:0;font-size:19px;line-height:1.5;max-width:none}.reponse b{color:#fff}
+.reco2{background:#fff;border:2px solid var(--brand);border-radius:14px;padding:12px 20px 16px;margin:14px 0}
+.reco2 h3{margin:4px 0 2px;color:var(--brand);font-size:21px}.reco2 .meta{margin-top:4px}
+.maquettes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:14px 0}
+.maquette h4{margin:0 0 6px;font-size:15px;color:var(--brand-dark)}
+.mail{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 2px 6px rgba(11,59,42,.08);font-family:Arial,Helvetica,sans-serif;color:#222}
+.mail .tete{background:var(--brand);color:var(--cream);text-align:center;padding:10px;font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:.02em}
+.mail .objet{background:#f5f5f5;padding:6px 12px;font-size:12px;color:#555;border-bottom:1px solid #e5e5e5}
+.mail .corps{padding:14px 16px;font-size:13.5px;line-height:1.45;text-align:center}
+.mail .corps h5{margin:0 0 8px;font-size:17px;color:var(--brand-dark);font-family:var(--display)}
+.mail .corps p{margin:6px 0;max-width:none}
+.mail .art{display:flex;gap:6px;justify-content:center;margin:10px 0}
+.mail .art i{display:block;width:62px;height:62px;border-radius:6px;background:var(--rose-soft);border:1px dashed var(--rose)}
+.mail .bouton{display:inline-block;background:#111;color:#fff;border-radius:5px;padding:9px 18px;font-size:13px;margin:8px 0}
+.mail .petit{font-size:11.5px;color:#777}
+.mail .etoiles{color:#d9a400;letter-spacing:2px;font-size:15px}
+.etiquette-test{display:inline-block;background:var(--rose);color:#3A0F0F;border-radius:99px;font-size:11px;padding:1px 9px;margin-left:6px;font-weight:700}
+.chaine{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:12px 0}
+.chaine .b{flex:1 1 150px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14.5px;position:relative}
+.chaine .b b{display:block;color:var(--brand-dark);margin-bottom:2px}
+.chaine .b.fin{background:var(--accent-soft);border-color:var(--brand)}
+.chaine .b:not(:last-child)::after{content:'›';position:absolute;right:-9px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--brand);font-weight:700;z-index:2}
