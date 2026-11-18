@@ -577,3 +577,4 @@ main.wrap{overflow:visible;overflow-x:clip}
 .cv-p b{display:inline}
 .kcards:has(> .kc:nth-child(4):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:640px){.kcards:has(> .kc:nth-child(4):last-child){grid-template-columns:1fr}}
+.codeliste{margin:6px 0 0;padding-left:20px}.codeliste li{margin:5px 0}
