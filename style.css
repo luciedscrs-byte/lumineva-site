@@ -442,3 +442,76 @@ table.plan td:first-child{white-space:nowrap}
 .gains .g .kv{font-family:var(--display);font-size:24px;font-weight:700;display:block;line-height:1.15}
 .gains .g p{margin:4px 0 0;font-size:14px}
 @media(max-width:640px){.avantapres{grid-template-columns:1fr}}
+
+/* ===================== 18/11 nuit : nouveau design (mélange « application » + « chaleureux ») ===================== */
+:root{--display:'Playfair Display',Georgia,serif;--body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;--shadow:0 2px 10px rgba(10,113,78,.08),0 1px 2px rgba(0,0,0,.04);--shadow2:0 14px 34px rgba(6,78,54,.14);--gdd:#032d1f}
+body{font-size:17.5px;line-height:1.62}
+/* menu horizontal en haut */
+.topnav{background:rgba(3,45,31,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,243,194,.18)}
+.topnav .wrap{max-width:1180px;padding:10px 24px}
+.topnav .brand{font-family:var(--display);font-size:21px;font-weight:700}
+.topnav .links a{font-weight:700;font-size:14.5px}
+.topnav .links a:hover{background:rgba(255,243,194,.14)}
+.topnav .links a[aria-current="page"]{background:var(--rose);color:#4a1219}
+.subnav{background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+/* bandeau de page */
+.hero{background:radial-gradient(ellipse 55% 90% at 85% 30%,rgba(255,200,120,.38),rgba(255,153,153,.14) 45%,transparent 72%),linear-gradient(160deg,var(--brand-dark),var(--gdd));border-bottom:none;color:var(--cream)}
+.hero .wrap{max-width:1180px;padding-block:58px 52px}
+.hero .kicker{display:inline-block;border:1px solid rgba(255,243,194,.4);border-radius:99px;padding:5px 15px;color:var(--cream);font-weight:800;letter-spacing:.09em;font-size:12.5px}
+.hero h1{color:#fff;font-weight:800;font-size:clamp(32px,5vw,54px);line-height:1.1;letter-spacing:-.01em}
+.hero .lead{color:#e8f2ec;font-size:20px}
+main.wrap{max-width:1180px}
+h2{font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:12px}
+h2:before{content:"";width:7px;height:26px;border-radius:4px;background:var(--rose);flex:none}
+.etape h2:before{display:none}
+h3{font-weight:700}
+/* cartes : ombre douce, coins arrondis */
+.kc,.cons .c,.chiffres .c,.dash .panel,.encadre,.mail,.maquette,.reco2,.flowmaq .fb{box-shadow:var(--shadow)}
+.kc{border:none;border-top:none;border-radius:22px;padding:18px 20px}
+.kc .kb{background:var(--rose);color:#4a1219;font-weight:800}
+.kc.rose .kb{background:var(--flame);color:#fff}
+.kc h4{font-family:var(--display);font-weight:700;font-size:18px}
+.kc .kp{background:#E7F3EC;border-radius:12px;color:var(--brand-dark);font-weight:600}
+.kc.rose .kp{background:var(--rose-soft);color:#6a2330}
+.cons .c{border-radius:22px;border:none}
+.chiffres .c{border-radius:20px;border:none}
+.encadre{border:none;border-radius:24px;background:#fff}
+.reco2{border:none;border-radius:26px;background:#fff;padding:20px 24px}
+.reponse{border-radius:22px}
+.chaine .b{border-radius:16px;border:none;box-shadow:var(--shadow)}
+.sept .s{border-radius:18px;border:none;box-shadow:var(--shadow)}
+/* les 7 étapes = la structure de la page */
+.stepper{position:sticky;top:56px;z-index:8;display:flex;gap:8px;overflow-x:auto;padding:10px 4px;margin:0 0 18px;background:rgba(255,250,235,.94);backdrop-filter:blur(8px);scrollbar-width:thin}
+.stepper a{flex:none;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--brand-dark);background:#fff;border-radius:99px;padding:6px 14px 6px 6px;font-weight:700;font-size:14px;box-shadow:var(--shadow)}
+.stepper a span{width:26px;height:26px;border-radius:50%;background:var(--brand);color:var(--cream);display:grid;place-items:center;font-size:13px;font-weight:800}
+.stepper a:first-child span,.stepper a:last-child span{background:var(--rose);color:#4a1219}
+.stepper a:hover{background:var(--cream)}
+.etape{position:relative;background:#fff;border-radius:30px;box-shadow:var(--shadow2);padding:28px 30px 26px;margin:34px 0 0;scroll-margin-top:120px}
+.etape+.etape:before{content:"";position:absolute;left:58px;top:-34px;width:4px;height:34px;background:linear-gradient(var(--brand),var(--rose));border-radius:4px}
+.eh{display:flex;align-items:center;gap:18px}
+.en{flex:none;width:58px;height:58px;border-radius:50%;background:var(--brand);color:var(--cream);font-family:var(--display);font-weight:800;font-size:28px;display:grid;place-items:center;box-shadow:0 6px 16px rgba(10,113,78,.3)}
+#e1 .en,#e7 .en{background:var(--rose);color:#4a1219;box-shadow:0 6px 16px rgba(255,153,153,.45)}
+.et{margin:0;font-size:30px;line-height:1.1}
+.ex{margin:3px 0 0;color:var(--muted);font-size:15.5px}
+.elead{font-size:19.5px;line-height:1.5;background:var(--bg);border-left:6px solid var(--rose);border-radius:14px;padding:14px 18px;margin:18px 0 8px;max-width:none}
+.ec>p.meta:first-child{margin-top:6px}
+.ec>h3:first-child{margin-top:12px}
+.gain2{display:grid;grid-template-columns:1fr 1.3fr;gap:16px;margin:14px 0}
+.gain2 .g1,.gain2 .g2{border-radius:22px;padding:18px 22px}
+.gain2 .g1{background:var(--bg);border:1px solid var(--line)}
+.gain2 .g2{background:var(--brand-dark);color:var(--cream)}
+.gain2 .lab,.pourquoi .lab,.changer .lab{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:4px}
+.gain2 .kv{display:block;font-family:var(--display);font-size:32px;font-weight:800;color:#fff;line-height:1.1}
+.gain2 .kv2{display:block;font-size:18px;font-weight:700;color:var(--rose);margin-bottom:6px}
+.gain2 .petit{color:#cfe6da;font-size:13.5px;margin:6px 0 0;max-width:none}
+.pourquoi{background:var(--cream);border-radius:18px;padding:14px 18px;margin:8px 0;color:var(--ink)}
+.pourquoi .lab{color:var(--brand)}
+.pourquoi p,.changer p{margin:0;max-width:none}
+.changer{background:var(--rose-soft);border-left:6px solid var(--flame);border-radius:16px;padding:14px 18px;margin:16px 0}
+.changer .lab{color:#9a2f37}
+.cols2{border-radius:18px}
+@media(max-width:760px){.gain2{grid-template-columns:1fr}.etape{padding:20px 18px}.en{width:46px;height:46px;font-size:22px}.et{font-size:24px}.stepper{top:96px}}
+main.wrap{overflow:visible;overflow-x:clip}
+.subnav .wrap{max-width:1180px}
+.subnav a{font-size:14px;padding:5px 11px}
+@media(max-width:760px){.topnav{position:static}.stepper{top:0}.topnav .wrap{padding:10px 16px}}
