@@ -566,3 +566,14 @@ main.wrap{overflow:visible;overflow-x:clip}
 .rc-suivi .lab{color:var(--rose)}
 .rgrid .plis,.rgrid details{grid-column:auto}
 @media(max-width:900px){.rgrid{grid-template-columns:1fr}.rc-faits{grid-template-columns:1fr}}
+.cv-p{margin:8px 0 0;font-size:14px;color:var(--muted)}.cv-p b{color:var(--brand-dark)}
+/* 18/11 soir : parties A / B (question 3) et liste d'état des automatisations */
+.sous-ab{display:flex;align-items:center;gap:10px;margin:26px 0 8px;font-family:var(--display);font-size:20px;color:var(--brand-dark)}
+.ab{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border-radius:99px;background:var(--brand);color:var(--cream);font-family:var(--body);font-weight:800;font-size:15px}
+.ab.b{background:var(--flame);color:#fff}
+.kc ul.etat{margin:4px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.kc ul.etat li{padding-left:0}
+.kc ul.etat .pill{margin-right:4px}
+.cv-p b{display:inline}
+.kcards:has(> .kc:nth-child(4):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:640px){.kcards:has(> .kc:nth-child(4):last-child){grid-template-columns:1fr}}
