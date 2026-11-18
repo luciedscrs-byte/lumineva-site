@@ -290,6 +290,14 @@ _jos = [_jo(a, b) for a, b in _exp]
 _nonexp = [r for r in raw_o if not r['Cancelled at'] and r['Paid at'] and not r['Fulfilled at'] and (REF - _dtp(r['Paid at'])).days > 30]
 out['expeditions'] = {'expediees': len(_jos), 'mediane_jours_ouvres': float(np.median(_jos)), 'plus_10_jo': sum(1 for x in _jos if x > 10), 'plus_7_jo': sum(1 for x in _jos if x > 7),
                       'non_expediees_plus_30j': len(_nonexp), 'non_expediees_plus_30j_retrait_local': sum(1 for r in _nonexp if 'lotissement' in r['Shipping Method'].lower())}
+
+# =================================================================== L. CE QUE LA BOUTIQUE VEND (part du chiffre d'affaires des lignes de commande, par famille)
+_fam = collections.defaultdict(float)
+for o in cmds:
+    for l in o['lignes']: _fam[famille(l['nom'])] += l['qte'] * l['prix']
+_tot_l = sum(_fam.values())
+out['mix_familles'] = {k: 100 * v / _tot_l for k, v in sorted(_fam.items(), key=lambda kv: -kv[1])}
+out['mix_bougies'] = sum(v for k, v in out['mix_familles'].items() if 'ougies' in k)
 json.dump(out, open('q5_profils.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1, default=str)
 print(json.dumps({k: out[k] for k in ('hazard', 'retour_rapide', 'curieux', 'chasseur', 'cibles', 'inscrits', 'base90', 'cible_abo', 'fideles_an', 'valeur_fidele', 'frais', 'prix_bougie', 'formation_periodes', 'codes')}, ensure_ascii=False, indent=1, default=str)[:9000])
 for s in out['criteres_90j']: print(s['groupe'], round(s['oui']['taux'], 1), round(s['non']['taux'], 1), s['oui']['suivis'], round(s['p'], 4), round(s['p_holm'], 4))

@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Méthode, code et vérifications · Lumineva</title>
+<title>Code et vérifications · Lumineva</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=23">
 
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Données et choix</a><a href="q-existant.html">Automatisations</a><a href="recommandations.html">Recommandations</a><a href="methode.html" aria-current="page">Méthode</a></div></div></nav>
+<nav class="topnav" aria-label="Navigation principale"><div class="wrap"><a class="brand" href="index.html">Lumineva · données</a><div class="links"><a href="index.html">Contexte</a><a href="donnees.html">Choix et données</a><a href="q-relance.html">Automatisations</a><a href="recommandations.html">Recommandations</a><a href="methode.html" aria-current="page">Code et vérifications</a></div></div></nav>
 
-<header class="hero"><div class="wrap"><p class="kicker">Transparence</p><h1>Méthode, code et vérifications</h1><p class="lead">Comment lire les chiffres, ce qui a été vérifié, les tests utilisés en mots simples et tout le code.</p></div></header>
+<header class="hero"><div class="wrap"><p class="kicker">Transparence</p><h1>Code et vérifications</h1><p class="lead">Qui a fait quoi, ce qui a été vérifié, les tests utilisés en mots simples et tout le code, à télécharger.</p></div></header>
 <main class="wrap" id="contenu">
-<h2>Comment lire</h2><ul><li><b>Fait</b> : un chiffre calculé dans les fichiers. <b>Interprétation possible</b> : une explication non démontrée. <b>Limite</b> : ce qui peut fausser la lecture.</li><li>Chaque question suit <b>sept étapes</b> : question, hypothèse, périmètre, test, effet, chiffre, décision.</li><li><b>p-value</b> : si en réalité il n’y avait aucun écart, chance d’en voir un au moins aussi grand par hasard. Sous 0,05, on admet que l’écart est réel ; elle ne dit rien de son importance.</li></ul>
+<h2>Comment lire le site</h2><ul><li><b>Fait</b> : un chiffre calculé dans les fichiers. <b>Interprétation</b> : une explication non démontrée. <b>Limite</b> : ce qui peut fausser la lecture.</li><li>Chaque page de question se termine par un bloc <b>« Limites et ce qui manque »</b>.</li><li>Quand un écart est annoncé « réel », c’est que le test statistique donne une valeur <b>p</b> sous 0,05 : moins de 5 chances sur 100 de le voir par hasard.</li></ul>
 <h2>Qui a fait quoi</h2><p>Règle du module : l’IA produit, les étudiants vérifient et signent. Les calculs, graphiques et pages sont produits par l’agent ; les chiffres sont contrôlés par un audit indépendant, puis relus par l’équipe. Le choix des questions est celui de l’équipe, après échange avec l’enseignant.</p>
 <details class="pli" name="audit-ind"><summary>Vérifications : audit indépendant des chiffres</summary><div class="corps"><p>Un second programme (<code>audit_independant.py</code>) recalcule chaque chiffre clé depuis les fichiers bruts, sans utiliser le code d’analyse, puis le compare à la valeur affichée. Il a déjà fait corriger des fins de période restées au 20 septembre, des chiffres périmés, un libellé trompeur et plusieurs phrases trop fortes. Les e-mails (captures Shopify) ne se recalculent pas : on contrôle leurs statistiques, pas leurs comptages.</p><pre class="code"><code>Contrôle                                                              Recalculé         Site  Verdict
 Commandes non annulées                                                   1595.0       1595.0  OK
@@ -130,7 +130,7 @@ Envoi du 8 juillet : montant (page : 840 €)                               840.
 
  109 contrôles OK sur 109
 </code></pre></div></details>
-<details class="pli" name="verif-approf"><summary>Vérifications : approfondissement des questions (15 novembre)</summary><div class="corps"><p>Un programme séparé (<code>verif_approfondi.py</code>) recalcule depuis les fichiers bruts les chiffres des pages Contexte, Données et choix et des quatre questions, sans réutiliser le code d’analyse, et les compare aux valeurs affichées.</p><pre class="code"><code>--- Données de base
+<details class="pli" name="verif-approf"><summary>Vérifications : approfondissement des questions (15 novembre)</summary><div class="corps"><p>Un programme séparé (<code>verif_approfondi.py</code>) recalcule depuis les fichiers bruts les chiffres des pages Contexte, Choix et données et des quatre questions, sans réutiliser le code d’analyse, et les compare aux valeurs affichées.</p><pre class="code"><code>--- Données de base
 Commandes non annulées                                                                1595.0000    1595.0000  OK
 Commandes annulées                                                                       7.0000       7.0000  OK
 Clients ayant commandé                                                                 913.0000     913.0000  OK

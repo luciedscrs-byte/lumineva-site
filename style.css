@@ -383,3 +383,30 @@ table.plan td:first-child{white-space:nowrap}
 .chaine .b b{display:block;color:var(--brand-dark);margin-bottom:2px}
 .chaine .b.fin{background:var(--accent-soft);border-color:var(--brand)}
 .chaine .b:not(:last-child)::after{content:'›';position:absolute;right:-9px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--brand);font-weight:700;z-index:2}
+
+/* ---- 18/11 : contexte, choix et données, encadré des sources ---- */
+.encadre{border:2px solid var(--brand);border-radius:14px;background:#fff;padding:6px 20px 14px;margin:24px 0}
+.encadre h2{margin-top:10px;font-size:20px}
+.constat-tbl{width:100%;border-collapse:separate;border-spacing:0 10px}
+.constat-tbl th{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:0 12px}
+.constat-tbl td{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 14px;vertical-align:middle}
+.constat-tbl td:first-child{border-left:6px solid var(--brand);border-radius:10px 0 0 10px;font-weight:700;width:30%}
+.constat-tbl td:last-child{border-right:1px solid var(--line);border-radius:0 10px 10px 0;width:24%}
+.constat-tbl .num{display:inline-block;background:var(--brand);color:var(--cream);border-radius:99px;width:26px;height:26px;line-height:26px;text-align:center;margin-right:8px;font-size:14px}
+.constat-tbl .gros{display:block;font-family:var(--display);font-size:24px;font-weight:700;color:var(--brand-dark);line-height:1.15}
+.constat-tbl td p{margin:2px 0 0;font-size:15px}
+.faq-tbl td:first-child{width:28%}
+.flowmaq{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin:12px 0}
+.flowmaq .fb{border-radius:8px;padding:9px 14px;font-size:14.5px;border:1px solid var(--line);background:#fff;min-width:260px;max-width:560px}
+.flowmaq .fb b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.flowmaq .decl{background:#FFF3C2;border-color:#e2cf7a}.flowmaq .cond{background:#E3F0FA;border-color:#9ec5e6}.flowmaq .act{background:#E3F2EA;border-color:#8cc7a8}.flowmaq .att{background:#F1E9FB;border-color:#c5aee6}
+.flowmaq .lien{width:2px;height:14px;background:var(--muted);margin-left:28px}
+.flows3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin:14px 0}
+.flows3 h4{margin:0 0 4px;font-size:16px;color:var(--brand-dark)}
+.bars2{display:flex;align-items:flex-end;gap:10px;height:170px;margin:10px 0 4px;padding:0 6px;border-bottom:2px solid var(--line)}
+.bars2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:38px}
+.bars2 .col i{display:block;width:100%;max-width:60px;background:var(--flame);border-radius:6px 6px 0 0;min-height:3px}
+.bars2.vert .col i{background:var(--accent)}
+.bars2 .col span.v{font-weight:700;font-size:14px;margin-bottom:3px}
+.bars2 .col.fort i{background:var(--brand-dark)}
+.barlab{display:flex;gap:10px;padding:0 6px;font-size:12.5px;color:var(--muted)}.barlab span{flex:1;text-align:center;min-width:38px}
